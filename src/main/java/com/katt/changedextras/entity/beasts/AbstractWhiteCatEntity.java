@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -35,8 +36,14 @@ public abstract class AbstractWhiteCatEntity extends ChangedEntity {
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        AttributeInstance maxHealthAttribute = attributes.getInstance(Attributes.MAX_HEALTH);
+        double configuredMaxHealth = maxHealthAttribute != null ? maxHealthAttribute.getBaseValue() : this.getMaxHealth();
         super.setAttributes(attributes);
         AttributePresets.catLike(attributes);
+        if (maxHealthAttribute != null) {
+            maxHealthAttribute.setBaseValue(configuredMaxHealth);
+            this.setHealth((float) configuredMaxHealth);
+        }
     }
 
     @Override

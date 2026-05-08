@@ -1,8 +1,8 @@
 package com.katt.changedextras.common.ai;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.Config;
 import com.katt.changedextras.common.LatexCuddleHelper;
+import com.katt.changedextras.common.ChangedExtrasGameRules;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +21,7 @@ public final class LatexAggroHandler {
             return;
         }
 
-        if (!Config.smartLatexAiEnabled) {
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules())) {
             return;
         }
 

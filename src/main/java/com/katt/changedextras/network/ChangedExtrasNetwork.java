@@ -43,5 +43,9 @@ public class ChangedExtrasNetwork {
                 LatexDebugSnapshotPacket::encode,
                 LatexDebugSnapshotPacket::decode,
                 LatexDebugSnapshotPacket::handle);
+        INSTANCE.registerMessage(id++, SyncVisorPacket.class,
+                SyncVisorPacket::encode,
+                SyncVisorPacket::decode,
+                SyncVisorPacket::handle);
     }
 }

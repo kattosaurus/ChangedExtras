@@ -4,17 +4,22 @@
   "package": "com.katt.changedextras.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "changedextras.refmap.json",
-  "mixins": [],
+  "mixins": [
+    "ExoskeletonMixin"
+  ],
   "client": [
     "AdvancedHumanoidModelMixin",
     "AdvancedHumanoidRendererMixin",
     "CustomEyesLayerMixin",
     "CustomLatexRendererMixin",
+    "ExoskeletonVisorLayerMixin",
     "ForgeHooksClientMixin",
     "LivingEntityRendererMixin",
     "OnlineServerEntryMixin",
     "PlayerRendererMixin",
-    "ServerDataMixin"
+    "ServerDataMixin",
+    "WornExoskeletonRendererMixin",
+    "ExoskeletonModelVisorModelMixin"
   ],
   "injectors": {
     "defaultRequire": 0

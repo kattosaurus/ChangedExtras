@@ -118,6 +118,8 @@
   "gamerule.changedextrasWhiteCatNaturalSpawns.description": "Whether White Cat can spawn naturally.",
   "gamerule.changedextrasArtistNaturalSpawns": "Artist Natural Spawns",
   "gamerule.changedextrasArtistNaturalSpawns.description": "Whether The Artist can spawn naturally.",
+  "gamerule.changedextrasSmartLatexAiEnabled": "Smart Latex AI",
+  "gamerule.changedextrasSmartLatexAiEnabled.description": "Whether Changed Extras latex creatures use the smart AI behavior package.",
   "gamerule.changedextrasLatexToolChance": "Latex Creature Tool Chance",
   "gamerule.changedextrasLatexToolChance.description": "The percent chance for Changed Extras latex creatures to spawn with a random tool.",
   "gamerule.changedextrasLatexArmorChance": "Latex Creature Armor Chance",

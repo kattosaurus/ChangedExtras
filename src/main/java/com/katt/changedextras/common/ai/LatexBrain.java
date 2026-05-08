@@ -57,22 +57,23 @@ public class LatexBrain {
     private static final double SEARCH_REACH = 1.75D;
     private static final double LOOT_RANGE = 10.0D;
     private static final double PICKUP_RANGE = 2.2D;
-    private static final double DIRECT_WALK_SPEED = 0.68D;
-    private static final double DIRECT_RUN_SPEED = 0.76D;
-    private static final double DIRECT_SPRINT_SPEED = 0.82D;
+    private static final double SPEED_SCALE = 0.85D;
+    private static final double DIRECT_WALK_SPEED = 0.68D * SPEED_SCALE;
+    private static final double DIRECT_RUN_SPEED = 0.76D * SPEED_SCALE;
+    private static final double DIRECT_SPRINT_SPEED = 0.82D * SPEED_SCALE;
     private static final double DIRECT_FACE_MIN_DISTANCE_SQR = 0.36D;
-    private static final double WATCH_APPROACH_SPEED = 0.74D;
+    private static final double WATCH_APPROACH_SPEED = 0.74D * SPEED_SCALE;
     private static final double WATCH_SIDE_OFFSET = 1.15D;
     private static final double WATCH_MIN_DISTANCE = 2.6D;
     private static final double WATCH_MAX_DISTANCE = 4.4D;
     private static final double NARROW_FOOTING_SAMPLE = 0.32D;
-    private static final double BREAK_MOVE_SPEED = 0.72D;
-    private static final double BUILD_MOVE_SPEED = 0.68D;
-    private static final double SEARCH_MOVE_SPEED = 0.68D;
-    private static final double LOOT_MOVE_SPEED = 0.66D;
-    private static final double RETREAT_MOVE_SPEED = 0.72D;
-    private static final double TOWER_ALIGN_SPEED = 0.46D;
-    private static final double CAUTIOUS_FOOTING_SPEED = 0.42D;
+    private static final double BREAK_MOVE_SPEED = 0.72D * SPEED_SCALE;
+    private static final double BUILD_MOVE_SPEED = 0.68D * SPEED_SCALE;
+    private static final double SEARCH_MOVE_SPEED = 0.68D * SPEED_SCALE;
+    private static final double LOOT_MOVE_SPEED = 0.66D * SPEED_SCALE;
+    private static final double RETREAT_MOVE_SPEED = 0.72D * SPEED_SCALE;
+    private static final double TOWER_ALIGN_SPEED = 0.46D * SPEED_SCALE;
+    private static final double CAUTIOUS_FOOTING_SPEED = 0.42D * SPEED_SCALE;
     private static final double MAX_VISIBLE_TARGET_RANGE = 14.0D;
     private static final double MAX_REMEMBERED_TARGET_RANGE = 20.0D;
     private static final double HARD_TARGET_DROP_RANGE = 24.0D;
@@ -92,6 +93,8 @@ public class LatexBrain {
     private static final int PATH_CACHE_TICKS = 8;
     private static final int TERRAIN_CACHE_TICKS = 6;
     private static final double BREAK_PREFERENCE_PENALTY = 18.0D;
+    private static final double STRAIGHT_ROUTE_ALIGNMENT_WEIGHT = 6.0D;
+    private static final double STRAIGHT_ROUTE_PATH_NODE_WEIGHT = 0.35D;
     enum State {
         IDLE,
         CHASE,
@@ -228,15 +231,18 @@ public class LatexBrain {
         if (target == null) return;
 
         equipBestCombatTool(mob);
-        boolean narrowFooting = isOnNarrowFooting(mob);
+        boolean bridgeStraightChase = shouldUseBridgeStraightChase(mob, target);
+        boolean narrowFooting = isOnNarrowFooting(mob) || bridgeStraightChase;
         boolean sprintJumpChase = !narrowFooting && canSprintJumpChase(mob, target);
         mob.setSprinting(sprintJumpChase);
         double speed = resolveChaseSpeed(target, sprintJumpChase);
         if (narrowFooting) {
             speed = Math.min(speed, CAUTIOUS_FOOTING_SPEED);
         }
-        Path reachPath = createReachPath(mob, target);
-        if (reachPath != null) {
+        Path reachPath = bridgeStraightChase ? null : createReachPath(mob, target);
+        if (bridgeStraightChase) {
+            applyStraightBridgeChaseMovement(mob, target, speed);
+        } else if (reachPath != null) {
             mob.setZza(0.0F);
             mob.setXxa(0.0F);
             mob.getNavigation().moveTo(reachPath, speed);
@@ -250,7 +256,7 @@ public class LatexBrain {
             mob.getNavigation().moveTo(target, speed);
             mob.getLookControl().setLookAt(target, 10.0F, 10.0F);
         }
-        if (!narrowFooting) {
+        if (!narrowFooting && !bridgeStraightChase) {
             smartJump(mob, target);
         }
     }
@@ -654,6 +660,21 @@ public class LatexBrain {
         mob.getNavigation().moveTo(target, moveSpeed);
     }
 
+    private void applyStraightBridgeChaseMovement(ChangedEntity mob, LivingEntity target, double moveSpeed) {
+        Vec3 forward = horizontalForwardToTarget(mob, target);
+        Vec3 center = mob.position();
+        Vec3 straightTarget = new Vec3(
+                center.x + forward.x * Math.max(1.0D, mob.distanceTo(target)),
+                mob.getY(),
+                center.z + forward.z * Math.max(1.0D, mob.distanceTo(target))
+        );
+        mob.setZza(0.0F);
+        mob.setXxa(0.0F);
+        faceTarget(mob, target, 6.0F);
+        mob.getNavigation().moveTo(straightTarget.x, straightTarget.y, straightTarget.z, moveSpeed);
+        mob.getLookControl().setLookAt(target, 10.0F, 10.0F);
+    }
+
     private double resolveChaseSpeed(LivingEntity target, boolean sprintJumpChase) {
         if (sprintJumpChase) {
             return DIRECT_SPRINT_SPEED;
@@ -682,6 +703,37 @@ public class LatexBrain {
         BlockPos below = BlockPos.containing(x, y - 0.2D, z);
         BlockState state = mob.level().getBlockState(below);
         return !state.isAir() && !state.getCollisionShape(mob.level(), below).isEmpty();
+    }
+
+    private boolean shouldUseBridgeStraightChase(ChangedEntity mob, LivingEntity target) {
+        if (!mob.onGround() || mob.horizontalCollision) {
+            return false;
+        }
+
+        Vec3 forward = horizontalForwardToTarget(mob, target);
+        Vec3 side = new Vec3(-forward.z, 0.0D, forward.x);
+        return isSideDropAirColumn(mob, side) && isSideDropAirColumn(mob, side.scale(-1.0D));
+    }
+
+    private boolean isSideDropAirColumn(ChangedEntity mob, Vec3 sideOffset) {
+        Vec3 sample = mob.position().add(sideOffset.normalize());
+        for (int depth = 1; depth <= 3; depth++) {
+            BlockPos pos = BlockPos.containing(sample.x, mob.getY() - depth, sample.z);
+            if (!mob.level().getBlockState(pos).isAir()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Vec3 horizontalForwardToTarget(ChangedEntity mob, LivingEntity target) {
+        Vec3 forward = target.position().subtract(mob.position()).multiply(1.0D, 0.0D, 1.0D);
+        if (forward.lengthSqr() > 1.0E-6D) {
+            return forward.normalize();
+        }
+
+        float yawRadians = mob.getYRot() * ((float)Math.PI / 180.0F);
+        return new Vec3(-Mth.sin(yawRadians), 0.0D, Mth.cos(yawRadians));
     }
 
     private void faceTarget(ChangedEntity mob, LivingEntity target, float maxTurnStep) {
@@ -824,7 +876,7 @@ public class LatexBrain {
 
     private void smartJump(ChangedEntity mob, LivingEntity target) {
         LatexMind mind = LatexMindStore.get(mob);
-        if (mind.jumpCooldown > 0 || !mob.onGround() || isOnNarrowFooting(mob)) return;
+        if (mind.jumpCooldown > 0 || !mob.onGround() || isOnNarrowFooting(mob) || shouldUseBridgeStraightChase(mob, target)) return;
 
         if (target instanceof Player && canSprintJumpChase(mob, target)) {
             Vec3 flat = target.position().subtract(mob.position()).multiply(1.0D, 0.0D, 1.0D);
@@ -912,7 +964,9 @@ public class LatexBrain {
     private Path createNearbyReachPath(ChangedEntity mob, LivingEntity target) {
         BlockPos targetPos = target.blockPosition();
         Path bestPath = null;
-        double bestDistance = Double.POSITIVE_INFINITY;
+        Vec3 directLine = target.position().subtract(mob.position()).multiply(1.0D, 0.0D, 1.0D);
+        Vec3 directNormal = directLine.lengthSqr() > 1.0E-6D ? directLine.normalize() : Vec3.ZERO;
+        double bestScore = Double.POSITIVE_INFINITY;
 
         for (int dy = -1; dy <= 1; dy++) {
             for (int radius = 0; radius <= ALT_PATH_SEARCH_RADIUS; radius++) {
@@ -932,9 +986,16 @@ public class LatexBrain {
                             continue;
                         }
 
+                        Vec3 candidateOffset = Vec3.atBottomCenterOf(candidate).subtract(target.position()).multiply(1.0D, 0.0D, 1.0D);
                         double distance = candidate.distSqr(targetPos);
-                        if (distance < bestDistance) {
-                            bestDistance = distance;
+                        double lateralOffset = directNormal.equals(Vec3.ZERO)
+                                ? 0.0D
+                                : candidateOffset.subtract(directNormal.scale(candidateOffset.dot(directNormal))).length();
+                        double score = distance
+                                + lateralOffset * STRAIGHT_ROUTE_ALIGNMENT_WEIGHT
+                                + candidatePath.getNodeCount() * STRAIGHT_ROUTE_PATH_NODE_WEIGHT;
+                        if (score < bestScore) {
+                            bestScore = score;
                             bestPath = candidatePath;
                         }
                     }

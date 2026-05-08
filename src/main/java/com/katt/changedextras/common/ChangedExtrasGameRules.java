@@ -1,6 +1,7 @@
 package com.katt.changedextras.common;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.Config;
 import net.minecraft.world.level.GameRules;
 
 public final class ChangedExtrasGameRules {
@@ -40,6 +41,12 @@ public final class ChangedExtrasGameRules {
             GameRules.BooleanValue.create(true)
     );
 
+    public static final GameRules.Key<GameRules.BooleanValue> SMART_LATEX_AI_ENABLED = GameRules.register(
+            "changedextrasSmartLatexAiEnabled",
+            GameRules.Category.MOBS,
+            GameRules.BooleanValue.create(false)
+    );
+
     public static final GameRules.Key<GameRules.IntegerValue> LATEX_TOOL_CHANCE = GameRules.register(
             "changedextrasLatexToolChance",
             GameRules.Category.SPAWNING,
@@ -57,6 +64,10 @@ public final class ChangedExtrasGameRules {
 
     public static void bootstrap() {
         ChangedExtras.class.getName();
+    }
+
+    public static boolean isSmartLatexAiEnabled(GameRules gameRules) {
+        return Config.smartLatexAiEnabled && gameRules.getBoolean(SMART_LATEX_AI_ENABLED);
     }
 
     public static float getToolChance(GameRules gameRules) {

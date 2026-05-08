@@ -1,7 +1,8 @@
 package com.katt.changedextras.common.ai;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.Config;
+import com.katt.changedextras.common.ChangedExtrasGameRules;
+import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -40,6 +41,12 @@ public final class LatexMobAIHandler {
     public static void onEntityJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) return;
         if (!(event.getEntity() instanceof ChangedEntity mob)) return;
+        if (mob instanceof ArtistEntity artist) {
+            if (artist.isNoAi()) {
+                artist.setNoAi(false);
+            }
+            return;
+        }
         ensureSmartAiInstalled(mob);
     }
 
@@ -47,7 +54,13 @@ public final class LatexMobAIHandler {
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         if (!(event.getEntity() instanceof ChangedEntity mob)) return;
         if (mob.level().isClientSide()) return;
-        if (!Config.smartLatexAiEnabled) return;
+        if (mob instanceof ArtistEntity artist) {
+            if (artist.isNoAi()) {
+                artist.setNoAi(false);
+            }
+            return;
+        }
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules())) return;
         if (LatexAiUtil.isSmartAiExcluded(mob)) {
             INSTALLED_MOBS.remove(mob);
             LatexMindStore.forget(mob);
@@ -86,7 +99,9 @@ public final class LatexMobAIHandler {
     }
 
     private static void ensureSmartAiInstalled(ChangedEntity mob) {
-        if (!Config.smartLatexAiEnabled || INSTALLED_MOBS.contains(mob) || LatexAiUtil.isSmartAiExcluded(mob)) {
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules())
+                || INSTALLED_MOBS.contains(mob)
+                || LatexAiUtil.isSmartAiExcluded(mob)) {
             return;
         }
 

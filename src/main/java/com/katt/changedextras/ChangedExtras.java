@@ -6,6 +6,7 @@ import com.katt.changedextras.client.particle.JackpotSmokeParticleProvider;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.common.ChangedExtrasSpawnController;
 import com.katt.changedextras.entity.ModEntities;
+import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import com.katt.changedextras.init.ChangedExtrasParticles;
@@ -72,7 +73,7 @@ public class ChangedExtras {
     private static final UUID SPECIAL_PLAYER_UUID = UUID.fromString("70080b3e-8cf3-46f3-922e-7b3a32269935");
 
     public static final String MODID = "changedextras";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
@@ -149,6 +150,7 @@ public class ChangedExtras {
         DiscoveryNetwork.bootstrap();
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(ModEntityAttributes::registerEntityAttributes);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);

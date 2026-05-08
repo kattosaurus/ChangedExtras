@@ -4,9 +4,25 @@
 
 A mod made to add things to the changed mods that don't fit in either the Changed Add-on (@Foxyas) or the Changed: Minecraft Mod (@ltxprogrammer), like characters from other verses.
 
+# The new AI
+
+Currently on the mod, there's an improved AI for the latex creatures, but it comes disabled by default, to enable it, do the following:
+
+## If on a server
+
+* Open the server config file, and set *smartLatexAiEnabled* to **true**
+* Open your *level.dat* file, and go to *Data/GameRules* inside the file, and set it to **true** (By apps like NBTEditor)
+
+## If playing singleplayer or using a local world
+
+* Open the server config file by a mod that lets you edit it (Like configured), and set *smartLatexAiEnabled* to **true**
+* Open your *level.dat* file, and go to *Data/GameRules* inside the file, and set it to **true** (By apps like NBTEditor)
+
 # My plans
 
 I'm planning to add multiple species from other verses that aren't changed, the first example: I added the conekat (Resurgenced) to the add-on, in addition to a cafeteria room in the changed facilities.
+
+You can join my discord and give me suggestions for what to add, either new transfurs, features, structures or other stuff
 
 # Features to be added
 
@@ -14,10 +30,8 @@ I'm planning to add multiple species from other verses that aren't changed, the 
 
 *   Fire Cat
 *   Water Dog
-
-· A new boss: Artist
-
-*   The boss, apparently a cat, with a brush, decided to explore, but since it is latex, it found you.
+*   Multiple new Cat -- Transfurs
+*   Some others, that I'll think of later
 
 # Current features
 
@@ -25,15 +39,20 @@ I'm planning to add multiple species from other verses that aren't changed, the 
 
 *   Conekat
 *   White Cat
-*   Katt (My transfur)
 
 ### New rooms:
 
-*   New cafeteria room in the facilities and a recreation room
+*   New cafeteria room in the facilities
+*   Recreation room in facilities
 
 ### New foods and items:
 
 *   New Ice Cream food item, and block
+*   Artist brush, Sketch, and palette
+
+### A new boss: Artist
+
+*   The boss, apparently a cat, with a brush, crafted from expensive materials, paper, and paint, it drops a paint brush, which can be used to customize custom latex to a bigger extent
 
 # FAQ
 
@@ -45,7 +64,10 @@ I'm planning to add multiple species from other verses that aren't changed, the 
 
 *   Either using its syringe, or eating 3 Ice cream
 
-# How do I contribute?
+# Extra notes
 
-~~You *can't* contribute to this project, as I want to keep the code as I like it, tho you can make suggestions via my discord server~~
-As of the 8 of april, you **can** contribute to this project, suggestions will be kept as they are.
+None of these features are in the changed mod, or add-on, and they won't since they don't fit in either of them. Since they are characters or species from other verses, related or not to changed and latex, or some extra transfurs that don't have a reason to be in either.
+
+Pretty sloppy, will later be improved and extended.
+
+These features, not fitting in any may be of multiple player's liking, even mine, that's why I made this mod in the first place, to add features that aren't in both mods and probably won't be in.

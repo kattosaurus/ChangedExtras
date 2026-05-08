@@ -15,7 +15,7 @@ public final class Config {
 
     private static final ForgeConfigSpec.BooleanValue SMART_LATEX_AI_ENABLED = BUILDER
             .comment("When enabled, Changed Extras latex creatures use the smart AI behavior package.")
-            .define("smartLatexAiEnabled", true);
+            .define("smartLatexAiEnabled", false);
 
     private static final ForgeConfigSpec.IntValue LATEX_ATTACKER_MEMORY_TICKS = BUILDER
             .comment("How long smart latex creatures remember and pursue a player after being attacked or otherwise acquiring a target. Set to 0 to disable attacker memory.")
@@ -24,7 +24,7 @@ public final class Config {
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static boolean serverDiscoveryEnabled = true;
-    public static boolean smartLatexAiEnabled = true;
+    public static boolean smartLatexAiEnabled = false;
     public static int latexAttackerMemoryTicks = 160;
 
     private Config() {

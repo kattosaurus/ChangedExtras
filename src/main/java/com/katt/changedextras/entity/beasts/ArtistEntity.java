@@ -1,7 +1,6 @@
 package com.katt.changedextras.entity.beasts;
 
 import com.katt.changedextras.ChangedExtras;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,6 +11,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -19,6 +19,8 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -30,9 +32,9 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 
 public class ArtistEntity extends AbstractWhiteCatEntity {
     public static final int ATTACK_POSE_NONE = 0;
@@ -44,12 +46,12 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
 
     private static final double MIN_DASH_RANGE_SQR = 9.0D;
     private static final double MAX_DASH_RANGE_SQR = 256.0D;
-    private static final double PHASE_ONE_HEALTH = 600.0D;
-    private static final double PHASE_ONE_SPEED = 0.30D;
-    private static final double PHASE_TWO_SPEED = 0.48D;
-    private static final double PHASE_ONE_DASH_SPEED = 1.25D;
-    private static final double PHASE_TWO_DASH_SPEED = 2.15D;
-    private static final double PHASE_TWO_HEALTH = 400.0D;
+    private static final double PHASE_ONE_HEALTH = 800.0D;
+    private static final double PHASE_ONE_SPEED = 0.36D;
+    private static final double PHASE_TWO_SPEED = 0.58D;
+    private static final double PHASE_ONE_DASH_SPEED = 1.45D;
+    private static final double PHASE_TWO_DASH_SPEED = 2.45D;
+    private static final double PHASE_TWO_HEALTH = 600.0D;
     private static final int PHASE_ONE_RELOAD_TICKS = 32;
     private static final int PHASE_TWO_RELOAD_TICKS = 22;
     private static final EntityDataAccessor<Integer> ATTACK_POSE =
@@ -96,6 +98,17 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     }
 
     @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData spawnData, CompoundTag dataTag) {
+        SpawnGroupData finalData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+        var maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
+        if (maxHealth != null) {
+            maxHealth.setBaseValue(PHASE_ONE_HEALTH);
+            this.setHealth((float) PHASE_ONE_HEALTH);
+        }
+        return finalData;
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.35D, false));
@@ -106,8 +119,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, target ->
                 target instanceof Player player
                         && !player.isCreative()
-                        && !player.isSpectator()
-                        && !ProcessTransfur.isPlayerTransfurred(player)));
+                        && !player.isSpectator()));
     }
 
     @Override
@@ -118,6 +130,10 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
         this.triggerAttackPose(ATTACK_POSE_BRUSH, 8);
         boolean hit = super.doHurtTarget(target);
         if (hit && !this.level().isClientSide) {
+            if (target instanceof Player) {
+                float lifesteal = (float)Math.max(2.0D, this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.65D);
+                this.heal(lifesteal);
+            }
             if (target instanceof LivingEntity living) {
                 living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
             }
@@ -355,9 +371,6 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!this.getOpening() && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            return false;
-        }
         if (!secondPhaseTriggered && this.getHealth() - amount <= 0.0F) {
             if (!this.level().isClientSide) {
                 this.beginSecondPhase(this.getTarget());
