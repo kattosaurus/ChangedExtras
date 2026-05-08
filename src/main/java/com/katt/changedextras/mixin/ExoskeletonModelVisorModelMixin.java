@@ -1,5 +1,6 @@
 package com.katt.changedextras.mixin;
 
+import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.ExoskeletonVisorRenderHelper;
 import com.katt.changedextras.common.ExoskeletonVisorStyle;
 import com.mojang.blaze3d.vertex.PoseStack;
