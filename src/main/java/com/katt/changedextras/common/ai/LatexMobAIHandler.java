@@ -47,7 +47,11 @@ public final class LatexMobAIHandler {
             }
             return;
         }
-        ensureSmartAiInstalled(mob);
+        if (ChangedExtrasGameRules.isSmartLatexAiEnabled(event.getLevel().getGameRules())) {
+            ensureSmartAiInstalled(mob);
+        } else {
+            installDefaultGoals(mob);
+        }
     }
 
     @SubscribeEvent
@@ -60,16 +64,25 @@ public final class LatexMobAIHandler {
             }
             return;
         }
-        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules())) return;
-        if (LatexAiUtil.isSmartAiExcluded(mob)) {
-            INSTALLED_MOBS.remove(mob);
-            LatexMindStore.forget(mob);
-            return;
-        }
+        boolean smartAiEnabled = ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules());
+        if (smartAiEnabled) {
+            if (LatexAiUtil.isSmartAiExcluded(mob)) {
+                INSTALLED_MOBS.remove(mob);
+                LatexMindStore.forget(mob);
+                return;
+            }
 
-        ensureSmartAiInstalled(mob);
-        LatexMind mind = LatexMindStore.get(mob);
-        mind.tick(mob);
+            ensureSmartAiInstalled(mob);
+            LatexMind mind = LatexMindStore.get(mob);
+            mind.tick(mob);
+        } else {
+            if (INSTALLED_MOBS.contains(mob)) {
+                INSTALLED_MOBS.remove(mob);
+                LatexMindStore.forget(mob);
+                installDefaultGoals(mob);
+                mob.setCanPickUpLoot(false);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -163,6 +176,28 @@ public final class LatexMobAIHandler {
             return (GoalSelector) field.get(mob);
         } catch (ReflectiveOperationException e) {
             return null;
+        }
+    }
+
+    private static void installDefaultGoals(ChangedEntity mob) {
+        GoalSelector goals = getSelector(mob, "goalSelector");
+        if (goals != null) {
+            goals.addGoal(5, new WaterAvoidingRandomStrollGoal(mob, 1.0D));
+            goals.addGoal(6, new RandomLookAroundGoal(mob));
+            goals.addGoal(6, new LookAtPlayerGoal(mob, Player.class, 8.0F));
+            goals.addGoal(4, new MeleeAttackGoal(mob, 1.0D, false));
+        }
+
+        GoalSelector targetSelector = getSelector(mob, "targetSelector");
+        if (targetSelector != null) {
+            targetSelector.addGoal(1, new HurtByTargetGoal(mob));
+            targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(mob, Player.class, true));
+        }
+
+        // Reset movement speed to default
+        AttributeInstance movementSpeed = mob.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (movementSpeed != null && movementSpeed.getBaseValue() > 0.25D) {
+            movementSpeed.setBaseValue(0.23D);
         }
     }
 }
