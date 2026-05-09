@@ -182,6 +182,8 @@ public class ChangedExtras {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(ICECREAM_BLOCK_ITEM.get());
+        } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            event.accept(ICECREAM_ITEM.get());
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(THE_PALETTE.get());
         } else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
