@@ -118,6 +118,8 @@
   "gamerule.changedextrasWhiteCatNaturalSpawns.description": "A fehér macska természetes módon idéződhet-e.",
   "gamerule.changedextrasArtistNaturalSpawns": "Művész természetes módon idéződése",
   "gamerule.changedextrasArtistNaturalSpawns.description": "A művész természetes módon idéződhet-e.",
+  "gamerule.changedextrasSmartLatexAiEnabled": "Okos latex AI",
+  "gamerule.changedextrasSmartLatexAiEnabled.description": "Vajon a Changed Extras latex lények használják-e az okos AI viselkedési csomagot.",
   "gamerule.changedextrasLatexToolChance": "Latex lények eszköz esélye",
   "gamerule.changedextrasLatexToolChance.description": "A százalékos esély arra, hogy a Changed Extras latex lények idéződnek egy véletlenszerű eszközzel.",
   "gamerule.changedextrasLatexArmorChance": "Latex lények páncél esélye",
