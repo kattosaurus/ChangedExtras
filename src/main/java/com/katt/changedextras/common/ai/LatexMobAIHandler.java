@@ -1,6 +1,7 @@
 package com.katt.changedextras.common.ai;
 
 import com.katt.changedextras.ChangedExtras;
+import net.minecraft.world.entity.player.Player;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
