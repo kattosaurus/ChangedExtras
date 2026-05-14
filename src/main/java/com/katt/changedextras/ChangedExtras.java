@@ -9,6 +9,7 @@ import com.katt.changedextras.entity.ModEntities;
 import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
+import com.katt.changedextras.init.ChangedExtrasPaintings;
 import com.katt.changedextras.init.ChangedExtrasParticles;
 import com.katt.changedextras.init.ChangedExtrasSounds;
 import com.katt.changedextras.item.ArtistBrushItem;
@@ -162,6 +163,7 @@ public class ChangedExtras {
         ModEntities.REGISTRY.register(modEventBus);
         ModTransfurVariants.REGISTRY.register(modEventBus);
         ChangedExtrasAbilities.REGISTRY.register(modEventBus);
+        ChangedExtrasPaintings.REGISTRY.register(modEventBus);
         ChangedExtrasSounds.REGISTRY.register(modEventBus);
         ChangedExtrasParticles.REGISTRY.register(modEventBus);
     }
