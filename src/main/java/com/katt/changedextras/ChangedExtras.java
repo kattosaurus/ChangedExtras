@@ -12,9 +12,14 @@ import com.katt.changedextras.init.ChangedExtrasAbilities;
 import com.katt.changedextras.init.ChangedExtrasPaintings;
 import com.katt.changedextras.init.ChangedExtrasParticles;
 import com.katt.changedextras.init.ChangedExtrasSounds;
+import com.katt.changedextras.init.ChangedExtrasStructurePieceTypes;
+import com.katt.changedextras.init.ChangedExtrasStructureTypes;
 import com.katt.changedextras.item.ArtistBrushItem;
 import com.katt.changedextras.item.ArtistSketchItem;
 import com.katt.changedextras.item.LongSleeveShirt;
+import com.katt.changedextras.item.PaleTestItem;
+import com.katt.changedextras.item.SterileSwabItem;
+import com.katt.changedextras.item.UsedVialItem;
 import com.katt.changedextras.network.ChangedExtrasNetwork;
 import com.katt.changedextras.network.DiscoveryNetwork;
 import com.katt.changedextras.network.JackpotStatePacket;
@@ -26,6 +31,7 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -99,6 +105,18 @@ public class ChangedExtras {
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
             ITEMS.register("artist_brush", () -> new ArtistBrushItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> STERILE_SWAB =
+            ITEMS.register("sterile_swab", () -> new SterileSwabItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> USED_SWAB =
+            ITEMS.register("used_swab", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> VIAL =
+            ITEMS.register("vial", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> USED_VIAL =
+            ITEMS.register("used_vial", () -> new UsedVialItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> PROCESSED_VIAL =
+            ITEMS.register("processed_vial", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> PALE_TEST =
+            ITEMS.register("pale_test", () -> new PaleTestItem(new Item.Properties().stacksTo(1)));
 
     // The Player-Locked Katt Syringe
     public static final RegistryObject<LatexSyringe> KATT_SYRINGE =
@@ -166,6 +184,8 @@ public class ChangedExtras {
         ChangedExtrasPaintings.REGISTRY.register(modEventBus);
         ChangedExtrasSounds.REGISTRY.register(modEventBus);
         ChangedExtrasParticles.REGISTRY.register(modEventBus);
+        ChangedExtrasStructureTypes.REGISTRY.register(modEventBus);
+        ChangedExtrasStructurePieceTypes.REGISTRY.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -188,8 +208,14 @@ public class ChangedExtras {
             event.accept(ICECREAM_ITEM.get());
         } else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(THE_PALETTE.get());
+            event.accept(STERILE_SWAB.get());
+            event.accept(USED_SWAB.get());
+            event.accept(VIAL.get());
+            event.accept(USED_VIAL.get());
+            event.accept(PROCESSED_VIAL.get());
         } else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ARTIST_BRUSH.get());
+            event.accept(PALE_TEST.get());
         }
     }
 
@@ -306,6 +332,17 @@ public class ChangedExtras {
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
                     SimpleClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST)
             );
+
+            event.enqueueWork(() -> ItemProperties.register(
+                    ChangedExtras.PALE_TEST.get(),
+                    ResourceLocation.fromNamespaceAndPath(MODID, "positive"),
+                    (stack, level, entity, seed) -> PaleTestItem.isPositive(stack) ? 1.0F : 0.0F
+            ));
+            event.enqueueWork(() -> ItemProperties.register(
+                    ChangedExtras.PALE_TEST.get(),
+                    ResourceLocation.fromNamespaceAndPath(MODID, "negative"),
+                    (stack, level, entity, seed) -> PaleTestItem.isNegative(stack) ? 1.0F : 0.0F
+            ));
 
             MinecraftForge.EVENT_BUS.register(ClientEventHandler.class);
         }

@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "changedextras:bunker",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 88420137,
+    "spacing": 72,
+    "separation": 40,
+    "spread_type": "linear"
+  }
+}

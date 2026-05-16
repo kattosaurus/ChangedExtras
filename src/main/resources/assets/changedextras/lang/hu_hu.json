@@ -51,6 +51,12 @@
   "item.changedextras.sketch": "Mestermű vázlat",
   "item.changedextras.icecream": "Fagylalt",
   "item.changedextras.long_sleeve_shirt": "Hosszú ujjú poló",
+  "item.changedextras.sterile_swab": "Steril mintavevő pálca",
+  "item.changedextras.used_swab": "Használt mintavevő pálca",
+  "item.changedextras.vial": "Fiola",
+  "item.changedextras.used_vial": "Használt fiola",
+  "item.changedextras.processed_vial": "Feldolgozott fiola",
+  "item.changedextras.pale_test": "Pale vírusteszt",
 
   "6 | Type": "Blokkok",
   "block.changedextras.icecream_block": "Fagylaltblokk",
@@ -104,6 +110,8 @@
   "message.changedextras.death_overlay.infected.6": "Még a latex is elenged a végén, semmi megmenthetőt nem hagyva maga után.",
   "message.changedextras.death_overlay.infected.7": "Valahol a rothadás alatt az utolsó gondolatod darabokra hullik, mielőtt szavakká válhatna.",
   "message.changedextras.locked_syringe": "A benne lévő latex taszít, úgy néz ki, mintha valaki másé lenne",
+  "message.changedextras.pale_test.positive": "Pale teszt eredmény: pozitív. Pale kitettség: %s",
+  "message.changedextras.pale_test.negative": "Pale teszt eredmény: negatív. Pale kitettség: %s",
 
   "10 | Type": "Játékszabályok",
   "gamerule.changedextrasLatexEquipmentEnabled": "Latex lények felszerelései",

@@ -1,0 +1,6 @@
+{
+  "type": "changedextras:bunker",
+  "biomes": "#changedextras:has_structure/bunker",
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}
