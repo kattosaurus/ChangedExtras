@@ -54,6 +54,10 @@ You can join my discord and give me suggestions for what to add, either new tran
 
 *   The boss, apparently a cat, with a brush, crafted from expensive materials, paper, and paint, it drops a paint brush, which can be used to customize custom latex to a bigger extent
 
+### The pale test
+
+* Lets you test yourself for pale
+
 # FAQ
 
 ### Where do I find the cafeteria?

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "GSG",
+    "GuG"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:oak_slab"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "u": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "result": {
+    "item": "changedextras:vial",
+    "count": 1
+  }
+}

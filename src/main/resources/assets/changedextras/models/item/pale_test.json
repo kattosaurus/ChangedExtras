@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "changedextras:item/emptypaletest"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "changedextras:negative": 1.0
+      },
+      "model": "changedextras:item/pale_test_negative"
+    },
+    {
+      "predicate": {
+        "changedextras:positive": 1.0
+      },
+      "model": "changedextras:item/pale_test_positive"
+    }
+  ]
+}

@@ -51,6 +51,12 @@
   "item.changedextras.sketch": "Masterpiece Sketch",
   "item.changedextras.icecream": "Ice Cream",
   "item.changedextras.long_sleeve_shirt": "Long-Sleeved Shirt",
+  "item.changedextras.sterile_swab": "Sterile Swab",
+  "item.changedextras.used_swab": "Used Swab",
+  "item.changedextras.vial": "Vial",
+  "item.changedextras.used_vial": "Used Vial",
+  "item.changedextras.processed_vial": "Processed Vial",
+  "item.changedextras.pale_test": "Pale Virus Test",
 
   "6 | Type": "Blocks",
   "block.changedextras.icecream_block": "Ice Cream Block",
@@ -105,7 +111,9 @@
   "message.changedextras.death_overlay.infected.5": "The thing you became goes still, and whatever was left of you goes with it.",
   "message.changedextras.death_overlay.infected.6": "Even the latex lets go in the end, leaving nothing worth saving behind.",
   "message.changedextras.death_overlay.infected.7": "Somewhere under the rot, your last thought breaks apart before it can become words.",
-  "message.changedextras.locked_syringe": "The latex inside rejects you, it looks like it belongs to someone else",
+  "message.changedextras.locked_syringe": "The latex inside rejects you, it looks like it \"want's\" another host instead of you.",
+  "message.changedextras.pale_test.positive": "The pale test shows two lines and a number, positive. With pale exposure of %s",
+  "message.changedextras.pale_test.negative": "The pale test shows one line and a zero, negative. With pale exposure of %s",
 
   "10 | Type": "Game rules",
   "gamerule.changedextrasLatexEquipmentEnabled": "Latex Creature Equipment",
