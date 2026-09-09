@@ -199,6 +199,7 @@ public final class LatexMobAIHandler {
         if (goals != null) {
             goals.addGoal(5, new WaterAvoidingRandomStrollGoal(mob, 1.0D));
             goals.addGoal(6, new RandomLookAroundGoal(mob));
+            goals.addGoal(6, new LookAtPlayerGoal(mob, Player.class, 8.0F));
             goals.addGoal(4, new MeleeAttackGoal(mob, 1.0D, false));
         }
 
