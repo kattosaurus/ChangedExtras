@@ -4,9 +4,12 @@ import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -32,7 +35,7 @@ import java.util.WeakHashMap;
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class LatexMobAIHandler {
     // Standard player-calibrated base movement speed, nudged up (was 0.23D, then 0.28D, then 0.35D)
-    private static final double LATEX_PLAYER_BASE_SPEED = 0.38D;
+    private static final double LATEX_PLAYER_BASE_SPEED = 0.38D * 10;
 
     private static final Set<ChangedEntity> INSTALLED_MOBS =
             Collections.newSetFromMap(new WeakHashMap<>());
@@ -181,12 +184,21 @@ public final class LatexMobAIHandler {
         }
     }
 
+    private static AttributeInstance getDefaultAttribute(ChangedEntity mob, Attribute attr) {
+        // Original code used to get default attribute. For some reason, returns values lower than default.
+        // return DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) mob.getType()).createInstance(null, attr);
+
+        // Workaround: retrieve entity from cache, and get attribute from there.
+        // Also see: changed_addon's beastiary; more specifically its `EntityAttributeRadialWidget.java`
+        ChangedEntity entity = ChangedEntities.getCachedEntity(mob.level(), TransfurVariant.getEntityVariant(mob).getEntityType());
+        return entity.getAttribute(attr);
+    }
+
     private static void installDefaultGoals(ChangedEntity mob) {
         GoalSelector goals = getSelector(mob, "goalSelector");
         if (goals != null) {
             goals.addGoal(5, new WaterAvoidingRandomStrollGoal(mob, 1.0D));
             goals.addGoal(6, new RandomLookAroundGoal(mob));
-            goals.addGoal(6, new LookAtPlayerGoal(mob, Player.class, 8.0F));
             goals.addGoal(4, new MeleeAttackGoal(mob, 1.0D, false));
         }
 
@@ -197,8 +209,14 @@ public final class LatexMobAIHandler {
         }
 
         AttributeInstance movementSpeed = mob.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance defaultAttribute = getDefaultAttribute(mob, Attributes.MOVEMENT_SPEED);
+
         if (movementSpeed != null) {
-            movementSpeed.setBaseValue(LATEX_PLAYER_BASE_SPEED);
+            if (defaultAttribute != null) {
+                movementSpeed.setBaseValue(defaultAttribute.getBaseValue());
+            } else {
+                movementSpeed.setBaseValue(LATEX_PLAYER_BASE_SPEED);
+            }
         }
     }
 }
