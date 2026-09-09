@@ -184,14 +184,20 @@ public final class LatexMobAIHandler {
         }
     }
 
+    @Nullable
     private static AttributeInstance getDefaultAttribute(ChangedEntity mob, Attribute attr) {
         // Original code used to get default attribute. For some reason, returns values lower than default.
         // return DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) mob.getType()).createInstance(null, attr);
 
         // Workaround: retrieve entity from cache, and get attribute from there.
         // Also see: changed_addon's beastiary; more specifically its `EntityAttributeRadialWidget.java`
-        ChangedEntity entity = ChangedEntities.getCachedEntity(mob.level(), TransfurVariant.getEntityVariant(mob).getEntityType());
-        return entity.getAttribute(attr);
+        TransfurVariant<?> variant = TransfurVariant.getEntityVariant(mob);
+        if (variant != null) {
+            ChangedEntity entity = ChangedEntities.getCachedEntity(mob.level(), variant.getEntityType());
+            return entity.getAttribute(attr);
+        } else {
+            return null;
+        }
     }
 
     private static void installDefaultGoals(ChangedEntity mob) {
