@@ -35,7 +35,7 @@ import java.util.WeakHashMap;
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class LatexMobAIHandler {
     // Standard player-calibrated base movement speed, nudged up (was 0.23D, then 0.28D, then 0.35D)
-    private static final double LATEX_PLAYER_BASE_SPEED = 0.38D * 10;
+    private static final double LATEX_PLAYER_BASE_SPEED = 0.38D;
 
     private static final Set<ChangedEntity> INSTALLED_MOBS =
             Collections.newSetFromMap(new WeakHashMap<>());
