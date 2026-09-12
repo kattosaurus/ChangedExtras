@@ -30,6 +30,7 @@ public class ArtistSketchItem extends Item {
             return InteractionResult.FAIL;
         }
 
+        artist.applyBossStats();
         artist.moveTo(
                 spawnPos.getX() + 0.5D,
                 spawnPos.getY(),

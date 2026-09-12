@@ -25,5 +25,23 @@
         "stream": true
       }
     ]
+  },
+  "parry": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:parry",
+        "stream": false
+      }
+    ]
+  },
+  "heartbeat": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:heartbeat",
+        "stream": false
+      }
+    ]
   }
 }

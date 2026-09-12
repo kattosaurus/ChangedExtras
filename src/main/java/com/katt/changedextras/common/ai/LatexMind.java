@@ -91,6 +91,17 @@ public final class LatexMind {
     public int cachedTerrainTick = -10000;
     public int retaliationExpireTick = -10000;
 
+    // Perf: throttles how often we're allowed to run a fresh nearby-entity
+    // scan to acquire a brand-new target (findVisibleTarget). Remembered and
+    // grudge targets are never gated by this - only the expensive "look for
+    // someone new" scan is.
+    public int targetScanCooldown = 0;
+
+    // Perf: tracks consecutive ticks where no path to the target could be
+    // found, so we can back off re-running the expensive ring-search
+    // pathfinder (createNearbyReachPath) while a mob is legitimately stuck.
+    public int consecutiveUnreachablePaths = 0;
+
     public boolean hasLOS = false;
     public boolean pathFailed = false;
     public boolean cachedReachablePath = false;
@@ -211,5 +222,6 @@ public final class LatexMind {
         cachedTerrainTick = -10000;
         cachedReachablePath = false;
         retaliationExpireTick = -10000;
+        consecutiveUnreachablePaths = 0;
     }
 }

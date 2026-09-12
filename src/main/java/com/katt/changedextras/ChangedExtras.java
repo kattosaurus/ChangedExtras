@@ -28,8 +28,11 @@ import com.katt.changedextras.network.DiscoveryNetwork;
 import com.katt.changedextras.network.JackpotStatePacket;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedGameRules;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
+import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
@@ -37,7 +40,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -73,17 +79,51 @@ import net.ltxprogrammer.changed.client.renderer.layers.AccessoryLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.minecraft.world.entity.EquipmentSlot;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Mod(ChangedExtras.MODID)
 public class ChangedExtras {
 
     private static final String ICECREAM_STREAK_TAG = "changedextras.icecream_streak";
-    private static final String SPECIAL_VARIANT_GIVEN_TAG = "changedextras.special_variant_given";
-    private static final UUID SPECIAL_PLAYER_UUID = UUID.fromString("70080b3e-8cf3-46f3-922e-7b3a32269935");
+    public static final String RECEIVED_STARTER_KIT_TAG = "changedextras.received_starter_kit";
+    public static final String SPECIAL_CHOICE_MADE_TAG = "changedextras.special_choice_made";
+
+    public record SpecialPlayerData(
+            Supplier<? extends TransfurVariant<?>> variantSupplier,
+            Supplier<? extends Item> syringeSupplier,
+            String variantId,
+            String displayName,
+            Supplier<List<ItemStack>> extraItemsSupplier
+    ) {
+        public SpecialPlayerData(
+                Supplier<? extends TransfurVariant<?>> variantSupplier,
+                Supplier<? extends Item> syringeSupplier,
+                String variantId,
+                String displayName
+        ) {
+            this(variantSupplier, syringeSupplier, variantId, displayName, List::of);
+        }
+    }
+
+    public static final UUID SPECIAL_PLAYER_UUID = UUID.fromString("70080b3e-8cf3-46f3-922e-7b3a32269935");
+    public static final UUID JAMMER_PLAYER_UUID = UUID.fromString("28a686cf-a2e5-49a0-8420-3c4ca52d6b5c");
+
+    public static final Map<UUID, SpecialPlayerData> SPECIAL_PLAYERS = Map.of(
+            SPECIAL_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.KATT, () -> ChangedExtras.KATT_SYRINGE.get(), "katt", "Katt"),
+            JAMMER_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.JAMMER, () -> null, "jammer", "Jammer", () -> List.of(new ItemStack(ChangedExtras.JAMMER_HEADPHONES.get())))
+    );
 
     public static final String MODID = "changedextras";
     public static final Logger LOGGER = LogUtils.getLogger();
+    private static final int PROTO_BEE_PRIMARY = 0xF5CB42;
+    private static final int PROTO_BEE_SECONDARY = 0x4D3029;
+    private static final int SNOW_LEOPARD_PRIMARY = 0xA3A3A3;
+    private static final int SNOW_LEOPARD_SECONDARY = 0x2E2E2E;
+    private static final int TIGER_SHARK_PRIMARY = 0x9AA8AD;
+    private static final int TIGER_SHARK_SECONDARY = 0x151C1F;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
@@ -109,6 +149,14 @@ public class ChangedExtras {
             ITEMS.register("white_cat_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> ARTIST_SYRINGE =
             ITEMS.register("artist_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final RegistryObject<LatexSyringe> PROTO_BEE_SYRINGE =
+            ITEMS.register("proto_bee_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> FURRED_LATEX_TIGER_SHARK_SYRINGE =
+            ITEMS.register("furred_latex_tiger_shark_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE =
+            ITEMS.register("fluffed_up_latex_snow_leopard_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE =
+            ITEMS.register("fluffed_up_latex_snow_leopard_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -120,13 +168,13 @@ public class ChangedExtras {
     public static final RegistryObject<Item> VIAL =
             ITEMS.register("vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> USED_VIAL =
-            ITEMS.register("used_vial", () -> new UsedVialItem(new Item.Properties().stacksTo(1)));
+            ITEMS.register("used_vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> PROCESSED_VIAL =
             ITEMS.register("processed_vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> PALE_TEST =
             ITEMS.register("pale_test", () -> new PaleTestItem(new Item.Properties().stacksTo(1)));
 
-    // The Player-Locked Katt Syringe
+    // The Katt Syringe (Usable by everyone)
     public static final RegistryObject<LatexSyringe> KATT_SYRINGE =
             ITEMS.register("katt_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
@@ -153,6 +201,18 @@ public class ChangedExtras {
     public static final RegistryObject<ForgeSpawnEggItem> JAMMER_SPAWN_EGG =
             ITEMS.register("jammer_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.JAMMER, 0x36323e, 0x797881, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> PROTO_BEE_SPAWN_EGG =
+            ITEMS.register("proto_bee_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.PROTO_BEE, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> FURRED_LATEX_TIGER_SHARK_SPAWN_EGG =
+            ITEMS.register("furred_latex_tiger_shark_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.FURRED_LATEX_TIGER_SHARK, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG =
+            ITEMS.register("fluffed_up_latex_snow_leopard_male_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG =
+            ITEMS.register("fluffed_up_latex_snow_leopard_female_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> ARTIST_MOB_SPAWN_EGG =
             ITEMS.register("artist_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.ARTIST, 0x5C6BC0, 0xF5F5F5, new Item.Properties()));
@@ -167,9 +227,17 @@ public class ChangedExtras {
                         output.accept(createVariantSyringeStack(CONEKAT_FEMALE_SYRINGE.get(), "conekat_female"));
                         output.accept(createVariantSyringeStack(WHITE_CAT_SYRINGE.get(), "white_cat"));
                         output.accept(createVariantSyringeStack(ARTIST_SYRINGE.get(), "artist"));
+                        output.accept(createVariantSyringeStack(PROTO_BEE_SYRINGE.get(), "proto_bee"));
+                        output.accept(createVariantSyringeStack(FURRED_LATEX_TIGER_SHARK_SYRINGE.get(), "furred_latex_tiger_shark"));
+                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_male"));
+                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_female"));
                         output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "katt"));
                         output.accept(KATT_SPAWN_EGG.get());
                         output.accept(JAMMER_SPAWN_EGG.get());
+                        output.accept(PROTO_BEE_SPAWN_EGG.get());
+                        output.accept(FURRED_LATEX_TIGER_SHARK_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
                         output.accept(ARTIST_MOB_SPAWN_EGG.get());
                     })
                     .build());
@@ -184,6 +252,13 @@ public class ChangedExtras {
                         output.accept(CONEKAT_FEMALE_SPAWN_EGG.get());
                         output.accept(WHITE_CAT_SPAWN_EGG.get());
                         output.accept(ARTIST_SPAWN_EGG.get());
+                        output.accept(KATT_SPAWN_EGG.get());
+                        output.accept(JAMMER_SPAWN_EGG.get());
+                        output.accept(PROTO_BEE_SPAWN_EGG.get());
+                        output.accept(FURRED_LATEX_TIGER_SHARK_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG.get());
+                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
+                        output.accept(ARTIST_MOB_SPAWN_EGG.get());
                         output.accept(JAMMER_HEADPHONES.get());
                     })
                     .build());
@@ -215,11 +290,23 @@ public class ChangedExtras {
     private void commonSetup(final FMLCommonSetupEvent event) {
         ChangedExtrasGameRules.bootstrap();
         ChangedExtrasNetwork.register();
+        event.enqueueWork(ChangedExtras::registerTransfurColors);
         event.enqueueWork(ChangedExtrasSpawnController::registerSpawnPlacements);
         LOGGER.info("[Changed Extras] Loaded in!");
     }
 
-    private static ItemStack createVariantSyringeStack(Item syringeItem, String variantId) {
+    private static void registerTransfurColors() {
+        registerEntityColor("proto_bee", PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY);
+        registerEntityColor("furred_latex_tiger_shark", TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY);
+        registerEntityColor("fluffed_up_latex_snow_leopard_male", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
+        registerEntityColor("fluffed_up_latex_snow_leopard_female", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
+    }
+
+    private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
+        ChangedEntities.registerEntityColor(ResourceLocation.fromNamespaceAndPath(MODID, entityId), primaryColor, secondaryColor);
+    }
+
+    public static ItemStack createVariantSyringeStack(Item syringeItem, String variantId) {
         return Syringe.setPureVariant(
                 new ItemStack(syringeItem),
                 ResourceLocation.fromNamespaceAndPath(MODID, variantId));
@@ -250,41 +337,90 @@ public class ChangedExtras {
     }
 
     @SubscribeEvent
-    public void onPlayerFirstJoin(PlayerEvent.PlayerLoggedInEvent event) {
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
-        if (!player.getUUID().equals(SPECIAL_PLAYER_UUID)) {
-            return;
-        }
+        SpecialPlayerData specialData = SPECIAL_PLAYERS.get(player.getUUID());
+        if (specialData == null) return;
 
         CompoundTag data = player.getPersistentData();
-        if (!data.getBoolean("changedextras.received_starter_kit")) {
 
-            ItemStack starterSyringe = createVariantSyringeStack(KATT_SYRINGE.get(), "katt");
-
-            if (!player.getInventory().add(starterSyringe)) {
-                player.drop(starterSyringe, false);
+        // 1. Give starter items on first join (not on respawn)
+        if (!data.getBoolean(RECEIVED_STARTER_KIT_TAG)) {
+            if (specialData.syringeSupplier() != null && specialData.syringeSupplier().get() != null) {
+                ItemStack starterSyringe = createVariantSyringeStack(specialData.syringeSupplier().get(), specialData.variantId());
+                if (!player.getInventory().add(starterSyringe)) {
+                    player.drop(starterSyringe, false);
+                }
             }
-
-            data.putBoolean("changedextras.received_starter_kit", true);
+            if (specialData.extraItemsSupplier() != null) {
+                for (ItemStack extraStack : specialData.extraItemsSupplier().get()) {
+                    if (!player.getInventory().add(extraStack.copy())) {
+                        player.drop(extraStack.copy(), false);
+                    }
+                }
+            }
+            data.putBoolean(RECEIVED_STARTER_KIT_TAG, true);
         }
+
+        // 2. Prompt in chat if they haven't made their choice yet
+        if (!data.getBoolean(SPECIAL_CHOICE_MADE_TAG)) {
+            sendTransfurPrompt(player, specialData);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event) {
+        CompoundTag oldData = event.getOriginal().getPersistentData();
+        CompoundTag newData = event.getEntity().getPersistentData();
+        if (oldData.contains(RECEIVED_STARTER_KIT_TAG)) {
+            newData.putBoolean(RECEIVED_STARTER_KIT_TAG, oldData.getBoolean(RECEIVED_STARTER_KIT_TAG));
+        }
+        if (oldData.contains(SPECIAL_CHOICE_MADE_TAG)) {
+            newData.putBoolean(SPECIAL_CHOICE_MADE_TAG, oldData.getBoolean(SPECIAL_CHOICE_MADE_TAG));
+        }
+    }
+
+    public static void sendTransfurPrompt(ServerPlayer player, SpecialPlayerData specialData) {
+        MutableComponent yesBtn = Component.literal("[✔ Yes]")
+                .withStyle(style -> style
+                        .withColor(ChatFormatting.GREEN)
+                        .withBold(true)
+                        .withClickEvent(new ClickEvent(
+                                ClickEvent.Action.RUN_COMMAND,
+                                "/changedextras choice yes"
+                        ))
+                        .withHoverEvent(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                Component.literal("§aClick to start transfurred as " + specialData.displayName())
+                        )));
+
+        MutableComponent noBtn = Component.literal("[✖ No]")
+                .withStyle(style -> style
+                        .withColor(ChatFormatting.RED)
+                        .withBold(true)
+                        .withClickEvent(new ClickEvent(
+                                ClickEvent.Action.RUN_COMMAND,
+                                "/changedextras choice no"
+                        ))
+                        .withHoverEvent(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                Component.literal("§cClick to remain human")
+                        )));
+
+        player.sendSystemMessage(Component.literal("§6[Changed Extras] §fWould you like to start transfurred as §b" + specialData.displayName() + "§f?"));
+        if (!player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM)) {
+            player.sendSystemMessage(Component.literal("§e§lWarning: §cThis world doesnt have keep form enabled, whenever you die, you'll lose your form"));
+        }
+        player.sendSystemMessage(Component.literal("  ").append(yesBtn).append(Component.literal("    ")).append(noBtn));
     }
 
     @SubscribeEvent
     public void onItemUseStart(LivingEntityUseItemEvent.Start event) {
         ItemStack stack = event.getItem();
-        LivingEntity user = event.getEntity();
 
-        // Lock the Katt Syringe to the special UUID
+        // Katt Syringe is now usable by everyone
         if (stack.is(KATT_SYRINGE.get())) {
-            if (!user.getUUID().equals(SPECIAL_PLAYER_UUID)) {
-                if (user instanceof net.minecraft.world.entity.player.Player player) {
-                    player.displayClientMessage(Component.translatable("message.changedextras.locked_syringe")
-                            .withStyle(ChatFormatting.RED), true);
-                }
-                event.setCanceled(true);
-                return;
-            }
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "katt"));
         }
 
@@ -293,6 +429,14 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "white_cat"));
         } else if (stack.is(ARTIST_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "artist"));
+        } else if (stack.is(PROTO_BEE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "proto_bee"));
+        } else if (stack.is(FURRED_LATEX_TIGER_SHARK_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "furred_latex_tiger_shark"));
+        } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_male"));
+        } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_female"));
         } else if (stack.is(CONEKAT_MALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat_male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
@@ -328,27 +472,6 @@ public class ChangedExtras {
         player.getPersistentData().putInt(ICECREAM_STREAK_TAG, 0);
     }
 
-    @SubscribeEvent
-    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        assignSpecialVariant(event.getEntity());
-    }
-
-    @SubscribeEvent
-    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        assignSpecialVariant(event.getEntity());
-    }
-
-    private static void assignSpecialVariant(net.minecraft.world.entity.player.Player player) {
-        if (!(player instanceof ServerPlayer serverPlayer)) return;
-        if (!SPECIAL_PLAYER_UUID.equals(serverPlayer.getUUID())) return;
-
-        CompoundTag persistentData = serverPlayer.getPersistentData();
-        if (!persistentData.getBoolean(SPECIAL_VARIANT_GIVEN_TAG)) {
-            ProcessTransfur.setPlayerTransfurVariant(serverPlayer, ModTransfurVariants.KATT.get());
-            persistentData.putBoolean(SPECIAL_VARIANT_GIVEN_TAG, true);
-        }
-    }
-
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
@@ -381,6 +504,21 @@ public class ChangedExtras {
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
                     DyeableClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST)
             );
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY),
+                    ChangedExtras.PROTO_BEE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY),
+                    ChangedExtras.FURRED_LATEX_TIGER_SHARK_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY),
+                    ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(),
+                    ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get());
+        }
+
+        private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {
+            return switch (tintIndex) {
+                case 0 -> primaryColor;
+                case 1 -> secondaryColor;
+                default -> 0xFFFFFF;
+            };
         }
 
         @SubscribeEvent

@@ -13,13 +13,58 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Mod.EventBusSubscriber(modid = "changedextras", value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientJackpotTracker {
     private static boolean vignetteActive = false;
-    private static final ResourceLocation VIGNETTE = new ResourceLocation("minecraft", "textures/misc/vignette.png");
+    private static final ResourceLocation VIGNETTE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/vignette.png");
+    private static final Map<UUID, Long> JACKPOT_START_TIMES = new ConcurrentHashMap<>();
 
     public static void setVignetteActive(boolean active) {
         vignetteActive = active;
+    }
+
+    public static void setJackpotState(UUID uuid, boolean active) {
+        if (uuid == null) return;
+        if (active) {
+            JACKPOT_START_TIMES.put(uuid, System.currentTimeMillis());
+        } else {
+            JACKPOT_START_TIMES.remove(uuid);
+        }
+    }
+
+    public static boolean isJackpotActive(UUID uuid) {
+        return uuid != null && JACKPOT_START_TIMES.containsKey(uuid);
+    }
+
+    public static float getAuraScale(UUID uuid) {
+        if (uuid == null) return 1.0f;
+        Long startTime = JACKPOT_START_TIMES.get(uuid);
+        if (startTime == null) return 1.0f;
+        float elapsedSec = (System.currentTimeMillis() - startTime) / 1000.0f;
+        return getAuraScaleForTime(elapsedSec);
+    }
+
+    public static float getAuraScaleForTime(float seconds) {
+        if (seconds < 10.0f) return 0.5f;   // 0:00 Starts (0.5 of current size)
+        if (seconds < 30.0f) return 0.7f;   // 0:10 Violin starts (0.7 of current size)
+        if (seconds < 65.0f) return 0.6f;   // 0:30 Vocals start, tones down (0.6 of current size)
+        if (seconds < 106.0f) return 1.2f;  // 1:05 Epic part starts (1.2 of current size)
+        if (seconds < 115.0f) return 0.5f;  // 1:46 Epic part ends, tones down (0.5 of current size)
+        if (seconds < 135.0f) return 0.7f;  // 1:55 Violin part again (0.7 of current size)
+        if (seconds < 173.0f) return 0.6f;  // 2:15 Vocals start again, toned down (0.6 of current size)
+        if (seconds < 191.0f) return 0.5f;  // 2:53 Tones down again (0.5 of current size)
+        if (seconds < 231.0f) return 1.2f;  // 3:11 Epic part again (1.2 of current size)
+        if (seconds < 251.0f) return 0.5f;  // 3:51 Epic part ends, tones down (0.5 of current size)
+        return 0.5f;                        // 4:11 Song ends (0.5 of current size)
+    }
+
+    public static void clear() {
+        JACKPOT_START_TIMES.clear();
+        vignetteActive = false;
     }
 
     @SubscribeEvent
@@ -85,7 +130,6 @@ public class ClientJackpotTracker {
 
         float smoothSway = (float) Math.sin(currentTime * 0.005f) * yawIntensity;
         float smoothPitch = (float) Math.cos(currentTime * 0.003f) * pitchIntensity;
-
 
         event.setPitch(event.getPitch() + (smoothPitch * shakeEnvelope));
         event.setYaw(event.getYaw() + (smoothSway * shakeEnvelope));

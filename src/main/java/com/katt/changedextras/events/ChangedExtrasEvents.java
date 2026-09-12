@@ -1,28 +1,28 @@
 package com.katt.changedextras.events;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.ability.ParryAbility;
 import com.katt.changedextras.common.ExoskeletonVisorStyle;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.network.JackpotStatePacket;
-import com.katt.changedextras.init.ChangedExtrasAbilities;
 import com.mojang.datafixers.util.Pair;
 import net.ltxprogrammer.changed.entity.robot.Exoskeleton;
 import net.ltxprogrammer.changed.item.ExoskeletonItem;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.Optional;
 
-@Mod.EventBusSubscriber(modid = "changedextras", bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ChangedExtrasEvents {
 
     private static final String NBT_TAG = "JackpotActive";
@@ -37,12 +37,42 @@ public class ChangedExtrasEvents {
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity living = event.getEntity();
 
-        // Server side only
         if (living.level().isClientSide()) return;
 
         syncExoskeletonVisorColor(living);
         tickJackpot(living);
         tickJackpotAftermath(living);
+        tickParrySpam(living);
+    }
+
+    private static void tickParrySpam(LivingEntity living) {
+        CompoundTag data = living.getPersistentData();
+        if (data.getBoolean(NBT_TAG)) {
+            if (data.contains(ParryAbility.PARRY_SPAM_COUNT_TAG) || data.contains(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
+                data.remove(ParryAbility.PARRY_COUNT_TAG);
+                data.remove(ParryAbility.PARRY_READY_FOR_SPAM_TAG);
+                data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
+                data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
+                data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
+            }
+            return;
+        }
+
+        if (data.getBoolean(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
+            int decay = data.getInt(ParryAbility.PARRY_SPAM_DECAY_TAG);
+            if (decay > 0) {
+                decay--;
+                if (decay <= 0) {
+                    data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
+                    data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
+                    data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
+                    living.removeEffect(MobEffects.BLINDNESS);
+                } else {
+                    data.putInt(ParryAbility.PARRY_SPAM_DECAY_TAG, decay);
+                    living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false, false));
+                }
+            }
+        }
     }
 
     private static void syncExoskeletonVisorColor(LivingEntity living) {
@@ -68,9 +98,6 @@ public class ChangedExtrasEvents {
             entityData = stackData;
         }
 
-        // If the player is wearing the hypnosis pattern, attempt to temporarily
-        // make Changed think they're a wolf for rendering without performing a
-        // full transfur. Only apply when the player is not already transfurred.
         if (living instanceof ServerPlayer serverPlayer) {
             boolean isHypno = entityData.pattern() == ExoskeletonVisorStyle.Pattern.PATTERN1;
             boolean alreadyFooled = serverPlayer.getPersistentData().getBoolean("changedextras.fooled_wolf");
@@ -80,10 +107,9 @@ public class ChangedExtrasEvents {
                     if (wolfVariant != null) {
                         net.ltxprogrammer.changed.process.ProcessTransfur.setPlayerTransfurVariant(serverPlayer, wolfVariant);
                         serverPlayer.getPersistentData().putBoolean("changedextras.fooled_wolf", true);
-                        ChangedExtras.LOGGER.info("Temporarily fooled Changed into treating player {} as wolf variant {}", serverPlayer.getUUID(), wolfVariant == null ? "null" : wolfVariant.toString());
+                        ChangedExtras.LOGGER.info("Temporarily fooled Changed into treating player {} as wolf variant {}", serverPlayer.getUUID(), wolfVariant.toString());
                     }
                 } else if (!isHypno && alreadyFooled) {
-                    // clear our temporary override if we had set it
                     net.ltxprogrammer.changed.process.ProcessTransfur.setPlayerTransfurVariant(serverPlayer, null);
                     serverPlayer.getPersistentData().remove("changedextras.fooled_wolf");
                     ChangedExtras.LOGGER.info("Restored original transfur state for player {}", serverPlayer.getUUID());
@@ -93,15 +119,13 @@ public class ChangedExtrasEvents {
             }
         }
 
-        // Broadcast to clients so client-side renderers have the persistent data
-        if (living.level() instanceof ServerLevel serverLevel) {
+        if (living.level() instanceof ServerLevel) {
             com.katt.changedextras.network.SyncVisorPacket.broadcast(living, entityData);
         }
     }
 
     @SuppressWarnings({"rawtypes","unchecked"})
     private static net.ltxprogrammer.changed.entity.variant.TransfurVariant<?> findWolfVariant() {
-        // Preferred exact resource name we need so Changed triggers the hypnosis texture
         final String preferredResource = "form_latex_benign_wolf";
 
         String[] candidates = new String[]{
@@ -121,7 +145,6 @@ public class ChangedExtrasEvents {
 
         try {
             Class<?> cls = Class.forName("net.ltxprogrammer.changed.init.ChangedTransfurVariants");
-            // First pass: try to find the preferred resource by inspecting variant.toString()
             for (java.lang.reflect.Field field : cls.getFields()) {
                 Object val;
                 try {
@@ -144,15 +167,12 @@ public class ChangedExtrasEvents {
                 }
                 if (variant instanceof net.ltxprogrammer.changed.entity.variant.TransfurVariant) {
                     String s = variant.toString();
-                    ChangedExtras.LOGGER.info("Inspecting ChangedTransfurVariants field {} -> variant {}", field.getName(), s);
                     if (s != null && s.contains(preferredResource)) {
-                        ChangedExtras.LOGGER.info("Found preferred variant {} in field {}", s, field.getName());
                         return (net.ltxprogrammer.changed.entity.variant.TransfurVariant<?>) variant;
                     }
                 }
             }
 
-            // Second pass: fallback to a list of likely field names
             for (String name : candidates) {
                 try {
                     java.lang.reflect.Field field = cls.getField(name);
@@ -160,21 +180,18 @@ public class ChangedExtrasEvents {
                     try {
                         val = field.get(null);
                     } catch (IllegalAccessException iae) {
-                        // can't access this field, skip
                         continue;
                     }
                     if (val == null) continue;
-                    // many registries expose RegistryObject or Supplier; try to call get()
                     try {
                         java.lang.reflect.Method m = val.getClass().getMethod("get");
                         Object variant;
                         try {
                             variant = m.invoke(val);
                         } catch (IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
-                            // can't invoke get(), skip this candidate
                             continue;
                         }
-                        if (variant != null && variant instanceof net.ltxprogrammer.changed.entity.variant.TransfurVariant) {
+                        if (variant instanceof net.ltxprogrammer.changed.entity.variant.TransfurVariant) {
                             return (net.ltxprogrammer.changed.entity.variant.TransfurVariant<?>) variant;
                         }
                     } catch (NoSuchMethodException ignored) {
@@ -183,7 +200,6 @@ public class ChangedExtrasEvents {
                         }
                     }
                 } catch (NoSuchFieldException ignored) {
-                    // try next candidate
                 }
             }
         } catch (ClassNotFoundException ignored) {
@@ -232,7 +248,7 @@ public class ChangedExtrasEvents {
         if (slownessTicks > 0) {
             living.getPersistentData().putInt(JACKPOT_SLOWNESS_TICKS_TAG, slownessTicks - 1);
             living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0, false, false));
-        } else if (slownessTicks < 0) {
+        } else {
             living.getPersistentData().remove(JACKPOT_SLOWNESS_TICKS_TAG);
         }
 
@@ -240,7 +256,7 @@ public class ChangedExtrasEvents {
         if (nauseaTicks > 0) {
             living.getPersistentData().putInt(JACKPOT_NAUSEA_TICKS_TAG, nauseaTicks - 1);
             living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 30, 1, false, false));
-        } else if (nauseaTicks < 0) {
+        } else {
             living.getPersistentData().remove(JACKPOT_NAUSEA_TICKS_TAG);
         }
     }

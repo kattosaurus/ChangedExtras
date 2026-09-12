@@ -4,6 +4,7 @@ import com.katt.changedextras.common.LatexCuddleHelper;
 import com.katt.changedextras.common.inventory.LatexInventory;
 import com.katt.changedextras.common.inventory.LatexInventoryProvider;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TamableLatexEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -99,6 +100,15 @@ public class LatexBrain {
     private static final int PATH_CACHE_TICKS = 8;
     private static final int TERRAIN_CACHE_TICKS = 6;
     private static final double BREAK_PREFERENCE_PENALTY = 18.0D;
+
+    // Perf: how many ticks must pass between fresh "acquire a new target" scans
+    // (findVisibleTarget). Remembered/grudge target lookups are unaffected.
+    private static final int TARGET_SCAN_INTERVAL_TICKS = 5;
+
+    // Perf: cap on how much the reachable-path cache duration can grow while
+    // a mob is stuck, and how fast it grows per consecutive failure.
+    private static final int STUCK_PATH_CACHE_GROWTH_PER_FAILURE = 4;
+    private static final int STUCK_PATH_CACHE_MAX_BONUS = 40;
 
     // Ranged combat (bow) tuning
     private static final double BOW_MIN_RANGE = ATTACK_RANGE + 0.35D;
@@ -248,6 +258,7 @@ public class LatexBrain {
         if (mind.curiosityCooldown > 0) mind.curiosityCooldown--;
         if (mind.healCooldown > 0) mind.healCooldown--;
         if (mind.rangedAttackCooldown > 0) mind.rangedAttackCooldown--;
+        if (mind.targetScanCooldown > 0) mind.targetScanCooldown--;
 
         if (mind.combatStrafeTimer > 0) {
             mind.combatStrafeTimer--;
@@ -1773,6 +1784,14 @@ public class LatexBrain {
             return remembered;
         }
 
+        // Perf: acquiring a brand-new target requires a full nearby-entity scan
+        // with per-candidate raycasts. Only do this a few times a second per mob
+        // instead of every tick - grudge/remembered lookups above are unaffected.
+        if (mind.targetScanCooldown > 0) {
+            return null;
+        }
+        mind.targetScanCooldown = TARGET_SCAN_INTERVAL_TICKS;
+
         LivingEntity visibleTarget = findVisibleTarget(mob, mind);
         if (visibleTarget != null) {
             mob.setTarget(visibleTarget);
@@ -1785,6 +1804,13 @@ public class LatexBrain {
 
     @Nullable
     private LivingEntity findGrudgeTarget(ChangedEntity mob, LatexMind mind) {
+        // Perf: this map is empty for the overwhelming majority of mobs at any
+        // given time - skip the full-radius entity scan entirely when there's
+        // nothing to look for instead of paying for it every tick.
+        if (mind.grudgeKillers.isEmpty()) {
+            return null;
+        }
+
         for (LivingEntity candidate : mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(MAX_REMEMBERED_TARGET_RANGE))) {
             if (candidate != mob && candidate.isAlive() && mind.isGrudgeKiller(candidate.getUUID(), mob.tickCount)) {
                 if (mob.hasLineOfSight(candidate)) {
@@ -1897,9 +1923,19 @@ public class LatexBrain {
     private boolean hasReachablePath(ChangedEntity mob, LatexMind mind, LivingEntity target) {
         BlockPos targetPos = target.blockPosition();
         BlockPos sourcePos = mob.blockPosition();
+
+        // Perf: the more consecutive ticks a mob has failed to find a path, the
+        // longer we're willing to trust the cached (negative) result before
+        // paying for another full ring-search of createNearbyReachPath. Caps out
+        // at PATH_CACHE_TICKS + STUCK_PATH_CACHE_MAX_BONUS so a genuinely stuck
+        // mob doesn't spam pathfinding every 8 ticks forever.
+        int cacheDuration = PATH_CACHE_TICKS + Math.min(
+                mind.consecutiveUnreachablePaths * STUCK_PATH_CACHE_GROWTH_PER_FAILURE,
+                STUCK_PATH_CACHE_MAX_BONUS);
+
         if (mind.cachedPathTargetPos != null
                 && mind.cachedPathSourcePos != null
-                && mob.tickCount - mind.cachedPathTick <= PATH_CACHE_TICKS
+                && mob.tickCount - mind.cachedPathTick <= cacheDuration
                 && mind.cachedPathTargetPos.closerThan(targetPos, 2.0D)
                 && mind.cachedPathSourcePos.closerThan(sourcePos, 2.0D)) {
             return mind.cachedReachablePath;
@@ -1909,6 +1945,7 @@ public class LatexBrain {
         mind.cachedPathTargetPos = targetPos.immutable();
         mind.cachedPathSourcePos = sourcePos.immutable();
         mind.cachedReachablePath = createReachPath(mob, target) != null;
+        mind.consecutiveUnreachablePaths = mind.cachedReachablePath ? 0 : mind.consecutiveUnreachablePaths + 1;
         return mind.cachedReachablePath;
     }
 
@@ -2700,6 +2737,15 @@ public class LatexBrain {
             if (player.isCreative() || player.isSpectator()) {
                 return false;
             }
+
+            // Tamed latexes are friendly to players by default - they only fight
+            // back against whoever actually hit them (or a retaliation target
+            // set for some other reason, e.g. owner defense). They never
+            // proactively pick fights with a random/idle player.
+            if (mob instanceof TamableLatexEntity tamable && tamable.isTame()) {
+                return mind.isRetaliationTarget(mob, player);
+            }
+
             if (!LatexAiUtil.isPlayerTransfurred(player)) {
                 return true;
             }

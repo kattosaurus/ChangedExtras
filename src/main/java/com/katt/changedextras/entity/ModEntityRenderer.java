@@ -24,14 +24,7 @@ public class ModEntityRenderer<T extends ChangedEntity, M extends AdvancedHumano
         super(context, model, ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.texture = texture;
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
-        this.addLayer(new CustomEyesLayer<>(
-                this,
-                context.getModelSet(),
-                CustomEyesLayer::noRender,
-                CustomEyesLayer::noRender,
-                CustomEyesLayer::noRender,
-                CustomEyesLayer::noRender,
-                CustomEyesLayer::noRender));
+        this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));
         this.addLayer(GasMaskLayer.forSnouted(this, context.getModelSet()));
     }
 

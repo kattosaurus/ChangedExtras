@@ -89,22 +89,40 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return AbstractWhiteCatEntity.createAttributes()
-                .add(Attributes.MAX_HEALTH, PHASE_ONE_HEALTH)
-                .add(Attributes.ATTACK_DAMAGE, 14.0D)
-                .add(Attributes.MOVEMENT_SPEED, PHASE_ONE_SPEED)
-                .add(Attributes.FOLLOW_RANGE, 48.0D)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.4D);
+        return AbstractWhiteCatEntity.createAttributes();
+    }
+
+    public void applyBossStats() {
+        if (this.getUnderlyingPlayer() != null) {
+            return;
+        }
+        var maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
+        if (maxHealth != null) {
+            maxHealth.setBaseValue(secondPhaseTriggered ? PHASE_TWO_HEALTH : PHASE_ONE_HEALTH);
+            this.setHealth((float) (secondPhaseTriggered ? PHASE_TWO_HEALTH : PHASE_ONE_HEALTH));
+        }
+        var attackDamage = this.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attackDamage != null) {
+            attackDamage.setBaseValue(14.0D);
+        }
+        var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speed != null) {
+            speed.setBaseValue(secondPhaseTriggered ? PHASE_TWO_SPEED : PHASE_ONE_SPEED);
+        }
+        var followRange = this.getAttribute(Attributes.FOLLOW_RANGE);
+        if (followRange != null) {
+            followRange.setBaseValue(48.0D);
+        }
+        var knockbackRes = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+        if (knockbackRes != null) {
+            knockbackRes.setBaseValue(0.4D);
+        }
     }
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData spawnData, CompoundTag dataTag) {
         SpawnGroupData finalData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
-        var maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
-        if (maxHealth != null) {
-            maxHealth.setBaseValue(PHASE_ONE_HEALTH);
-            this.setHealth((float) PHASE_ONE_HEALTH);
-        }
+        this.applyBossStats();
         return finalData;
     }
 
@@ -149,6 +167,12 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        if (this.getUnderlyingPlayer() == null) {
+            var maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
+            if (maxHealth != null && maxHealth.getBaseValue() < PHASE_TWO_HEALTH) {
+                this.applyBossStats();
+            }
+        }
         if (this.getMainHandItem().isEmpty()) {
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ChangedExtras.ARTIST_BRUSH.get()));
         }
@@ -392,7 +416,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
         super.readAdditionalSaveData(tag);
         secondPhaseTriggered = tag.getBoolean("ArtistSecondPhase");
         this.entityData.set(OPENING_TICKS, tag.getInt("ArtistOpeningTicks"));
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(secondPhaseTriggered ? PHASE_TWO_HEALTH : PHASE_ONE_HEALTH);
+        if (this.getUnderlyingPlayer() == null) {
+            this.applyBossStats();
+        }
         if (this.getHealth() > this.getMaxHealth()) {
             this.setHealth(this.getMaxHealth());
         }
@@ -422,7 +448,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     @Override
     public void startSeenByPlayer(ServerPlayer player) {
         super.startSeenByPlayer(player);
-        bossEvent.addPlayer(player);
+        if (this.getUnderlyingPlayer() == null) {
+            bossEvent.addPlayer(player);
+        }
     }
 
     @Override

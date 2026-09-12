@@ -4,8 +4,12 @@ import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import com.katt.changedextras.entity.beasts.ConeKatFemaleEntity;
 import com.katt.changedextras.entity.beasts.ConeKatMaleEntity;
+import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardFemaleEntity;
+import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardMaleEntity;
+import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.entity.beasts.KattEntity;
+import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -46,6 +50,30 @@ public class ModEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F)
                     .build("jammer"));
+
+    public static final RegistryObject<EntityType<ProtoBeeEntity>> PROTO_BEE = REGISTRY.register("proto_bee",
+            () -> EntityType.Builder.of(ProtoBeeEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("proto_bee"));
+
+    public static final RegistryObject<EntityType<FurredLatexTigerSharkEntity>> FURRED_LATEX_TIGER_SHARK = REGISTRY.register("furred_latex_tiger_shark",
+            () -> EntityType.Builder.of(FurredLatexTigerSharkEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("furred_latex_tiger_shark"));
+
+    public static final RegistryObject<EntityType<FluffedUpLatexSnowLeopardMaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE = REGISTRY.register("fluffed_up_latex_snow_leopard_male",
+            () -> EntityType.Builder.of(FluffedUpLatexSnowLeopardMaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("fluffed_up_latex_snow_leopard_male"));
+
+    public static final RegistryObject<EntityType<FluffedUpLatexSnowLeopardFemaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE = REGISTRY.register("fluffed_up_latex_snow_leopard_female",
+            () -> EntityType.Builder.of(FluffedUpLatexSnowLeopardFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("fluffed_up_latex_snow_leopard_female"));
 
     public static final RegistryObject<EntityType<ArtistEntity>> ARTIST = REGISTRY.register("artist",
             () -> EntityType.Builder.of(ArtistEntity::new, MobCategory.MONSTER)

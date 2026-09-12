@@ -1,5 +1,6 @@
 package com.katt.changedextras.client.particle;
 
+import com.katt.changedextras.client.ClientJackpotTracker;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -35,7 +36,8 @@ public class JackpotSmokeParticle extends TextureSheetParticle {
         this.zOffset = (level.random.nextFloat() - 0.5F) * 0.4F;
 
         this.lifetime = 22;
-        this.quadSize = BASE_SIZE;
+        float auraScale = target != null ? ClientJackpotTracker.getAuraScale(target.getUUID()) : 1.0f;
+        this.quadSize = BASE_SIZE * auraScale;
         this.setSpriteFromAge(sprites);
 
         // Pure high-intensity Green/Cyan
@@ -100,7 +102,8 @@ public class JackpotSmokeParticle extends TextureSheetParticle {
                 target.getY() + 1.1D,
                 target.getZ() + zOffset + backZ);
 
-        this.quadSize = BASE_SIZE + (0.15f * (float)Math.sin(this.age * 0.5f));
+        float auraScale = ClientJackpotTracker.getAuraScale(target.getUUID());
+        this.quadSize = (BASE_SIZE * auraScale) + (0.15f * auraScale * (float)Math.sin(this.age * 0.5f));
 
         if (this.age++ >= this.lifetime) { this.age = 0; }
         this.setSpriteFromAge(this.sprites);
