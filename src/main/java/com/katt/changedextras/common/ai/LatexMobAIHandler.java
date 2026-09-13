@@ -4,9 +4,12 @@ import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -181,6 +184,22 @@ public final class LatexMobAIHandler {
         }
     }
 
+    @Nullable
+    private static AttributeInstance getDefaultAttribute(ChangedEntity mob, Attribute attr) {
+        // Original code used to get default attribute. For some reason, returns values lower than default.
+        // return DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) mob.getType()).createInstance(null, attr);
+
+        // Workaround: retrieve entity from cache, and get attribute from there.
+        // Also see: changed_addon's beastiary; more specifically its `EntityAttributeRadialWidget.java`
+        TransfurVariant<?> variant = TransfurVariant.getEntityVariant(mob);
+        if (variant != null) {
+            ChangedEntity entity = ChangedEntities.getCachedEntity(mob.level(), variant.getEntityType());
+            return entity.getAttribute(attr);
+        } else {
+            return null;
+        }
+    }
+
     private static void installDefaultGoals(ChangedEntity mob) {
         GoalSelector goals = getSelector(mob, "goalSelector");
         if (goals != null) {
@@ -197,8 +216,14 @@ public final class LatexMobAIHandler {
         }
 
         AttributeInstance movementSpeed = mob.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance defaultAttribute = getDefaultAttribute(mob, Attributes.MOVEMENT_SPEED);
+
         if (movementSpeed != null) {
-            movementSpeed.setBaseValue(LATEX_PLAYER_BASE_SPEED);
+            if (defaultAttribute != null) {
+                movementSpeed.setBaseValue(defaultAttribute.getBaseValue());
+            } else {
+                movementSpeed.setBaseValue(LATEX_PLAYER_BASE_SPEED);
+            }
         }
     }
 }
