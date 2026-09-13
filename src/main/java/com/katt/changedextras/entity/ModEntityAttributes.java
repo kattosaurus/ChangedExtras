@@ -19,6 +19,10 @@ public final class ModEntityAttributes {
         event.put(ModEntities.CONEKAT_FEMALE.get(), AbstractConeKatEntity.createAttributes().build());
         event.put(ModEntities.WHITE_CAT.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.JAMMER.get(), AbstractWhiteCatEntity.createAttributes().build());
+        event.put(ModEntities.PROTO_BEE.get(), AbstractWhiteCatEntity.createAttributes().build());
+        event.put(ModEntities.FURRED_LATEX_TIGER_SHARK.get(), AbstractWhiteCatEntity.createAttributes().build());
+        event.put(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE.get(), AbstractWhiteCatEntity.createAttributes().build());
+        event.put(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.ARTIST.get(), ArtistEntity.createAttributes().build());
 
         // Fixed the builder chain here

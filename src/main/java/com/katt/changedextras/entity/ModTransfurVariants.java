@@ -3,11 +3,16 @@ package com.katt.changedextras.entity;
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.entity.beasts.ConeKatFemaleEntity;
 import com.katt.changedextras.entity.beasts.ConeKatMaleEntity;
+import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardFemaleEntity;
+import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardMaleEntity;
+import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
+import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
+import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
@@ -59,12 +64,11 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
-                            .addAbility(ChangedExtrasAbilities.JACKPOT_AURA)
+                            .addAbility(ChangedExtrasAbilities.PARRY)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
                             .addAbility(ChangedAbilities.HYPNOSIS)
                             .reducedFall(true)
                             .extraJumps(2)
-
                             .build());
 
     public static final RegistryObject<TransfurVariant<JammerEntity>> JAMMER =
@@ -75,6 +79,50 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
                             .build());
+
+    public static final RegistryObject<TransfurVariant<ProtoBeeEntity>> PROTO_BEE =
+            REGISTRY.register("proto_bee",
+                    () -> TransfurVariant.Builder.of(ModEntities.PROTO_BEE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAddonAbilities.POLLEN_CARRY)
+                            .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .reducedFall(true)
+                            .extraJumps(3)
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<FurredLatexTigerSharkEntity>> FURRED_LATEX_TIGER_SHARK =
+            REGISTRY.register("furred_latex_tiger_shark",
+                    () -> TransfurVariant.Builder.of(ModEntities.FURRED_LATEX_TIGER_SHARK)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardMaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE =
+            REGISTRY.register("fluffed_up_latex_snow_leopard_male",
+                    () -> TransfurVariant.Builder.of(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_GENDER)
+                            .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardFemaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE =
+            REGISTRY.register("fluffed_up_latex_snow_leopard_female",
+                    () -> TransfurVariant.Builder.of(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_GENDER)
+                            .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .build());
+
+    public static final GenderedPair<FluffedUpLatexSnowLeopardMaleEntity, FluffedUpLatexSnowLeopardFemaleEntity> FLUFFED_UP_LATEX_SNOW_LEOPARDS =
+            ChangedTransfurVariants.Gendered.registerPair(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE);
 
     public static final RegistryObject<TransfurVariant<ArtistEntity>> ARTIST =
             REGISTRY.register("artist",

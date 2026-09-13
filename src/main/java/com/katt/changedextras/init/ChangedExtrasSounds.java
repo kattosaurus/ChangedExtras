@@ -41,5 +41,25 @@ public final class ChangedExtrasSounds {
                     SoundEvent.createVariableRangeEvent(
                             ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "artist_theme")));
 
+    /**
+     * Sound played when successfully parrying an attack.
+     * Audio file at:
+     *   src/main/resources/assets/changedextras/sounds/parry.ogg
+     */
+    public static final RegistryObject<SoundEvent> PARRY =
+            REGISTRY.register("parry", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "parry")));
+
+    /**
+     * Heartbeat buildup sound played while spamming parry for Jackpot.
+     * Audio file at:
+     *   src/main/resources/assets/changedextras/sounds/heartbeat.ogg
+     */
+    public static final RegistryObject<SoundEvent> HEARTBEAT =
+            REGISTRY.register("heartbeat", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "heartbeat")));
+
     private ChangedExtrasSounds() {}
 }

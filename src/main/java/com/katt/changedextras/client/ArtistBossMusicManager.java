@@ -45,7 +45,7 @@ public final class ArtistBossMusicManager {
         double bestDistance = Double.MAX_VALUE;
 
         for (ArtistEntity artist : mc.level.getEntitiesOfClass(ArtistEntity.class, mc.player.getBoundingBox().inflate(48.0D))) {
-            if (!artist.isAlive()) {
+            if (!artist.isAlive() || artist.getUnderlyingPlayer() != null) {
                 continue;
             }
 

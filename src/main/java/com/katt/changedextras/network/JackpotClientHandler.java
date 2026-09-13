@@ -25,6 +25,7 @@ public class JackpotClientHandler {
         if (localPlayer != null && localPlayer.getUUID().equals(msg.getPlayerUUID())) {
             ClientJackpotTracker.setVignetteActive(msg.isActive());
         }
+        ClientJackpotTracker.setJackpotState(msg.getPlayerUUID(), msg.isActive());
 
         if (level == null) {
             if (!msg.isActive()) {
@@ -73,6 +74,7 @@ public class JackpotClientHandler {
             ACTIVE_SOUNDS.get(uuid).stopLoop();
             ACTIVE_SOUNDS.remove(uuid);
         }
+        ClientJackpotTracker.setJackpotState(uuid, false);
     }
 
     public static void stopAllEffects() {
@@ -82,7 +84,7 @@ public class JackpotClientHandler {
         for (UUID uuid : java.util.List.copyOf(ACTIVE_SOUNDS.keySet())) {
             stopEffects(uuid);
         }
-        ClientJackpotTracker.setVignetteActive(false);
+        ClientJackpotTracker.clear();
     }
 
     public static class JackpotLoopSound extends AbstractTickableSoundInstance {

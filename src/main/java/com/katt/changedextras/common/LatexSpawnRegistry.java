@@ -34,6 +34,11 @@ public final class LatexSpawnRegistry {
             addRegistryObject(variantsById, ModTransfurVariants.CONEKAT_FEMALE);
             addRegistryObject(variantsById, ModTransfurVariants.WHITE_CAT);
             addRegistryObject(variantsById, ModTransfurVariants.KATT);
+            addRegistryObject(variantsById, ModTransfurVariants.JAMMER);
+            addRegistryObject(variantsById, ModTransfurVariants.PROTO_BEE);
+            addRegistryObject(variantsById, ModTransfurVariants.FURRED_LATEX_TIGER_SHARK);
+            addRegistryObject(variantsById, ModTransfurVariants.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE);
+            addRegistryObject(variantsById, ModTransfurVariants.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE);
             addRegistryObject(variantsById, ModTransfurVariants.ARTIST);
         }
 

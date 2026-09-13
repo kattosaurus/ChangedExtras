@@ -7,7 +7,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class ChangedExtrasNetwork {
     private static final String PROTOCOL_VERSION = "1.0";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation("changedextras", "main"),
+            ResourceLocation.fromNamespaceAndPath("changedextras", "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
@@ -19,6 +19,10 @@ public class ChangedExtrasNetwork {
                 JackpotStatePacket::encode,
                 JackpotStatePacket::decode,
                 JackpotStatePacket::handle);
+        INSTANCE.registerMessage(id++, ParryStatePacket.class,
+                ParryStatePacket::encode,
+                ParryStatePacket::decode,
+                ParryStatePacket::handle);
         INSTANCE.registerMessage(id++, SaveArtistBrushPacket.class,
                 SaveArtistBrushPacket::encode,
                 SaveArtistBrushPacket::decode,

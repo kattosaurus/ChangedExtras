@@ -53,20 +53,22 @@ public class ClientEventHandler {
             double px = player.getX();
             double py = player.getY();
             double pz = player.getZ();
+            float auraScale = ClientJackpotTracker.getAuraScale(player.getUUID());
 
-            for (int i = 0; i < 5; i++) {
-                double ox = (random.nextDouble() - 0.5) * 1.2;
-                double oy = 0.5 + random.nextDouble() * 1.5;
-                double oz = (random.nextDouble() - 0.5) * 1.2;
+            int count = Math.max(2, Math.round(5 * auraScale));
+            for (int i = 0; i < count; i++) {
+                double ox = (random.nextDouble() - 0.5) * 1.2 * auraScale;
+                double oy = 0.5 + random.nextDouble() * 1.5 * auraScale;
+                double oz = (random.nextDouble() - 0.5) * 1.2 * auraScale;
                 
                 level.addParticle(
                         ChangedExtrasParticles.JACKPOT_AURA.get(),
                         px + ox,
                         py + oy,
                         pz + oz,
-                        (random.nextDouble() - 0.5) * 0.02,
-                        0.05 + random.nextDouble() * 0.02,
-                        (random.nextDouble() - 0.5) * 0.02
+                        (random.nextDouble() - 0.5) * 0.02 * auraScale,
+                        (0.05 + random.nextDouble() * 0.02) * auraScale,
+                        (random.nextDouble() - 0.5) * 0.02 * auraScale
                 );
             }
         }
