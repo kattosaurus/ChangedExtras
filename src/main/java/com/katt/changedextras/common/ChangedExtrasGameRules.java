@@ -1,6 +1,7 @@
 package com.katt.changedextras.common;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.Config;
 import net.minecraft.world.level.GameRules;
 
 public final class ChangedExtrasGameRules {
@@ -66,7 +67,10 @@ public final class ChangedExtrasGameRules {
     }
 
     public static boolean isSmartLatexAiEnabled(GameRules gameRules) {
-        return gameRules.getBoolean(SMART_LATEX_AI_ENABLED);
+        if (gameRules != null) {
+            return gameRules.getBoolean(SMART_LATEX_AI_ENABLED);
+        }
+        return Config.smartLatexAiEnabled;
     }
 
     public static float getToolChance(GameRules gameRules) {

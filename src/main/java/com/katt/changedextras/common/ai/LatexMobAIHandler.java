@@ -7,10 +7,11 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -25,16 +26,17 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class LatexMobAIHandler {
-    // Standard player-calibrated base movement speed, nudged up (was 0.23D, then 0.28D, then 0.35D)
+    // Standard player-calibrated base movement speed for smart AI
     private static final double LATEX_PLAYER_BASE_SPEED = 0.38D;
 
     private static final Set<ChangedEntity> INSTALLED_MOBS =
@@ -54,8 +56,6 @@ public final class LatexMobAIHandler {
         }
         if (ChangedExtrasGameRules.isSmartLatexAiEnabled(event.getLevel().getGameRules())) {
             ensureSmartAiInstalled(mob);
-        } else {
-            installDefaultGoals(mob);
         }
     }
 
@@ -69,7 +69,8 @@ public final class LatexMobAIHandler {
         if (!smartEnabled) {
             if (INSTALLED_MOBS.contains(mob)) {
                 INSTALLED_MOBS.remove(mob);
-                installDefaultGoals(mob);
+                LatexMindStore.forget(mob);
+                restoreNativeGoals(mob);
             }
             return;
         }
@@ -96,7 +97,8 @@ public final class LatexMobAIHandler {
             INSTALLED_MOBS.remove(victim);
             LatexMindStore.forget(victim);
 
-            if (event.getSource().getEntity() instanceof LivingEntity killer) {
+            if (ChangedExtrasGameRules.isSmartLatexAiEnabled(victim.level().getGameRules())
+                    && event.getSource().getEntity() instanceof LivingEntity killer) {
                 alertNearbyAlliesOfMurder(victim, killer);
             }
         }
@@ -122,8 +124,6 @@ public final class LatexMobAIHandler {
         installTargetShareGoal(mob);
         mob.setCanPickUpLoot(true);
 
-        // Let the navigator route straight through water instead of detouring around it or refusing
-        // to path once a target wades/swims in - latex creatures should be able to pursue into water.
         mob.getNavigation().setCanFloat(true);
         mob.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
         mob.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
@@ -135,84 +135,52 @@ public final class LatexMobAIHandler {
 
         AttributeInstance movementSpeed = mob.getAttribute(Attributes.MOVEMENT_SPEED);
         if (movementSpeed != null) {
-            movementSpeed.setBaseValue(LATEX_PLAYER_BASE_SPEED);
+            movementSpeed.setBaseValue(movementSpeed.getAttribute().getDefaultValue());
         }
 
         INSTALLED_MOBS.add(mob);
     }
 
     private static void removeConflictingLookGoals(ChangedEntity mob) {
-        GoalSelector goals = getSelector(mob, "goalSelector");
-        if (goals != null) {
-            goals.removeAllGoals(goal ->
-                    goal instanceof RandomLookAroundGoal
-                            || goal instanceof LookAtPlayerGoal
-                            || goal instanceof WaterAvoidingRandomStrollGoal
-            );
-        }
+        mob.goalSelector.removeAllGoals(goal ->
+                goal instanceof RandomLookAroundGoal
+                        || goal instanceof LookAtPlayerGoal
+                        || goal instanceof WaterAvoidingRandomStrollGoal
+        );
     }
 
     private static void removeConflictingCombatGoals(ChangedEntity mob) {
-        GoalSelector goals = getSelector(mob, "goalSelector");
-        if (goals != null) {
-            goals.removeAllGoals(goal -> goal instanceof MeleeAttackGoal);
-        }
-
-        GoalSelector targetSelector = getSelector(mob, "targetSelector");
-        if (targetSelector != null) {
-            targetSelector.removeAllGoals(goal ->
-                    goal instanceof HurtByTargetGoal
-                            || goal instanceof NearestAttackableTargetGoal<?>);
-        }
+        mob.goalSelector.removeAllGoals(goal -> goal instanceof MeleeAttackGoal);
+        mob.targetSelector.removeAllGoals(goal ->
+                goal instanceof HurtByTargetGoal
+                        || goal instanceof NearestAttackableTargetGoal<?>);
     }
 
     private static void installTargetShareGoal(ChangedEntity mob) {
-        GoalSelector targetSelector = getSelector(mob, "targetSelector");
-        if (targetSelector != null) {
-            targetSelector.addGoal(2, new ShareTargetGoal(mob, 12.0D, 10));
-        }
+        mob.targetSelector.addGoal(2, new ShareTargetGoal(mob, 12.0D, 10));
     }
 
-    @Nullable
-    private static GoalSelector getSelector(ChangedEntity mob, String fieldName) {
+    private static void restoreNativeGoals(ChangedEntity mob) {
+        mob.goalSelector.removeAllGoals(goal -> true);
+        mob.targetSelector.removeAllGoals(goal -> true);
+
         try {
-            Field field = net.minecraft.world.entity.Mob.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (GoalSelector) field.get(mob);
-        } catch (ReflectiveOperationException e) {
-            return null;
-        }
-    }
-
-    @Nullable
-    private static AttributeInstance getDefaultAttribute(ChangedEntity mob, Attribute attr) {
-        // Original code used to get default attribute. For some reason, returns values lower than default.
-        // return DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) mob.getType()).createInstance(null, attr);
-
-        // Workaround: retrieve entity from cache, and get attribute from there.
-        // Also see: changed_addon's beastiary; more specifically its `EntityAttributeRadialWidget.java`
-        TransfurVariant<?> variant = TransfurVariant.getEntityVariant(mob);
-        if (variant != null) {
-            ChangedEntity entity = ChangedEntities.getCachedEntity(mob.level(), variant.getEntityType());
-            return entity.getAttribute(attr);
-        } else {
-            return null;
-        }
-    }
-
-    private static void installDefaultGoals(ChangedEntity mob) {
-        GoalSelector goals = getSelector(mob, "goalSelector");
-        if (goals != null) {
-            goals.addGoal(5, new WaterAvoidingRandomStrollGoal(mob, 1.0D));
-            goals.addGoal(6, new RandomLookAroundGoal(mob));
-            goals.addGoal(6, new LookAtPlayerGoal(mob, Player.class, 8.0F));
-            goals.addGoal(4, new MeleeAttackGoal(mob, 1.0D, false));
+            Method registerGoalsMethod = ObfuscationReflectionHelper.findMethod(Mob.class, "m_8099_");
+            registerGoalsMethod.setAccessible(true);
+            registerGoalsMethod.invoke(mob);
+        } catch (Exception e) {
+            mob.goalSelector.addGoal(1, new FloatGoal(mob));
+            mob.goalSelector.addGoal(2, new MeleeAttackGoal(mob, 0.4D, false));
+            mob.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(mob, 0.3D));
+            mob.goalSelector.addGoal(4, new LookAtPlayerGoal(mob, Player.class, 8.0F));
+            mob.goalSelector.addGoal(5, new RandomLookAroundGoal(mob));
+            mob.targetSelector.addGoal(1, new HurtByTargetGoal(mob));
+            mob.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(mob, Player.class, true));
         }
 
-        GoalSelector targetSelector = getSelector(mob, "targetSelector");
-        if (targetSelector != null) {
-            targetSelector.addGoal(1, new HurtByTargetGoal(mob));
-            targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(mob, Player.class, true));
+        AttributeInstance followRange = mob.getAttribute(Attributes.FOLLOW_RANGE);
+        if (followRange != null) {
+            followRange.setBaseValue(16.0D);
         }
 
         AttributeInstance movementSpeed = mob.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -224,6 +192,19 @@ public final class LatexMobAIHandler {
             } else {
                 movementSpeed.setBaseValue(LATEX_PLAYER_BASE_SPEED);
             }
+        }
+
+        mob.setCanPickUpLoot(false);
+    }
+
+    @Nullable
+    private static AttributeInstance getDefaultAttribute(ChangedEntity mob, Attribute attr) {
+        TransfurVariant<?> variant = TransfurVariant.getEntityVariant(mob);
+        if (variant != null) {
+            ChangedEntity entity = ChangedEntities.getCachedEntity(mob.level(), variant.getEntityType());
+            return entity.getAttribute(attr);
+        } else {
+            return null;
         }
     }
 }

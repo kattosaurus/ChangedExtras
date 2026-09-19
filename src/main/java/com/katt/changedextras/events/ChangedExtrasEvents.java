@@ -5,10 +5,12 @@ import com.katt.changedextras.ability.ParryAbility;
 import com.katt.changedextras.common.ExoskeletonVisorStyle;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.network.JackpotStatePacket;
+import com.katt.changedextras.network.ParryStatePacket;
 import com.mojang.datafixers.util.Pair;
 import net.ltxprogrammer.changed.entity.robot.Exoskeleton;
 import net.ltxprogrammer.changed.item.ExoskeletonItem;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -51,6 +53,7 @@ public class ChangedExtrasEvents {
             if (data.contains(ParryAbility.PARRY_SPAM_COUNT_TAG) || data.contains(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
                 data.remove(ParryAbility.PARRY_COUNT_TAG);
                 data.remove(ParryAbility.PARRY_READY_FOR_SPAM_TAG);
+                data.remove(ParryAbility.PARRY_READY_TIMEOUT_TAG);
                 data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
                 data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
                 data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
@@ -59,6 +62,36 @@ public class ChangedExtrasEvents {
         }
 
         if (data.getBoolean(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
+            // Check 15-second expiration timer if player does not spam ability key
+            int readyTimer = data.contains(ParryAbility.PARRY_READY_TIMEOUT_TAG)
+                    ? data.getInt(ParryAbility.PARRY_READY_TIMEOUT_TAG)
+                    : ParryAbility.PARRY_READY_TIMEOUT_TICKS;
+
+            readyTimer--;
+            if (readyTimer <= 0) {
+                // 15 seconds elapsed without completing spam - expire parries and reset state
+                data.remove(ParryAbility.PARRY_COUNT_TAG);
+                data.remove(ParryAbility.PARRY_READY_FOR_SPAM_TAG);
+                data.remove(ParryAbility.PARRY_READY_TIMEOUT_TAG);
+                data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
+                data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
+                data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
+                living.removeEffect(MobEffects.BLINDNESS);
+
+                if (living.level() instanceof ServerLevel serverLevel) {
+                    ParryStatePacket.broadcast(serverLevel, living.getUUID(), false, false);
+                }
+                if (living instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.displayClientMessage(
+                            Component.literal("§cParry charge expired."),
+                            true
+                    );
+                }
+                return;
+            } else {
+                data.putInt(ParryAbility.PARRY_READY_TIMEOUT_TAG, readyTimer);
+            }
+
             int decay = data.getInt(ParryAbility.PARRY_SPAM_DECAY_TAG);
             if (decay > 0) {
                 decay--;

@@ -13,6 +13,7 @@ import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
@@ -91,7 +92,7 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAddonAbilities.POLLEN_CARRY)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
-                            .transfurMode(TransfurMode.Absorption)
+                            .transfurMode(TransfurMode.ABSORPTION)
                             .absorbing()
                             .reducedFall(true)
                             .extraJumps(3)

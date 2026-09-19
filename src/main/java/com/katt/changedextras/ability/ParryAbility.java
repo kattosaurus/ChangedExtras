@@ -23,12 +23,14 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
     public static final String PARRY_ACTIVE_TAG = "changedextras.parry_active";
     public static final String PARRY_COUNT_TAG = "changedextras.parry_count";
     public static final String PARRY_READY_FOR_SPAM_TAG = "changedextras.parry_ready_for_spam";
+    public static final String PARRY_READY_TIMEOUT_TAG = "changedextras.parry_ready_timeout";
     public static final String PARRY_SPAM_COUNT_TAG = "changedextras.parry_spam_count";
     public static final String PARRY_SPAM_DECAY_TAG = "changedextras.parry_spam_decay";
     public static final String HEARTBEAT_PLAYING_TAG = "changedextras.heartbeat_playing";
 
     public static final int REQUIRED_PARRIES = 5;
     public static final int REQUIRED_SPAM = 20;
+    public static final int PARRY_READY_TIMEOUT_TICKS = 15 * 20; // 15 seconds (300 ticks)
 
     public ParryAbility() {
         super(ParryAbilityInstance::new);
@@ -107,6 +109,9 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
             if (data.getBoolean(PARRY_READY_FOR_SPAM_TAG)) {
                 int currentSpam = data.getInt(PARRY_SPAM_COUNT_TAG) + 1;
 
+                // Refresh 15-second expiration timer on each spam keypress
+                data.putInt(PARRY_READY_TIMEOUT_TAG, PARRY_READY_TIMEOUT_TICKS);
+
                 // Apply blindness while spamming
                 living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 45, 0, false, false, false));
 
@@ -126,6 +131,7 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
                     // JACKPOT UNLEASHED!
                     data.remove(PARRY_COUNT_TAG);
                     data.remove(PARRY_READY_FOR_SPAM_TAG);
+                    data.remove(PARRY_READY_TIMEOUT_TAG);
                     data.remove(PARRY_SPAM_COUNT_TAG);
                     data.remove(PARRY_SPAM_DECAY_TAG);
                     data.remove(HEARTBEAT_PLAYING_TAG);
@@ -200,6 +206,7 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
             tag.putBoolean("Parrying", this.entity.getPersistentData().getBoolean(PARRY_ACTIVE_TAG));
             tag.putInt("ParryCount", this.entity.getPersistentData().getInt(PARRY_COUNT_TAG));
             tag.putBoolean("ParryReadyForSpam", this.entity.getPersistentData().getBoolean(PARRY_READY_FOR_SPAM_TAG));
+            tag.putInt("ParryReadyTimeout", this.entity.getPersistentData().getInt(PARRY_READY_TIMEOUT_TAG));
             tag.putInt("ParrySpamCount", this.entity.getPersistentData().getInt(PARRY_SPAM_COUNT_TAG));
         }
 
@@ -209,6 +216,7 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
             this.entity.getPersistentData().putBoolean(PARRY_ACTIVE_TAG, tag.getBoolean("Parrying"));
             this.entity.getPersistentData().putInt(PARRY_COUNT_TAG, tag.getInt("ParryCount"));
             this.entity.getPersistentData().putBoolean(PARRY_READY_FOR_SPAM_TAG, tag.getBoolean("ParryReadyForSpam"));
+            this.entity.getPersistentData().putInt(PARRY_READY_TIMEOUT_TAG, tag.getInt("ParryReadyTimeout"));
             this.entity.getPersistentData().putInt(PARRY_SPAM_COUNT_TAG, tag.getInt("ParrySpamCount"));
         }
     }

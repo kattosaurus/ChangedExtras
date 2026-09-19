@@ -76,6 +76,10 @@ public final class LatexAggroHandler {
             });
         }
 
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(victim.level().getGameRules())) {
+            return;
+        }
+
         // Grudge Memory: If victim was a latex creature, allies remember the killer and seek revenge!
         LatexAiUtil.LatexAlignment victimAlignment = LatexAiUtil.getAlignment(victim);
         if (victimAlignment == LatexAiUtil.LatexAlignment.WHITE || victimAlignment == LatexAiUtil.LatexAlignment.DARK) {

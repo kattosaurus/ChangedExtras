@@ -1,5 +1,6 @@
 package com.katt.changedextras.common.ai;
 
+import com.katt.changedextras.common.ChangedExtrasGameRules;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,10 @@ public class ShareTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules())) {
+            return false;
+        }
+
         LivingEntity target = mob.getTarget();
         return target != null
                 && target.isAlive()
