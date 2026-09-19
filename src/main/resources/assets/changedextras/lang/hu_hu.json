@@ -1,8 +1,8 @@
 {
   "1 | Type": "ConeKat Leírások",
   "hu_hu.addon.changedextras.cone_kat.name": "Tölcsér Macska",
-  "hu_hu.addon.changedextras.cone_kat.name.male": "Tölcsér Macska (Férfi)",
-  "hu_hu.addon.changedextras.cone_kat.name.female": "Tölcsér Macska (Nő)",
+  "hu_hu.addon.changedextras.cone_kat.name.male": "Tölcsér Macska (Hím)",
+  "hu_hu.addon.changedextras.cone_kat.name.female": "Tölcsér Macska (Nőstény)",
   "hu_hu.addon.changedextras.cone_kat.description": "Egy életforma, amelyet az emberek táplálására és a világ éhezésének megszüntetésére hoztak létre. A Resurgenced-ből származik, ott Goopie vagy Foodie néven ismert.",
 
   "2 | Type": "Képességek",
@@ -12,8 +12,8 @@
   "ability.changedextras.claws.selected_off": "Karmok bent",
   "ability.changedextras.claws.toggle_on": "Karmok kiengedve",
   "ability.changedextras.claws.toggle_off": "Karmok behúzva",
-  "ability.changedextras.paint_ball.name": "Festéklabda",
-  "ability.changedextras.paint_ball.description": "Dobj egy festéklabdát a nézésed irányába. A célpontok 4 sebzést és 3 másodpercig Lassúság III-at kapnak.",
+  "ability.changedextras.paint_ball.name": "Festékgolyó",
+  "ability.changedextras.paint_ball.description": "Dobj egy festékgolyót a nézésed irányába. A célpontok 4 sebzést és 3 másodpercig Lassúság III-at kapnak.",
   "ability.changedextras.swing.name": "Kaszálás",
   "ability.changedextras.swing.description": "Közeli söprő támadás, amely megvakítja, megmérgezi és lelassítja az összes közeli célpontot.",
   "ability.changedextras.puncture.name": "Átdöfés",
@@ -165,7 +165,7 @@
   "changedextras.discovery.ping_pending": "Pingelés...",
 
   "12 | Type": "Feliratok",
-  "subtitles.changedextras.jackpot_song": "Tripping on love - Ashley Collins szól",
+  "subtitles.changedextras.jackpot_song": "Magánjellegű, tiszta szerelemről szóló zene szól",
   "subtitles.changedextras.jackpot_stop": "A zene hirtelen elhallgat",
   "subtitles.changedextras.parry": "Támadás elhárítva",
   "subtitles.changedextras.heartbeat": "A szív hevesen ver"
