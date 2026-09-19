@@ -55,6 +55,8 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<KattEntity>> KATT =
@@ -69,6 +71,7 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.HYPNOSIS)
                             .reducedFall(true)
                             .extraJumps(2)
+                            .transfurMode(TransfurMode.REPLICATION)
                             .build());
 
     public static final RegistryObject<TransfurVariant<JammerEntity>> JAMMER =
@@ -88,6 +91,8 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAddonAbilities.POLLEN_CARRY)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .transfurMode(TransfurMode.Absorption)
+                            .absorbing()
                             .reducedFall(true)
                             .extraJumps(3)
                             .build());
@@ -109,6 +114,8 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_GENDER)
                             .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardFemaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE =
