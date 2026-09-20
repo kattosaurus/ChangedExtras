@@ -1,6 +1,7 @@
 package com.katt.changedextras.item;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.common.JammerVipManager;
 import com.katt.changedextras.entity.ModTransfurVariants;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
@@ -63,8 +64,9 @@ public class JammerHeadphonesItem extends ClothingItem {
         var instance = ProcessTransfur.setPlayerTransfurVariant(player, ModTransfurVariants.JAMMER.get());
         if (instance != null) {
             ChangedSounds.broadcastSound(player, ChangedSounds.TRANSFUR_BY_LATEX, 1.0F, 1.0F);
-            if (instance.getChangedEntity() instanceof JammerEntity jammer) {
-                jammer.setVip(player.getRandom().nextInt(30) == 0);
+            boolean rollVip = player.getRandom().nextInt(30) == 0;
+            if (rollVip || JammerVipManager.isServerVip(player)) {
+                JammerVipManager.setVip(player, true);
             }
         }
         player.getPersistentData().remove(TIMER_TAG);

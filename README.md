@@ -1,6 +1,6 @@
 # **Changed Extras**
 
-![The icon of Changed Extras](https://cdn.modrinth.com/data/cached_images/5054a4c73df77f8935c5828795b76d1ff853e22f_0.webp)
+![The icon of Changed Extras](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/src/main/resources/pack.png)
 
 <p align="center">
     <a href="https://modrinth.com/mod/changed-extras" rel="Modrinth"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/1aec26abb75544baec37249f42008b2fcc0e731f/assets/cozy/available/modrinth_vector.svg"></a>

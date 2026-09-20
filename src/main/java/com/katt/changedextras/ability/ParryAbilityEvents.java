@@ -101,6 +101,7 @@ public final class ParryAbilityEvents {
         if (currentCount >= ParryAbility.REQUIRED_PARRIES) {
             data.putInt(ParryAbility.PARRY_COUNT_TAG, ParryAbility.REQUIRED_PARRIES);
             data.putBoolean(ParryAbility.PARRY_READY_FOR_SPAM_TAG, true);
+            data.putInt(ParryAbility.PARRY_READY_TIMEOUT_TAG, ParryAbility.PARRY_READY_TIMEOUT_TICKS);
             data.putBoolean(ParryAbility.PARRY_ACTIVE_TAG, false);
             if (victim.level() instanceof ServerLevel serverLevel) {
                 ParryStatePacket.broadcast(serverLevel, victim.getUUID(), false, false);

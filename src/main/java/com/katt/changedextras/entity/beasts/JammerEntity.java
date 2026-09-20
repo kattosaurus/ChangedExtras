@@ -1,5 +1,6 @@
 package com.katt.changedextras.entity.beasts;
 
+import com.katt.changedextras.common.JammerVipManager;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
@@ -26,6 +27,12 @@ public class JammerEntity extends AbstractWhiteCatEntity {
     }
 
     public boolean isVip() {
+        if (this.getUnderlyingPlayer() != null) {
+            if (this.level().isClientSide()) {
+                return JammerVipManager.isClientVip(this.getUnderlyingPlayer().getUUID());
+            }
+            return JammerVipManager.isServerVip(this.getUnderlyingPlayer());
+        }
         return this.entityData.get(VIP);
     }
 
