@@ -23,16 +23,16 @@ public class BunkerStructure extends Structure {
     public static final int GRASS_RING_LOCAL_Y = 18;
     public static final int BUNKER_ROOF_LOCAL_Y = 14;
 
-    // Grid points covering the entrance rim (X: 51..66, Z: 17..32)
-    private static final int[] ENTRANCE_SAMPLE_X = {51, 55, 58, 62, 66};
-    private static final int[] ENTRANCE_SAMPLE_Z = {17, 21, 25, 29, 32};
+    // Corner sample points covering the entrance rim (X: 51..66, Z: 17..32)
+    private static final int[] ENTRANCE_SAMPLE_X = {51, 66};
+    private static final int[] ENTRANCE_SAMPLE_Z = {17, 32};
 
-    // Grid points covering the underground bunker complex (X: 1..86, Z: 17..95)
-    private static final int[] COMPLEX_SAMPLE_X = {1, 22, 43, 65, 86};
-    private static final int[] COMPLEX_SAMPLE_Z = {17, 36, 55, 75, 95};
+    // Strategic sample points covering the underground bunker complex (X: 1..86, Z: 17..95)
+    private static final int[] COMPLEX_SAMPLE_X = {1, 43, 86};
+    private static final int[] COMPLEX_SAMPLE_Z = {17, 56, 95};
 
-    // Maximum allowed elevation difference across the entrance area for flat terrain placement
-    private static final int MAX_ENTRANCE_HEIGHT_VARIATION = 1;
+    // Maximum allowed elevation difference across the entrance area for placement
+    private static final int MAX_ENTRANCE_HEIGHT_VARIATION = 3;
 
     public BunkerStructure(StructureSettings settings) {
         super(settings);
@@ -46,9 +46,38 @@ public class BunkerStructure extends Structure {
         int originX = chunkPos.getMinBlockX();
         int originZ = chunkPos.getMinBlockZ();
 
-        // 1. Calculate entrance world coordinates and check flatness around the entrance
-        int minEntranceY = Integer.MAX_VALUE;
-        int maxEntranceY = Integer.MIN_VALUE;
+        // 1. Fast check entrance center height and water clearance
+        BlockPos entranceOffset = StructureTemplate.transform(ENTRANCE_LOCAL_POS, Mirror.NONE, rotation, BlockPos.ZERO);
+        int entranceCenterX = originX + entranceOffset.getX();
+        int entranceCenterZ = originZ + entranceOffset.getZ();
+
+        int centerSurfaceY = context.chunkGenerator().getFirstOccupiedHeight(
+                entranceCenterX,
+                entranceCenterZ,
+                Heightmap.Types.WORLD_SURFACE_WG,
+                context.heightAccessor(),
+                context.randomState()
+        );
+
+        if (centerSurfaceY < context.chunkGenerator().getSeaLevel()) {
+            return Optional.empty();
+        }
+
+        int centerOceanFloorY = context.chunkGenerator().getFirstOccupiedHeight(
+                entranceCenterX,
+                entranceCenterZ,
+                Heightmap.Types.OCEAN_FLOOR_WG,
+                context.heightAccessor(),
+                context.randomState()
+        );
+
+        if (centerSurfaceY != centerOceanFloorY) {
+            return Optional.empty();
+        }
+
+        // 2. Check entrance corners for reasonable flatness
+        int minEntranceY = centerSurfaceY;
+        int maxEntranceY = centerSurfaceY;
 
         for (int lx : ENTRANCE_SAMPLE_X) {
             for (int lz : ENTRANCE_SAMPLE_Z) {
@@ -64,38 +93,23 @@ public class BunkerStructure extends Structure {
                         context.randomState()
                 );
 
-                int oceanFloorY = context.chunkGenerator().getFirstOccupiedHeight(
-                        sampleX,
-                        sampleZ,
-                        Heightmap.Types.OCEAN_FLOOR_WG,
-                        context.heightAccessor(),
-                        context.randomState()
-                );
-
-                // Reject if submerged in water
-                if (surfaceY != oceanFloorY || surfaceY < context.chunkGenerator().getSeaLevel()) {
-                    return Optional.empty();
-                }
-
                 if (surfaceY < minEntranceY) minEntranceY = surfaceY;
                 if (surfaceY > maxEntranceY) maxEntranceY = surfaceY;
+
+                if (maxEntranceY - minEntranceY > MAX_ENTRANCE_HEIGHT_VARIATION) {
+                    return Optional.empty();
+                }
             }
         }
 
-        // Reject if entrance terrain is too steep/sloped
-        if (maxEntranceY - minEntranceY > MAX_ENTRANCE_HEIGHT_VARIATION) {
-            return Optional.empty();
-        }
-
-        // Align origin Y so that the entrance grass ring at local Y=18 sits at the sampled surface Y
-        int surfaceY = minEntranceY;
-        int originY = surfaceY - GRASS_RING_LOCAL_Y;
+        // Align origin Y so that the entrance grass ring at local Y=18 sits at the center surface Y
+        int originY = centerSurfaceY - GRASS_RING_LOCAL_Y;
         if (originY <= context.heightAccessor().getMinBuildHeight()) {
             return Optional.empty();
         }
 
-        // 2. Check underground coverage across the bunker footprint (ensure terrain doesn't dip below the bunker ceiling)
-        int minAllowedGroundY = originY + BUNKER_ROOF_LOCAL_Y + 1; // At least 1 solid block above bunker roof
+        // 3. Check underground coverage across key points (ensure terrain covers bunker roof)
+        int minAllowedGroundY = originY + BUNKER_ROOF_LOCAL_Y;
         for (int lx : COMPLEX_SAMPLE_X) {
             for (int lz : COMPLEX_SAMPLE_Z) {
                 BlockPos sampleOffset = StructureTemplate.transform(new BlockPos(lx, 0, lz), Mirror.NONE, rotation, BlockPos.ZERO);
@@ -111,7 +125,7 @@ public class BunkerStructure extends Structure {
                 );
 
                 if (groundY < minAllowedGroundY) {
-                    return Optional.empty(); // Valley, cliff, or ravine exposes bunker underground rooms
+                    return Optional.empty();
                 }
             }
         }

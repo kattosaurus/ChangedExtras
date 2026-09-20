@@ -51,5 +51,9 @@ public class ChangedExtrasNetwork {
                 SyncVisorPacket::encode,
                 SyncVisorPacket::decode,
                 SyncVisorPacket::handle);
+        INSTANCE.registerMessage(id++, SyncJammerVipPacket.class,
+                SyncJammerVipPacket::encode,
+                SyncJammerVipPacket::decode,
+                SyncJammerVipPacket::handle);
     }
 }

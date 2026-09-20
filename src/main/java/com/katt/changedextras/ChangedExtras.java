@@ -10,6 +10,7 @@ import com.katt.changedextras.common.ChangedExtrasSpawnController;
 import com.katt.changedextras.entity.ModEntities;
 import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
+import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import com.katt.changedextras.init.ChangedExtrasPaintings;
 import com.katt.changedextras.init.ChangedExtrasParticles;
@@ -378,6 +379,9 @@ public class ChangedExtras {
         }
         if (oldData.contains(SPECIAL_CHOICE_MADE_TAG)) {
             newData.putBoolean(SPECIAL_CHOICE_MADE_TAG, oldData.getBoolean(SPECIAL_CHOICE_MADE_TAG));
+        }
+        if (oldData.contains(JammerEntity.VIP_TAG)) {
+            newData.putBoolean(JammerEntity.VIP_TAG, oldData.getBoolean(JammerEntity.VIP_TAG));
         }
     }
 

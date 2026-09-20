@@ -28,8 +28,8 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
     public static final String PARRY_SPAM_DECAY_TAG = "changedextras.parry_spam_decay";
     public static final String HEARTBEAT_PLAYING_TAG = "changedextras.heartbeat_playing";
 
-    public static final int REQUIRED_PARRIES = 5;
-    public static final int REQUIRED_SPAM = 20;
+    public static final int REQUIRED_PARRIES = 15;
+    public static final int REQUIRED_SPAM = 50;
     public static final int PARRY_READY_TIMEOUT_TICKS = 15 * 20; // 15 seconds (300 ticks)
 
     public ParryAbility() {
@@ -149,7 +149,7 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
 
                     if (living instanceof ServerPlayer serverPlayer) {
                         serverPlayer.displayClientMessage(
-                                Component.literal("§6§l★ JACKPOT! ★"),
+                                Component.literal("§6§lJACKPOT!"),
                                 true
                         );
                     }

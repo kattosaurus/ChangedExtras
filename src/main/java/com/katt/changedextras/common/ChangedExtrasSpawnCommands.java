@@ -6,6 +6,7 @@ import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.network.ChangedExtrasNetwork;
 import com.katt.changedextras.network.OpenLatexSpawnControlScreenPacket;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
 import net.ltxprogrammer.changed.item.ExoskeletonItem;
@@ -78,6 +79,15 @@ public final class ChangedExtrasSpawnCommands {
                                 .executes(context -> setOwnVisorStyle(context.getSource(), ExoskeletonVisorStyle.Pattern.PATTERN1)))
                         .then(Commands.literal("default")
                                 .executes(context -> setOwnVisorStyle(context.getSource(), ExoskeletonVisorStyle.Pattern.PATTERN2))))
+                .then(Commands.literal("jammer")
+                        .then(Commands.literal("vip")
+                                .executes(context -> toggleOwnJammerVip(context.getSource()))
+                                .then(Commands.literal("enable")
+                                        .executes(context -> setOwnJammerVip(context.getSource(), true)))
+                                .then(Commands.literal("disable")
+                                        .executes(context -> setOwnJammerVip(context.getSource(), false)))
+                                .then(Commands.argument("enabled", BoolArgumentType.bool())
+                                        .executes(context -> setOwnJammerVip(context.getSource(), BoolArgumentType.getBool(context, "enabled"))))))
                 .then(Commands.literal("admin")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.literal("spawns")
@@ -247,10 +257,28 @@ public final class ChangedExtrasSpawnCommands {
         return ItemStack.EMPTY;
     }
 
+    private static int toggleOwnJammerVip(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        boolean current = JammerVipManager.isServerVip(player);
+        return setOwnJammerVip(source, !current);
+    }
+
+    private static int setOwnJammerVip(CommandSourceStack source, boolean vip) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!source.hasPermission(2) && !JammerVipManager.isServerVip(player)) {
+            source.sendFailure(Component.literal("§cYou do not have Jammer VIP access. An admin must grant it to you."));
+            return 0;
+        }
+
+        JammerVipManager.setVip(player, vip);
+        source.sendSuccess(() -> Component.literal("§aJammer VIP " + (vip ? "enabled" : "disabled") + "!"), false);
+        return 1;
+    }
+
     private static int setJammerVip(CommandSourceStack source, Collection<ServerPlayer> targets, boolean vip) {
         int count = 0;
         for (ServerPlayer player : targets) {
-            player.getPersistentData().putBoolean(JammerEntity.VIP_TAG, vip);
+            JammerVipManager.setVip(player, vip);
             count++;
         }
 
