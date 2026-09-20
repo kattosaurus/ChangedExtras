@@ -22,7 +22,7 @@
   "ability.changedextras.jackpot_aura.name": "Átkozott Technika: Azonnali Jackpot",
   "ability.changedextras.jackpot_aura.description": "Más szóval, a jackpotot követő 4 perc és 11 másodpercben Hakari gyakorlatilag halhatatlan.",
   "ability.changedextras.parry.name": "Hárítás",
-  "ability.changedextras.parry.description": "Hárítsd el a bejövő támadásokat és vágj vissza 90% sebzéssel. Háríts 5 támadást, majd spammeld a képességet a Jackpot feloldásához!",
+  "ability.changedextras.parry.description": "Hárítsd el a bejövő támadásokat és vágj vissza 90% sebzéssel. Háríts 15 támadást, majd spammeld a képességet a Jackpot feloldásához!",
 
   "3 | Type": "Entitás nevek",
   "entity.changedextras.conekat_male": "Hím Tölcsér Macska",
