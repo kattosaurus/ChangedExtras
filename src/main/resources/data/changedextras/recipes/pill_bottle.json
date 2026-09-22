@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "G G",
+    " G "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:orange_terracotta"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "result": {
+    "item": "changedextras:pill_bottle",
+    "count": 1
+  }
+}

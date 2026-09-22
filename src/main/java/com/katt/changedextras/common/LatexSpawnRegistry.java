@@ -40,6 +40,7 @@ public final class LatexSpawnRegistry {
             addRegistryObject(variantsById, ModTransfurVariants.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE);
             addRegistryObject(variantsById, ModTransfurVariants.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE);
             addRegistryObject(variantsById, ModTransfurVariants.ARTIST);
+            addRegistryObject(variantsById, ModTransfurVariants.SCP_009);
         }
 
         return variantsById.values().stream()

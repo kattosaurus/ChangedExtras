@@ -1,6 +1,6 @@
 package com.katt.changedextras.item;
 
-import net.foxyas.changedaddon.procedure.DoLatexInfectionTickHandle;
+import net.foxyas.changedaddon.variant.LatexInfection;
 import net.ltxprogrammer.changed.process.Pale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +28,7 @@ public class PaleTestItem extends Item {
             return InteractionResultHolder.sidedSuccess(stack, true);
         }
 
-        boolean infected = DoLatexInfectionTickHandle.getInfected(player);
+        boolean infected = LatexInfection.isPlayerInfected(player);
         int paleValue = infected ? Pale.getPaleExposure(player) : 0;
 
         CompoundTag tag = stack.getOrCreateTag();

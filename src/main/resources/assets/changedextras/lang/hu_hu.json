@@ -35,6 +35,7 @@
   "entity.changedextras.furred_latex_tiger_shark": "Bundás Latex Tigriscápa",
   "entity.changedextras.fluffed_up_latex_snow_leopard_male": "Bolyhos Hím Latex Hópárduc",
   "entity.changedextras.fluffed_up_latex_snow_leopard_female": "Bolyhos Nőstény Latex Hópárduc",
+  "entity.changedextras.scp_009": "SCP-009",
 
   "4 | Type": "Különleges fecskendők",
   "katt_syringe": "Katt Fájdalom és Szenvedés Fecskendője",
@@ -56,6 +57,7 @@
   "item.changedextras.furred_latex_tiger_shark_syringe": "Bundás Latex Tigriscápa Fecskendő",
   "item.changedextras.fluffed_up_latex_snow_leopard_male_syringe": "Bolyhos Hím Latex Hópárduc Fecskendő",
   "item.changedextras.fluffed_up_latex_snow_leopard_female_syringe": "Bolyhos Nőstény Latex Hópárduc Fecskendő",
+  "item.changedextras.scp_009_syringe": "SCP-009 Fecskendő",
   "item.changedextras.conekat_male_spawn_egg": "Hím Tölcsér Macska Idézőtojás",
   "item.changedextras.conekat_female_spawn_egg": "Nőstény Tölcsér Macska Idézőtojás",
   "item.changedextras.white_cat_spawn_egg": "Fehér Macska Idézőtojás",
@@ -66,6 +68,7 @@
   "item.changedextras.furred_latex_tiger_shark_spawn_egg": "Bundás Latex Tigriscápa Idézőtojás",
   "item.changedextras.fluffed_up_latex_snow_leopard_male_spawn_egg": "Bolyhos Hím Latex Hópárduc Idézőtojás",
   "item.changedextras.fluffed_up_latex_snow_leopard_female_spawn_egg": "Bolyhos Nőstény Latex Hópárduc Idézőtojás",
+  "item.changedextras.scp_009_spawn_egg": "SCP-009 Idézőtojás",
   "item.changedextras.sketch": "Mestermű Vázlat",
   "item.changedextras.icecream": "Fagylalt",
   "item.changedextras.long_sleeve_shirt": "Hosszú Ujjú Ing",

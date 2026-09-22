@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "changed_addon:biomass"
+    },
+    {
+      "item": "changed_addon:ammonia"
+    },
+    {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ],
+  "result": {
+    "item": "changedextras:hydroxyurea",
+    "count": 1
+  }
+}

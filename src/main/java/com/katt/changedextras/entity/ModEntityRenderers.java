@@ -9,6 +9,7 @@ import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardFemaleEntity
 import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardMaleEntityModel;
 import com.katt.changedextras.entity.model.FurredLatexTigerSharkEntityModel;
 import com.katt.changedextras.entity.model.KattEntityModel;
+import com.katt.changedextras.entity.model.Scp009EntityModel;
 import com.katt.changedextras.entity.model.WhiteCatEntityModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -47,5 +48,9 @@ public class ModEntityRenderers {
                 context -> new ModEntityRenderer<>(context,
                         new FluffedUpLatexSnowLeopardFemaleEntityModel(context.bakeLayer(FluffedUpLatexSnowLeopardFemaleEntityModel.LAYER_LOCATION)),
                         ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/fluffed_up_latex_snow_leopard_female/fluffed_up_latex_snow_leopard_female.png")));
+        registerHumanoid(event, ModEntities.SCP_009.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new Scp009EntityModel(context.bakeLayer(Scp009EntityModel.LAYER_LOCATION)),
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/scp_009/scp_009.png")));
     }
 }

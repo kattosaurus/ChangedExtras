@@ -10,6 +10,7 @@ import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
+import com.katt.changedextras.entity.beasts.Scp009Entity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -80,4 +81,10 @@ public class ModEntities {
                     .clientTrackingRange(12)
                     .sized(0.7F, 1.93F)
                     .build("artist"));
+
+    public static final RegistryObject<EntityType<Scp009Entity>> SCP_009 = REGISTRY.register("scp_009",
+            () -> EntityType.Builder.of(Scp009Entity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("scp_009"));
 }

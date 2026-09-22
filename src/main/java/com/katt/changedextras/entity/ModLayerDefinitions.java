@@ -10,6 +10,7 @@ import com.katt.changedextras.entity.model.FurredLatexTigerSharkEntityModel;
 import com.katt.changedextras.entity.model.JammerEntityModel;
 import com.katt.changedextras.entity.model.KattEntityModel;
 import com.katt.changedextras.entity.model.ProtoBeeEntityModel;
+import com.katt.changedextras.entity.model.Scp009EntityModel;
 import com.katt.changedextras.entity.model.WhiteCatEntityModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -31,5 +32,6 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(FurredLatexTigerSharkEntityModel.LAYER_LOCATION, FurredLatexTigerSharkEntityModel::createBodyLayer);
         event.registerLayerDefinition(FluffedUpLatexSnowLeopardMaleEntityModel.LAYER_LOCATION, FluffedUpLatexSnowLeopardMaleEntityModel::createBodyLayer);
         event.registerLayerDefinition(FluffedUpLatexSnowLeopardFemaleEntityModel.LAYER_LOCATION, FluffedUpLatexSnowLeopardFemaleEntityModel::createBodyLayer);
+        event.registerLayerDefinition(Scp009EntityModel.LAYER_LOCATION, Scp009EntityModel::createBodyLayer);
     }
 }

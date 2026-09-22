@@ -10,6 +10,7 @@ import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
+import com.katt.changedextras.entity.beasts.Scp009Entity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
@@ -139,6 +140,15 @@ public class ModTransfurVariants {
                             .addAbility(ChangedExtrasAbilities.PAINT_BALL)
                             .addAbility(ChangedExtrasAbilities.SWING)
                             .addAbility(ChangedExtrasAbilities.PUNCTURE)
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<Scp009Entity>> SCP_009 =
+            REGISTRY.register("scp_009",
+                    () -> TransfurVariant.Builder.of(ModEntities.SCP_009)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .build());
 
 }

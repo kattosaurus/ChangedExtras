@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "changed_addon:luminara_bloom_petals"
+    },
+    {
+      "item": "changed_addon:biomass"
+    },
+    {
+      "item": "changed_addon:ammonia"
+    },
+    {
+      "item": "minecraft:glowstone_powder"
+    }
+  ],
+  "result": {
+    "item": "changedextras:voxelotor",
+    "count": 1
+  }
+}

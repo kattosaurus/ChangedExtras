@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "changedextras:used_vial"
+    },
+    {
+      "item": "changed_addon:ammonia"
+    }
+  ],
+  "result": {
+    "item": "changedextras:crizanlizumab",
+    "count": 1
+  }
+}
