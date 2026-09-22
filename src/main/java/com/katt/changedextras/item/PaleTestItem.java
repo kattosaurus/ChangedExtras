@@ -12,10 +12,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class PaleTestItem extends Item {
+    private static final Logger LOGGER = LogManager.getLogger("changedextras");
+
     private static final String RESULT_READY_TAG = "changedextras.result_ready";
     private static final String RESULT_POSITIVE_TAG = "changedextras.positive_result";
     private static final String PALE_VALUE_TAG = "changedextras.pale_value";
+    private static final String FALLBACK_INFECTED_TAG = "transfur_infected";
 
     public PaleTestItem(Properties properties) {
         super(properties);
@@ -28,7 +34,7 @@ public class PaleTestItem extends Item {
             return InteractionResultHolder.sidedSuccess(stack, true);
         }
 
-        boolean infected = LatexInfection.isPlayerInfected(player);
+        boolean infected = isPlayerInfectedSafe(player);
         int paleValue = infected ? Pale.getPaleExposure(player) : 0;
 
         CompoundTag tag = stack.getOrCreateTag();
@@ -42,6 +48,20 @@ public class PaleTestItem extends Item {
         player.sendSystemMessage(message);
 
         return InteractionResultHolder.sidedSuccess(stack, false);
+    }
+
+    private static boolean isPlayerInfectedSafe(Player player) {
+        try {
+            return LatexInfection.isPlayerInfected(player);
+        } catch (Throwable t) {
+            LOGGER.warn("changedextras: LatexInfection.isPlayerInfected() failed ({}), " +
+                    "falling back to reading '{}' NBT directly. The Changed Addon's " +
+                    "infection API may have changed.", t.toString(), FALLBACK_INFECTED_TAG);
+
+            CompoundTag persistentData = player.getPersistentData();
+            return persistentData.contains(FALLBACK_INFECTED_TAG)
+                    && persistentData.getBoolean(FALLBACK_INFECTED_TAG);
+        }
     }
 
     public static boolean isPositive(ItemStack stack) {
