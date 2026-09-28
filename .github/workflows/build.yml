@@ -1,0 +1,66 @@
+name: Build and Release Snapshot
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Extract Version from gradle.properties
+        id: get_version
+        run: |
+          # Extract version or mod_version property, removing spaces and quotes
+          RAW_VERSION=$(grep -E '^(mod_version|version)=' gradle.properties | head -n 1 | cut -d'=' -f2 | tr -d ' "\r')
+          
+          if [ -z "$RAW_VERSION" ]; then
+            echo "Error: Could not find 'mod_version' or 'version' in gradle.properties"
+            exit 1
+          fi
+
+          # Construct the snapshot tag using the run number for X
+          SNAPSHOT_TAG="${RAW_VERSION}-snapshot-${{ github.run_number }}"
+          echo "RELEASE_VERSION=${SNAPSHOT_TAG}" >> $GITHUB_ENV
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Build Mod with Gradle
+        run: ./gradlew build --no-daemon
+
+      - name: Upload Artifact to Workflow Run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChangedExtras-Build
+          path: build/libs/*.jar
+
+      - name: Publish Snapshot to GitHub Releases
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          name: Release ${{ env.RELEASE_VERSION }}
+          prerelease: true
+          files: build/libs/*.jar
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
