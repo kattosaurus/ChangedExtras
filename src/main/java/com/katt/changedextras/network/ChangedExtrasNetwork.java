@@ -55,5 +55,9 @@ public class ChangedExtrasNetwork {
                 SyncJammerVipPacket::encode,
                 SyncJammerVipPacket::decode,
                 SyncJammerVipPacket::handle);
+        INSTANCE.registerMessage(id++, FeralCatStatePacket.class,
+                FeralCatStatePacket::encode,
+                FeralCatStatePacket::decode,
+                FeralCatStatePacket::handle);
     }
 }

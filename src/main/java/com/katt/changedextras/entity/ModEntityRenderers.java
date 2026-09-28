@@ -52,5 +52,7 @@ public class ModEntityRenderers {
                 context -> new ModEntityRenderer<>(context,
                         new Scp009EntityModel(context.bakeLayer(Scp009EntityModel.LAYER_LOCATION)),
                         ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/scp_009/scp_009.png")));
+        registerHumanoid(event, ModEntities.LATEX_HAZZY.get(),
+                LatexHazzyRenderer::new);
     }
 }

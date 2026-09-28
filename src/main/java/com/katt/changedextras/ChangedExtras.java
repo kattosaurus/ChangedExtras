@@ -1,5 +1,8 @@
 package com.katt.changedextras;
 
+import com.katt.changedextras.block.Scp009CrystalBlock;
+import com.katt.changedextras.block.Scp009CrystalSmallBlock;
+import com.katt.changedextras.client.FeralCatClientRenderer;
 import com.katt.changedextras.client.PillBottleScreen;
 import com.katt.changedextras.client.renderer.accessory.DyeableClothingRenderer;
 import com.katt.changedextras.client.renderer.accessory.JammerHeadphonesRenderer;
@@ -12,6 +15,7 @@ import com.katt.changedextras.entity.ModEntities;
 import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
 import com.katt.changedextras.entity.beasts.JammerEntity;
+import com.katt.changedextras.fluid.ModFluids;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import com.katt.changedextras.init.ChangedExtrasEffects;
 import com.katt.changedextras.init.ChangedExtrasMenus;
@@ -31,8 +35,6 @@ import com.katt.changedextras.item.SterileSwabItem;
 import com.katt.changedextras.item.UsedVialItem;
 import com.katt.changedextras.network.ChangedExtrasNetwork;
 import com.katt.changedextras.network.DiscoveryNetwork;
-import com.katt.changedextras.network.JackpotStatePacket;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
@@ -41,8 +43,6 @@ import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.Registries;
@@ -56,7 +56,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -81,13 +80,13 @@ import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import net.ltxprogrammer.changed.client.renderer.accessory.SimpleClothingRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.AccessoryLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.minecraft.world.entity.EquipmentSlot;
-
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -135,12 +134,41 @@ public class ChangedExtras {
     private static final int TIGER_SHARK_SECONDARY = 0x151C1F;
     private static final int SCP_009_PRIMARY = 0xB51E2B;
     private static final int SCP_009_SECONDARY = 0x4A000E;
+    private static final int LATEX_HAZZY_PRIMARY = 0xCD5452;
+    private static final int LATEX_HAZZY_SECONDARY = 0xF6F7F7;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final RegistryObject<Block> ICECREAM_BLOCK =
             BLOCKS.register("icecream_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)));
+
+    public static final RegistryObject<Block> SCP009_CRYSTAL = BLOCKS.register("scp009_crystal",
+            () -> new Scp009CrystalBlock(BlockBehaviour.Properties.of()
+                    .instrument(NoteBlockInstrument.CHIME)
+                    .strength(1.5F)
+                    .sound(SoundType.AMETHYST)
+                    .friction(0.99F)
+                    .requiresCorrectToolForDrops()
+            )
+    );
+
+    public static final RegistryObject<Block> SCP009_CRYSTAL_SMALL = BLOCKS.register("scp009_crystal_small",
+            () -> new Scp009CrystalSmallBlock(BlockBehaviour.Properties.of()
+                    .instrument(NoteBlockInstrument.CHIME)
+                    .strength(1.5F)
+                    .sound(SoundType.AMETHYST)
+                    .friction(0.99F)
+                    .noOcclusion()
+                    .requiresCorrectToolForDrops()
+            )
+    );
+
+    public static final RegistryObject<Item> SCP009_CRYSTAL_SMALL_ITEM =
+            ITEMS.register("scp009_crystal_small", () -> new BlockItem(SCP009_CRYSTAL_SMALL.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SCP009_CRYSTAL_ITEM =
+            ITEMS.register("scp009_crystal", () -> new BlockItem(SCP009_CRYSTAL.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> ICECREAM_BLOCK_ITEM =
             ITEMS.register("icecream_block", () -> new BlockItem(ICECREAM_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<Block> JAMMER_HEADPHONES_BLOCK =
@@ -170,6 +198,8 @@ public class ChangedExtras {
             ITEMS.register("fluffed_up_latex_snow_leopard_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> SCP_009_SYRINGE =
             ITEMS.register("scp_009_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_HAZZY_SYRINGE =
+            ITEMS.register("latex_hazzy_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -217,7 +247,7 @@ public class ChangedExtras {
                     ),
                     List.of("Vascular Flow (10:00) - Prevents Pale Virus damage"),
                     () -> List.of(
-                            new MobEffectInstance(ChangedExtrasEffects.HYPOXEMIA.get(), 6000, 0)
+                            new MobEffectInstance(ChangedExtrasEffects.HYPOXIA.get(), 6000, 0)
                     ),
                     List.of("Hypoxemia (5:00) - Weakness II, Slowness II, 50% Poison damage")
             ));
@@ -233,7 +263,7 @@ public class ChangedExtras {
                     ),
                     List.of("Oxygenated (15:00) - Prevents Pale Virus damage"),
                     () -> List.of(
-                            new MobEffectInstance(ChangedExtrasEffects.HYPOXEMIA.get(), 6000, 0)
+                            new MobEffectInstance(ChangedExtrasEffects.HYPOXIA.get(), 6000, 0)
                     ),
                     List.of("Hypoxemia (5:00) - Weakness II, Slowness II, 50% Poison damage")
             ));
@@ -286,6 +316,9 @@ public class ChangedExtras {
     public static final RegistryObject<ForgeSpawnEggItem> SCP_009_SPAWN_EGG =
             ITEMS.register("scp_009_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.SCP_009, SCP_009_PRIMARY, SCP_009_SECONDARY, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> LATEX_HAZZY_SPAWN_EGG =
+            ITEMS.register("latex_hazzy_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.LATEX_HAZZY, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY, new Item.Properties()));
 
     public static final RegistryObject<CreativeModeTab> SYRINGES_TAB =
             CREATIVE_MODE_TABS.register("changedextras_syringes", () -> CreativeModeTab.builder()
@@ -302,6 +335,7 @@ public class ChangedExtras {
                         output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_male"));
                         output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_female"));
                         output.accept(createVariantSyringeStack(SCP_009_SYRINGE.get(), "scp_009"));
+                        output.accept(createVariantSyringeStack(LATEX_HAZZY_SYRINGE.get(), "latex_hazzy"));
                         output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "katt"));
                         output.accept(KATT_SPAWN_EGG.get());
                         output.accept(JAMMER_SPAWN_EGG.get());
@@ -311,6 +345,7 @@ public class ChangedExtras {
                         output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
                         output.accept(ARTIST_MOB_SPAWN_EGG.get());
                         output.accept(SCP_009_SPAWN_EGG.get());
+                        output.accept(LATEX_HAZZY_SPAWN_EGG.get());
                     })
                     .build());
 
@@ -318,7 +353,8 @@ public class ChangedExtras {
             CREATIVE_MODE_TABS.register("changedextras_mobs", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.changedextras.changedextras_mobs"))
                     .withTabsBefore(SYRINGES_TAB.getKey())
-                    .icon(() -> CONEKAT_MALE_SPAWN_EGG.get().getDefaultInstance())\n                    .displayItems((parameters, output) -> {
+                    .icon(() -> CONEKAT_MALE_SPAWN_EGG.get().getDefaultInstance())
+                    .displayItems((parameters, output) -> {
                         output.accept(CONEKAT_MALE_SPAWN_EGG.get());
                         output.accept(CONEKAT_FEMALE_SPAWN_EGG.get());
                         output.accept(WHITE_CAT_SPAWN_EGG.get());
@@ -331,6 +367,7 @@ public class ChangedExtras {
                         output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
                         output.accept(ARTIST_MOB_SPAWN_EGG.get());
                         output.accept(SCP_009_SPAWN_EGG.get());
+                        output.accept(LATEX_HAZZY_SPAWN_EGG.get());
                         output.accept(JAMMER_HEADPHONES.get());
                     })
                     .build());
@@ -362,6 +399,8 @@ public class ChangedExtras {
         modEventBus.addListener(ModEntityAttributes::registerEntityAttributes);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
+        ModFluids.FLUID_TYPES.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
         ChangedExtrasEffects.REGISTRY.register(modEventBus);
         ChangedExtrasMenus.REGISTRY.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
@@ -394,6 +433,7 @@ public class ChangedExtras {
         registerEntityColor("fluffed_up_latex_snow_leopard_male", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
         registerEntityColor("fluffed_up_latex_snow_leopard_female", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
         registerEntityColor("scp_009", SCP_009_PRIMARY, SCP_009_SECONDARY);
+        registerEntityColor("latex_hazzy", LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY);
     }
 
     private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
@@ -409,6 +449,7 @@ public class ChangedExtras {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(ICECREAM_BLOCK_ITEM.get());
+            event.accept(SCP009_CRYSTAL_ITEM.get());
             event.accept(JAMMER_HEADPHONES.get());
         } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(ICECREAM_ITEM.get());
@@ -552,6 +593,8 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_female"));
         } else if (stack.is(SCP_009_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "scp_009"));
+        } else if (stack.is(LATEX_HAZZY_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_hazzy"));
         } else if (stack.is(CONEKAT_MALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat_male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
@@ -591,6 +634,7 @@ public class ChangedExtras {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            FeralCatClientRenderer.register();
             AccessoryLayer.registerRenderer(
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
                     SimpleClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST)
@@ -632,6 +676,8 @@ public class ChangedExtras {
                     ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, SCP_009_PRIMARY, SCP_009_SECONDARY),
                     ChangedExtras.SCP_009_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY),
+                    ChangedExtras.LATEX_HAZZY_SYRINGE.get());
         }
 
         private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {

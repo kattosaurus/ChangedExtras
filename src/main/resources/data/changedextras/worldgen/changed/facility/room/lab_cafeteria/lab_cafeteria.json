@@ -6,7 +6,7 @@
   },
   "spawn_weight": 100,
   "minimum": 0,
-  "maximum": 3,
+  "maximum": 2,
   "neighboring_zones": [
     "changed:general"
   ]

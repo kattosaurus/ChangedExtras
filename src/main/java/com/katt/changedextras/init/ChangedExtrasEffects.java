@@ -23,6 +23,6 @@ public class ChangedExtrasEffects {
     public static final RegistryObject<MobEffect> OXYGENATED =
             REGISTRY.register("oxygenated", OxygenatedEffect::new);
 
-    public static final RegistryObject<MobEffect> HYPOXEMIA =
-            REGISTRY.register("hypoxemia", HypoxemiaEffect::new);
+    public static final RegistryObject<MobEffect> HYPOXIA =
+            REGISTRY.register("hypoxia", HypoxemiaEffect::new);
 }

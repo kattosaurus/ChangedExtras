@@ -25,6 +25,7 @@ public final class ModEntityAttributes {
         event.put(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.ARTIST.get(), ArtistEntity.createAttributes().build());
         event.put(ModEntities.SCP_009.get(), AbstractWhiteCatEntity.createAttributes().build());
+        event.put(ModEntities.LATEX_HAZZY.get(), AbstractWhiteCatEntity.createAttributes().build());
 
         // Fixed the builder chain here
         event.put(ModEntities.KATT.get(), KattEntity.createAttributes()

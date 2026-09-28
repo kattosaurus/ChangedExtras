@@ -1,10 +1,10 @@
 package com.katt.changedextras.init;
 
-import com.katt.changedextras.ability.ClawsAbility;
 import com.katt.changedextras.ability.PaintBallAbility;
 import com.katt.changedextras.ability.ParryAbility;
 import com.katt.changedextras.ability.PunctureAbility;
 import com.katt.changedextras.ability.SwingAbility;
+import com.katt.changedextras.ability.TurnFeralAbility;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.events.ChangedExtrasEvents;
 import com.katt.changedextras.network.JackpotStatePacket;
@@ -24,9 +24,6 @@ public final class ChangedExtrasAbilities {
     public static final DeferredRegister<AbstractAbility<?>> REGISTRY =
             ChangedRegistry.ABILITY.createDeferred("changedextras");
 
-    public static final RegistryObject<ClawsAbility> CLAWS =
-            REGISTRY.register("claws", ClawsAbility::new);
-
     public static final RegistryObject<PaintBallAbility> PAINT_BALL =
             REGISTRY.register("paint_ball", PaintBallAbility::new);
 
@@ -38,6 +35,9 @@ public final class ChangedExtrasAbilities {
 
     public static final RegistryObject<ParryAbility> PARRY =
             REGISTRY.register("parry", ParryAbility::new);
+
+    public static final RegistryObject<TurnFeralAbility> TURN_FERAL =
+            REGISTRY.register("turn_feral", TurnFeralAbility::new);
 
     public static final RegistryObject<AbstractAbility<JackpotAbilityInstance>> JACKPOT_AURA = REGISTRY.register("jackpot_aura",
             () -> new AbstractAbility<JackpotAbilityInstance>(JackpotAbilityInstance::new) {

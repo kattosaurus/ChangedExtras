@@ -1,0 +1,8 @@
+{
+  "render_type": "minecraft:translucent",
+  "parent": "block/cross",
+  "textures": {
+    "cross": "changedextras:block/scp009_crystal_small",
+    "particle": "changedextras:block/scp009_crystal_small"
+  }
+}

@@ -9,6 +9,7 @@ import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardMaleEntity;
 import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.entity.beasts.KattEntity;
+import com.katt.changedextras.entity.beasts.LatexHazzyEntity;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
 import com.katt.changedextras.entity.beasts.Scp009Entity;
 import com.katt.changedextras.entity.beasts.WhiteCatEntity;
@@ -87,4 +88,10 @@ public class ModEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F)
                     .build("scp_009"));
+
+    public static final RegistryObject<EntityType<LatexHazzyEntity>> LATEX_HAZZY = REGISTRY.register("latex_hazzy",
+            () -> EntityType.Builder.of(LatexHazzyEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("latex_hazzy"));
 }

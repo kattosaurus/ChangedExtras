@@ -46,5 +46,9 @@ public final class ChangedExtrasSpawnController {
                 (entityType, level, spawnType, pos, random) -> LatexSpawnRules.shouldOverrideToDaySpawn(level, spawnType)
                         ? LatexSpawnRules.checkDaySpawnRules(entityType, level, spawnType, pos, random)
                         : ChangedEntity.checkEntitySpawnRules(entityType, level, spawnType, pos, random));
+        SpawnPlacements.register(ModEntities.LATEX_HAZZY.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (entityType, level, spawnType, pos, random) -> LatexSpawnRules.shouldOverrideToDaySpawn(level, spawnType)
+                        ? LatexSpawnRules.checkDaySpawnRules(entityType, level, spawnType, pos, random)
+                        : ChangedEntity.checkEntitySpawnRules(entityType, level, spawnType, pos, random));
     }
 }

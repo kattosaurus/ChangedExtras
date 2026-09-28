@@ -8,6 +8,7 @@ import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardMaleEntity;
 import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.entity.beasts.KattEntity;
+import com.katt.changedextras.entity.beasts.LatexHazzyEntity;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
 import com.katt.changedextras.entity.beasts.Scp009Entity;
@@ -20,8 +21,6 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -34,7 +33,6 @@ public class ModTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .addAbility(ChangedAbilities.SWITCH_GENDER)
-                    .addAbility(ChangedExtrasAbilities.CLAWS)
                     .build());
 
     public static final RegistryObject<TransfurVariant<ConeKatFemaleEntity>> CONEKAT_FEMALE =
@@ -43,7 +41,6 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_GENDER)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .build());
 
     public static final GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> CONEKATS =
@@ -55,7 +52,6 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .transfurMode(TransfurMode.REPLICATION)
                             .replicating()
@@ -69,8 +65,8 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
                             .addAbility(ChangedExtrasAbilities.PARRY)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .addAbility(ChangedAbilities.HYPNOSIS)
+                            .addAbility(ChangedExtrasAbilities.TURN_FERAL)
                             .reducedFall(true)
                             .extraJumps(2)
                             .transfurMode(TransfurMode.REPLICATION)
@@ -82,7 +78,6 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .build());
 
     public static final RegistryObject<TransfurVariant<ProtoBeeEntity>> PROTO_BEE =
@@ -92,7 +87,6 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAddonAbilities.POLLEN_CARRY)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .transfurMode(TransfurMode.ABSORPTION)
                             .absorbing()
                             .reducedFall(true)
@@ -105,7 +99,6 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .build());
 
     public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardMaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE =
@@ -115,7 +108,6 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_GENDER)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
                             .replicating()
                             .build());
@@ -127,7 +119,6 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_GENDER)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
                             .build());
 
     public static final GenderedPair<FluffedUpLatexSnowLeopardMaleEntity, FluffedUpLatexSnowLeopardFemaleEntity> FLUFFED_UP_LATEX_SNOW_LEOPARDS =
@@ -148,7 +139,14 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                            .addAbility(ChangedExtrasAbilities.CLAWS)
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<LatexHazzyEntity>> LATEX_HAZZY =
+            REGISTRY.register("latex_hazzy",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_HAZZY)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .build());
 
 }

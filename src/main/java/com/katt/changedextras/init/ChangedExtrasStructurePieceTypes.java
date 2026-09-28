@@ -1,6 +1,7 @@
 package com.katt.changedextras.init;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.worldgen.structure.BiologicalStudiesFacilityPiece;
 import com.katt.changedextras.worldgen.structure.BunkerStructurePiece;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -13,6 +14,9 @@ public final class ChangedExtrasStructurePieceTypes {
 
     public static final RegistryObject<StructurePieceType> BUNKER =
             REGISTRY.register("bunker", () -> (StructurePieceType.StructureTemplateType) BunkerStructurePiece::new);
+
+    public static final RegistryObject<StructurePieceType> BIOLOGICAL_STUDIES_FACILITY =
+            REGISTRY.register("biological_studies_facility", () -> (StructurePieceType.StructureTemplateType) BiologicalStudiesFacilityPiece::new);
 
     private ChangedExtrasStructurePieceTypes() {
     }
