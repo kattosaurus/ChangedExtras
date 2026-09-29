@@ -6,6 +6,7 @@
     <a href="https://modrinth.com/mod/changed-extras" rel="Modrinth"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/1aec26abb75544baec37249f42008b2fcc0e731f/assets/cozy/available/modrinth_vector.svg"></a>
     <a href="https://www.curseforge.com/minecraft/mc-mods/changed-extras" rel="CurseForge"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/1aec26abb75544baec37249f42008b2fcc0e731f/assets/cozy/available/curseforge_vector.svg"></a>
     <a href="https://discord.gg/e8GxE4e4Bb" rel="Discord"><img src="https://raw.githubusercontent.com/LtxProgrammer/Changed-Minecraft-Mod/refs/heads/1.20.1-dev/images/discord-custom_vector.svg"></a>
+    <a href="https://github.com/kattosaurus/ChangedExtras/tree/main/src/main/resources/assets/changedextras/lang" rel="Translate"><img src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/translate/generic-plural_vector.svg"></a>
 </p>
 
 A mod made to add things to the changed mods that don't fit in either the Changed Add-on (@Foxyas) or the Changed: Minecraft Mod (@ltxprogrammer), like characters from other verses.
