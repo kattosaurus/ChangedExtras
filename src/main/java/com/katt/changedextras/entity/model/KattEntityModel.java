@@ -27,7 +27,6 @@ public class KattEntityModel extends AdvancedHumanoidModel<KattEntity> {
     private final ModelPart leftArm;
     private final ModelPart head;
     private final ModelPart torso;
-    private final ModelPart neck;   // Child of Head
     private final ModelPart sleeve; // Child of RightArm
     private final HumanoidAnimator<KattEntity, KattEntityModel> animator;
 
@@ -41,7 +40,6 @@ public class KattEntityModel extends AdvancedHumanoidModel<KattEntity> {
         this.leftArm = root.getChild("LeftArm");
 
         // Hierarchy Setup
-        this.neck = head.getChild("Neck");      // Now found inside Head
         this.sleeve = rightArm.getChild("Sleeve");
 
         // Tail Chain
@@ -69,14 +67,20 @@ public class KattEntityModel extends AdvancedHumanoidModel<KattEntity> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        // --- HEAD (Neck is now here) ---
-        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, 0.0F));
+        // --- HEAD ---
+        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create()
+                        .texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+                        .texOffs(15, 32).addBox(-2.0F, -3.0F, -6.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+                        .texOffs(12, 0).addBox(-1.5F, -1.0F, -5.0F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)),
+                PartPose.offset(0.0F, -0.5F, 0.0F));
 
         Head.addOrReplaceChild("Fluff_r1", CubeListBuilder.create().texOffs(88, 23).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, -5.0F, -4.0F, 0.0F, 0.6545F, 0.0F));
-        Head.addOrReplaceChild("Fluff_r2", CubeListBuilder.create().texOffs(88, 23).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, 0.0F, 4.0F, 0.0F, -0.6109F, 0.0F));
-        Head.addOrReplaceChild("Fluff_r3", CubeListBuilder.create().texOffs(88, 28).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 0.0F, -2.0F, 0.0F, 0.6109F, 0.0F));
+        Head.addOrReplaceChild("Fluff_r2", CubeListBuilder.create().texOffs(88, 28).mirror().addBox(3.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.0F, 0.0F, -2.0F, 0.0F, -0.6109F, 0.0F));
+        Head.addOrReplaceChild("Fluff_r3", CubeListBuilder.create().texOffs(88, 18).mirror().addBox(3.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.0F, -1.0F, -1.0F, 0.0F, -0.6109F, 0.0F));
+        Head.addOrReplaceChild("Fluff_r4", CubeListBuilder.create().texOffs(88, 18).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, -1.0F, -1.0F, 0.0F, 0.6109F, 0.0F));
+        Head.addOrReplaceChild("Fluff_r5", CubeListBuilder.create().texOffs(88, 28).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 0.0F, -2.0F, 0.0F, 0.6109F, 0.0F));
 
-        Head.addOrReplaceChild("Neck", CubeListBuilder.create().texOffs(56, 51).addBox(-5.0F, -28.0F, -5.0F, 10.0F, 3.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 26.0F, 0.0F));
+        Head.addOrReplaceChild("Snout_r1", CubeListBuilder.create().texOffs(74, 0).addBox(-1.0F, -29.625F, -0.95F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 26.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
 
         PartDefinition RightEar = Head.addOrReplaceChild("RightEar", CubeListBuilder.create(), PartPose.offset(-3.0F, -7.5F, 0.0F));
         RightEar.addOrReplaceChild("RightEarPivot", CubeListBuilder.create().texOffs(0, 4).addBox(-1.9F, -1.2F, -1.0F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.05F))

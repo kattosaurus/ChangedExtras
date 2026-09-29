@@ -1,4 +1,4 @@
-// Made with Blockbench 5.1.6
+// Made with Blockbench 5.2.1
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
@@ -19,8 +19,6 @@ public class Katt<T extends Entity> extends EntityModel<T> {
 	private final ModelPart RightEarPivot;
 	private final ModelPart LeftEar;
 	private final ModelPart LeftEarPivot;
-	private final ModelPart Hair;
-	private final ModelPart Neck;
 	private final ModelPart Torso;
 	private final ModelPart Tail;
 	private final ModelPart TailPrimary;
@@ -44,8 +42,6 @@ public class Katt<T extends Entity> extends EntityModel<T> {
 		this.RightEarPivot = this.RightEar.getChild("RightEarPivot");
 		this.LeftEar = this.Head.getChild("LeftEar");
 		this.LeftEarPivot = this.LeftEar.getChild("LeftEarPivot");
-		this.Hair = this.Head.getChild("Hair");
-		this.Neck = this.Head.getChild("Neck");
 		this.Torso = root.getChild("Torso");
 		this.Tail = this.Torso.getChild("Tail");
 		this.TailPrimary = this.Tail.getChild("TailPrimary");
@@ -88,13 +84,21 @@ public class Katt<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition LeftPad = LeftFoot.addOrReplaceChild("LeftPad", CubeListBuilder.create().texOffs(24, 0).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.325F, -4.425F));
 
-		PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, 0.0F));
+		PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+		.texOffs(15, 32).addBox(-2.0F, -3.0F, -6.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+		.texOffs(12, 0).addBox(-1.5F, -1.0F, -5.0F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, 0.0F));
 
 		PartDefinition Fluff_r1 = Head.addOrReplaceChild("Fluff_r1", CubeListBuilder.create().texOffs(88, 23).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, -5.0F, -4.0F, 0.0F, 0.6545F, 0.0F));
 
-		PartDefinition Fluff_r2 = Head.addOrReplaceChild("Fluff_r2", CubeListBuilder.create().texOffs(88, 23).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, 0.0F, 4.0F, 0.0F, -0.6109F, 0.0F));
+		PartDefinition Fluff_r2 = Head.addOrReplaceChild("Fluff_r2", CubeListBuilder.create().texOffs(88, 28).mirror().addBox(3.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.0F, 0.0F, -2.0F, 0.0F, -0.6109F, 0.0F));
 
-		PartDefinition Fluff_r3 = Head.addOrReplaceChild("Fluff_r3", CubeListBuilder.create().texOffs(88, 28).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 0.0F, -2.0F, 0.0F, 0.6109F, 0.0F));
+		PartDefinition Fluff_r3 = Head.addOrReplaceChild("Fluff_r3", CubeListBuilder.create().texOffs(88, 18).mirror().addBox(3.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.0F, -1.0F, -1.0F, 0.0F, -0.6109F, 0.0F));
+
+		PartDefinition Fluff_r4 = Head.addOrReplaceChild("Fluff_r4", CubeListBuilder.create().texOffs(88, 18).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, -1.0F, -1.0F, 0.0F, 0.6109F, 0.0F));
+
+		PartDefinition Fluff_r5 = Head.addOrReplaceChild("Fluff_r5", CubeListBuilder.create().texOffs(88, 28).addBox(-7.0F, -4.0F, -4.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 0.0F, -2.0F, 0.0F, 0.6109F, 0.0F));
+
+		PartDefinition Snout_r1 = Head.addOrReplaceChild("Snout_r1", CubeListBuilder.create().texOffs(74, 0).addBox(-1.0F, -29.625F, -0.95F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 26.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
 
 		PartDefinition RightEar = Head.addOrReplaceChild("RightEar", CubeListBuilder.create(), PartPose.offset(-3.0F, -7.5F, 0.0F));
 
@@ -109,10 +113,6 @@ public class Katt<T extends Entity> extends EntityModel<T> {
 		.texOffs(0, 20).addBox(-1.1F, -1.6F, -0.4F, 2.0F, 3.0F, 1.0F, new CubeDeformation(0.04F))
 		.texOffs(32, 24).addBox(-1.1F, -2.3F, -1.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.05F))
 		.texOffs(0, 32).addBox(-1.1F, -3.1F, -1.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.05F)), PartPose.offsetAndRotation(-0.5F, -1.25F, 0.0F, -0.1309F, -0.5236F, 0.3491F));
-
-		PartDefinition Hair = Head.addOrReplaceChild("Hair", CubeListBuilder.create(), PartPose.offset(2.0F, 0.0F, 1.0F));
-
-		PartDefinition Neck = Head.addOrReplaceChild("Neck", CubeListBuilder.create().texOffs(56, 51).addBox(-5.0F, -28.0F, -5.0F, 10.0F, 3.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 26.0F, 0.0F));
 
 		PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(28, 28).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, 0.0F));
 

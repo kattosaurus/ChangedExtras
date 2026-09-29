@@ -11,14 +11,20 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class TurnFeralAbility extends AbstractAbility<TurnFeralAbility.TurnFeralAbilityInstance> {
+
+    private static final EquipmentSlot[] ARMOR_SLOTS = {
+            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
+    };
 
     public TurnFeralAbility() {
         super(TurnFeralAbilityInstance::new);
@@ -73,6 +79,27 @@ public class TurnFeralAbility extends AbstractAbility<TurnFeralAbility.TurnFeral
         return living.isAlive();
     }
 
+    /**
+     * Moves every equipped armor piece (and anything worn in an armor slot,
+     * which includes Changed clothing that uses armor slots) back into the
+     * inventory. If the inventory is full, the item is dropped at the player's feet.
+     * Server side only.
+     */
+    public static void unequipAll(Player player) {
+        for (EquipmentSlot slot : ARMOR_SLOTS) {
+            ItemStack worn = player.getItemBySlot(slot);
+            if (worn.isEmpty()) {
+                continue;
+            }
+            ItemStack toMove = worn.copy();
+            player.setItemSlot(slot, ItemStack.EMPTY);
+            if (!player.getInventory().add(toMove)) {
+                player.drop(toMove, false);
+            }
+        }
+        player.inventoryMenu.broadcastChanges();
+    }
+
     public static class TurnFeralAbilityInstance extends AbstractAbilityInstance {
 
         public TurnFeralAbilityInstance(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
@@ -110,7 +137,14 @@ public class TurnFeralAbility extends AbstractAbility<TurnFeralAbility.TurnFeral
                 boolean currentlyFeral = FeralCatManager.isFeral(player);
                 boolean nextFeral = !currentlyFeral;
 
+                if (nextFeral) {
+                    unequipAll(player);
+                }
+
                 FeralCatManager.setFeral(player, nextFeral);
+
+                // Forces Minecraft to recompute hitbox + eye height (see EntityEvent.Size handler)
+                player.refreshDimensions();
 
                 Level level = player.level();
                 if (nextFeral) {

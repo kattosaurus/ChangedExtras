@@ -2,6 +2,7 @@ package com.katt.changedextras.worldgen.structure;
 
 import com.katt.changedextras.Config;
 import com.katt.changedextras.init.ChangedExtrasStructureTypes;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import net.ltxprogrammer.changed.block.GluBlock;
 import net.ltxprogrammer.changed.block.entity.GluBlockEntity;
@@ -12,6 +13,7 @@ import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Mirror;
@@ -24,11 +26,17 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraftforge.server.ServerLifecycleHooks;
+import org.slf4j.Logger;
 
 import java.util.*;
 
 public class BiologicalStudiesFacilityStructure extends Structure {
     public static final Codec<BiologicalStudiesFacilityStructure> CODEC = simpleCodec(BiologicalStudiesFacilityStructure::new);
+
+    private static final Logger LOGGER = LogUtils.getLogger();
+
+    private static final boolean DEBUG_LOG = true;
 
     public static final ResourceLocation ENTRANCE_TEMPLATE =
             ResourceLocation.fromNamespaceAndPath("changedextras", "biological_studies_facility/dark_facility");
@@ -40,7 +48,8 @@ public class BiologicalStudiesFacilityStructure extends Structure {
     private static final int[] SURFACE_SAMPLE_Z = {9, 18, 27};
     private static final int MAX_SURFACE_HEIGHT_VARIATION = 4;
 
-    /** Fewest rooms a facility aims for. The most is the biologicalFacilityMaxRooms server config value. */
+    private static final int MAX_RADIUS = 112;
+
     private static final int MIN_PIECES = Config.BIOLOGICAL_FACILITY_MIN_ROOMS;
 
     public BiologicalStudiesFacilityStructure(StructureSettings settings) {
@@ -55,7 +64,6 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         int originX = chunkPos.getMinBlockX();
         int originZ = chunkPos.getMinBlockZ();
 
-        // 1. Check surface center height and water clearance
         BlockPos surfaceOffset = StructureTemplate.transform(SURFACE_LOCAL_POS, Mirror.NONE, rotation, BlockPos.ZERO);
         int surfaceCenterX = originX + surfaceOffset.getX();
         int surfaceCenterZ = originZ + surfaceOffset.getZ();
@@ -84,7 +92,6 @@ public class BiologicalStudiesFacilityStructure extends Structure {
             return Optional.empty();
         }
 
-        // 2. Check surface footprint for reasonable flatness
         int minSurfaceY = centerSurfaceY;
         int maxSurfaceY = centerSurfaceY;
 
@@ -128,15 +135,12 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         List<BoundingBox> placedBoxes = new ArrayList<>();
         StructureTemplate entranceTemplate = templateManager.getOrCreate(ENTRANCE_TEMPLATE);
 
-        // Add Entrance piece
         builder.addPiece(new BiologicalStudiesFacilityPiece(templateManager, ENTRANCE_TEMPLATE, entranceOrigin, entranceRotation));
 
-        // Entrance sub-boxes for accurate collision detection
         placedBoxes.add(calculateBoundingBox(entranceOrigin, new Vec3i(16, 7, 13), entranceRotation));
         BlockPos surfaceOrigin = entranceOrigin.offset(StructureTemplate.transform(new BlockPos(0, 7, 0), Mirror.NONE, entranceRotation, BlockPos.ZERO));
         placedBoxes.add(calculateBoundingBox(surfaceOrigin, new Vec3i(21, 19, 28), entranceRotation));
 
-        // Dynamically extract glu blocks from entrance template
         List<GluData> entranceGluBlocks = extractGluBlocks(entranceTemplate);
         List<OpenGluConnection> openGluConnections = new ArrayList<>();
 
@@ -150,64 +154,98 @@ public class BiologicalStudiesFacilityStructure extends Structure {
 
         List<WeightedTemplate> corridorPool = buildCorridorPool(templateManager);
         List<WeightedTemplate> roomPool = buildRoomPool(templateManager);
+        List<WeightedTemplate> capPool = buildCapPool(templateManager);
 
-        // Read the configured maximum, never letting it drop below the minimum
         int maxPieces = Math.max(MIN_PIECES, Config.biologicalFacilityMaxRooms);
         int targetPieceCount = random.nextIntBetweenInclusive(MIN_PIECES, maxPieces);
         int pieceCount = 1;
 
         List<OpenGluConnection> terminalDeadEnds = new ArrayList<>();
 
-        // Phase 1: Hallway and junction network expansion.
-        // Keep going until enough pieces are placed. Every open end will later be capped with a room (Phase 2),
-        // so also stop once the pieces placed plus those pending caps would reach the configured maximum.
         while (!openGluConnections.isEmpty()
                 && pieceCount < targetPieceCount
                 && pieceCount + openGluConnections.size() + terminalDeadEnds.size() < maxPieces) {
             OpenGluConnection currentGlu = openGluConnections.remove(0);
 
-            // Chance to branch into a room directly if depth > 1.
-            // Rooms have no exits, so only do this while other open ends remain; otherwise a room placed on the
-            // last open end would finish the whole facility early.
             boolean tryRoomFirst = currentGlu.depth > 1 && !openGluConnections.isEmpty() && random.nextFloat() < 0.25F;
             boolean placed = false;
 
             if (tryRoomFirst) {
-                placed = tryPlacePiece(builder, templateManager, currentGlu, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false);
+                placed = tryPlacePiece(builder, templateManager, currentGlu, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin);
                 if (placed) {
                     pieceCount++;
                     continue;
                 }
             }
 
-            // Try placing corridor / intersection
-            placed = tryPlacePiece(builder, templateManager, currentGlu, corridorPool, placedBoxes, openGluConnections, minBuildHeight, random, true);
+            placed = tryPlacePiece(builder, templateManager, currentGlu, corridorPool, placedBoxes, openGluConnections, minBuildHeight, random, true, entranceOrigin);
             if (placed) {
                 pieceCount++;
             } else {
-                // If a corridor cannot fit, mark this open connection as a terminal dead-end to cap with a room
                 terminalDeadEnds.add(currentGlu);
             }
         }
 
-        // Phase 2: Cap ALL remaining hallway/intersection ends with a room
         List<OpenGluConnection> allRemainingEnds = new ArrayList<>();
         allRemainingEnds.addAll(terminalDeadEnds);
         allRemainingEnds.addAll(openGluConnections);
         openGluConnections.clear();
 
+        int failedCaps = 0;
+
         for (OpenGluConnection deadEnd : allRemainingEnds) {
-            boolean placedRoom = tryPlacePiece(builder, templateManager, deadEnd, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false);
-            if (placedRoom) {
+            boolean placedCap = tryPlacePiece(builder, templateManager, deadEnd, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin);
+            if (!placedCap) {
+                placedCap = tryPlacePiece(builder, templateManager, deadEnd, capPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin);
+            }
+
+            if (placedCap) {
                 pieceCount++;
+            } else {
+                failedCaps++;
             }
         }
+
+        if (DEBUG_LOG) {
+            int maxDist = 0;
+            for (BoundingBox box : placedBoxes) {
+                int dx = Math.max(Math.abs(box.minX() - entranceOrigin.getX()), Math.abs(box.maxX() - entranceOrigin.getX()));
+                int dz = Math.max(Math.abs(box.minZ() - entranceOrigin.getZ()), Math.abs(box.maxZ() - entranceOrigin.getZ()));
+                maxDist = Math.max(maxDist, Math.max(dx, dz));
+            }
+
+            LOGGER.info("Biological facility at {}: pieces={}, target={}, max={}, ends={}, failedCaps={}, maxDist={}, radius={}",
+                    entranceOrigin, pieceCount, targetPieceCount, maxPieces, allRemainingEnds.size(), failedCaps, maxDist, getMaxRadius());
+        }
+    }
+
+    private static final int MIN_RADIUS = 48;
+
+    private static int getMaxRadius() {
+        try {
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            if (server != null) {
+                int viewDistanceBlocks = server.getPlayerList().getViewDistance() * 16;
+                return Math.max(MIN_RADIUS, Math.min(MAX_RADIUS, viewDistanceBlocks));
+            }
+        } catch (Exception ignored) {
+        }
+        return MAX_RADIUS;
+    }
+
+    private static boolean isWithinRange(BoundingBox box, BlockPos startOrigin) {
+        int radius = getMaxRadius();
+        return box.minX() >= startOrigin.getX() - radius
+                && box.maxX() <= startOrigin.getX() + radius
+                && box.minZ() >= startOrigin.getZ() - radius
+                && box.maxZ() <= startOrigin.getZ() + radius;
     }
 
     private static boolean tryPlacePiece(StructurePiecesBuilder builder, StructureTemplateManager templateManager,
                                          OpenGluConnection currentGlu, List<WeightedTemplate> pool,
                                          List<BoundingBox> placedBoxes, List<OpenGluConnection> openGluConnections,
-                                         int minBuildHeight, RandomSource random, boolean addOpenConnectors) {
+                                         int minBuildHeight, RandomSource random, boolean addOpenConnectors,
+                                         BlockPos startOrigin) {
         Direction targetFacing = currentGlu.worldFront.getOpposite();
         BlockPos targetConnectPos = currentGlu.worldPos.relative(currentGlu.worldFront);
 
@@ -232,6 +270,10 @@ public class BiologicalStudiesFacilityStructure extends Structure {
                     continue;
                 }
 
+                if (!isWithinRange(candidateBox, startOrigin)) {
+                    continue;
+                }
+
                 boolean collides = false;
                 for (BoundingBox placedBox : placedBoxes) {
                     if (candidateBox.intersects(placedBox)) {
@@ -246,10 +288,10 @@ public class BiologicalStudiesFacilityStructure extends Structure {
 
                     if (addOpenConnectors) {
                         for (GluData otherGlu : candidate.gluBlocks) {
-                            // Open every other end of the piece. Ends are told apart by the wall they face, not by door id:
-                            // the facility templates give every glu block the same door id, which used to leave hallways
-                            // with no open far end and stopped generation after a single hallway.
-                            if (otherGlu.front != candGlu.front && otherGlu.jointType == GluBlockEntity.JointType.ENTRANCE) {
+                            // Open every glu block except the exact one we connected through. Comparing by
+                            // reference (the list holds the same GluData instances) also handles pieces that
+                            // have several glu blocks on the same wall.
+                            if (otherGlu != candGlu && otherGlu.jointType == GluBlockEntity.JointType.ENTRANCE && !isSameDoorway(otherGlu, candGlu)) {
                                 Direction otherWorldFront = neededRotation.rotate(otherGlu.front);
                                 BlockPos otherWorldPos = candidateOrigin.offset(
                                         StructureTemplate.transform(otherGlu.localPos, Mirror.NONE, neededRotation, BlockPos.ZERO)
@@ -265,6 +307,10 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         }
 
         return false;
+    }
+
+    private static boolean isSameDoorway(GluData a, GluData b) {
+        return a.front == b.front && a.localPos.distManhattan(b.localPos) <= a.size + 1;
     }
 
     private static List<GluData> extractGluBlocks(StructureTemplate template) {
@@ -302,12 +348,16 @@ public class BiologicalStudiesFacilityStructure extends Structure {
     private static List<WeightedTemplate> buildCorridorPool(StructureTemplateManager templateManager) {
         List<WeightedTemplate> pool = new ArrayList<>();
 
-        addWeighted(pool, templateManager, "biological_studies_facility/long_hallways/longhallway_1", 6);
-        addWeighted(pool, templateManager, "biological_studies_facility/long_hallways/longhallway_2", 6);
-        addWeighted(pool, templateManager, "biological_studies_facility/long_hallways/longhallway_3", 6);
-        addWeighted(pool, templateManager, "biological_studies_facility/long_hallways/longhallway_4", 6);
-        addWeighted(pool, templateManager, "biological_studies_facility/corridors/corridor_turn", 8);
-        addWeighted(pool, templateManager, "biological_studies_facility/corridors/corridor_circle", 4);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/longhallway_1", 6);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/longhallway_2", 6);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/longhallway_3", 6);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/longhallway_4", 6);
+        addWeighted(pool, templateManager, "biological_studies_facility/intersections/corridor_turn", 8);
+        addWeighted(pool, templateManager, "biological_studies_facility/intersections/corridor_circle", 4);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/stair_up", 4);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/stair_up_no_chest", 3);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/stairs_down", 4);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/latex_cafeteria", 1);
 
         return pool;
     }
@@ -315,13 +365,33 @@ public class BiologicalStudiesFacilityStructure extends Structure {
     private static List<WeightedTemplate> buildRoomPool(StructureTemplateManager templateManager) {
         List<WeightedTemplate> pool = new ArrayList<>();
 
-        addWeighted(pool, templateManager, "biological_studies_facility/scp009_room", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/scp009_room", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/armory_room", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/office_safe", 2);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/office_danger", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/storage_dark", 1);
+
+        return pool;
+    }
+
+    private static List<WeightedTemplate> buildCapPool(StructureTemplateManager templateManager) {
+        List<WeightedTemplate> pool = new ArrayList<>();
+
+        addWeighted(pool, templateManager, "biological_studies_facility/end_cap", 1, false);
 
         return pool;
     }
 
     private static void addWeighted(List<WeightedTemplate> pool, StructureTemplateManager templateManager, String path, int weight) {
+        addWeighted(pool, templateManager, path, weight, true);
+    }
+
+    private static void addWeighted(List<WeightedTemplate> pool, StructureTemplateManager templateManager, String path, int weight, boolean required) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath("changedextras", path);
+        if (required && templateManager.get(id).isEmpty()) {
+            LOGGER.error("Biological facility template {} was not found (expected data/{}/structures/{}.nbt). It will never be placed.",
+                    id, id.getNamespace(), id.getPath());
+        }
         StructureTemplate template = templateManager.getOrCreate(id);
         Vec3i size = template.getSize();
         List<GluData> gluBlocks = extractGluBlocks(template);
