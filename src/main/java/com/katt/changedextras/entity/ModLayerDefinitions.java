@@ -1,18 +1,7 @@
 package com.katt.changedextras.entity;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.entity.model.ArtistEntityModel;
-import com.katt.changedextras.entity.model.ConeKatFemaleEntityModel;
-import com.katt.changedextras.entity.model.ConeKatMaleEntityModel;
-import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardFemaleEntityModel;
-import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardMaleEntityModel;
-import com.katt.changedextras.entity.model.FurredLatexTigerSharkEntityModel;
-import com.katt.changedextras.entity.model.JammerEntityModel;
-import com.katt.changedextras.entity.model.KattEntityModel;
-import com.katt.changedextras.entity.model.LatexHazzyEntityModel;
-import com.katt.changedextras.entity.model.ProtoBeeEntityModel;
-import com.katt.changedextras.entity.model.Scp009EntityModel;
-import com.katt.changedextras.entity.model.WhiteCatEntityModel;
+import com.katt.changedextras.entity.model.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,5 +24,6 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(FluffedUpLatexSnowLeopardFemaleEntityModel.LAYER_LOCATION, FluffedUpLatexSnowLeopardFemaleEntityModel::createBodyLayer);
         event.registerLayerDefinition(Scp009EntityModel.LAYER_LOCATION, Scp009EntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexHazzyEntityModel.LAYER_LOCATION, LatexHazzyEntityModel::createBodyLayer);
+        event.registerLayerDefinition(LatexCatteEntityModel.LAYER_LOCATION, LatexCatteEntityModel::createBodyLayer);
     }
 }

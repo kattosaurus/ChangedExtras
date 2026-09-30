@@ -1,18 +1,7 @@
 package com.katt.changedextras.entity;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.entity.beasts.ConeKatFemaleEntity;
-import com.katt.changedextras.entity.beasts.ConeKatMaleEntity;
-import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardFemaleEntity;
-import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardMaleEntity;
-import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
-import com.katt.changedextras.entity.beasts.JammerEntity;
-import com.katt.changedextras.entity.beasts.KattEntity;
-import com.katt.changedextras.entity.beasts.LatexHazzyEntity;
-import com.katt.changedextras.entity.beasts.ArtistEntity;
-import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
-import com.katt.changedextras.entity.beasts.Scp009Entity;
-import com.katt.changedextras.entity.beasts.WhiteCatEntity;
+import com.katt.changedextras.entity.beasts.*;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.entity.TransfurMode;
@@ -147,6 +136,17 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<LatexCatteEntity>> LATEX_CATTE =
+            REGISTRY.register("latex_catte",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_CATTE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
                             .build());
 
 }

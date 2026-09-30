@@ -1,10 +1,7 @@
 package com.katt.changedextras.entity;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.entity.beasts.AbstractConeKatEntity;
-import com.katt.changedextras.entity.beasts.AbstractWhiteCatEntity;
-import com.katt.changedextras.entity.beasts.ArtistEntity;
-import com.katt.changedextras.entity.beasts.KattEntity;
+import com.katt.changedextras.entity.beasts.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,6 +23,7 @@ public final class ModEntityAttributes {
         event.put(ModEntities.ARTIST.get(), ArtistEntity.createAttributes().build());
         event.put(ModEntities.SCP_009.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.LATEX_HAZZY.get(), AbstractWhiteCatEntity.createAttributes().build());
+        event.put(ModEntities.LATEX_CATTE.get(), AbstractLatexCatteEntity.createAttributes().build());
 
         // Fixed the builder chain here
         event.put(ModEntities.KATT.get(), KattEntity.createAttributes()

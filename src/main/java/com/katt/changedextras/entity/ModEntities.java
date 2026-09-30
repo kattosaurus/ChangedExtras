@@ -1,18 +1,7 @@
 package com.katt.changedextras.entity;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.entity.beasts.ArtistEntity;
-import com.katt.changedextras.entity.beasts.ConeKatFemaleEntity;
-import com.katt.changedextras.entity.beasts.ConeKatMaleEntity;
-import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardFemaleEntity;
-import com.katt.changedextras.entity.beasts.FluffedUpLatexSnowLeopardMaleEntity;
-import com.katt.changedextras.entity.beasts.FurredLatexTigerSharkEntity;
-import com.katt.changedextras.entity.beasts.JammerEntity;
-import com.katt.changedextras.entity.beasts.KattEntity;
-import com.katt.changedextras.entity.beasts.LatexHazzyEntity;
-import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
-import com.katt.changedextras.entity.beasts.Scp009Entity;
-import com.katt.changedextras.entity.beasts.WhiteCatEntity;
+import com.katt.changedextras.entity.beasts.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -94,4 +83,11 @@ public class ModEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F)
                     .build("latex_hazzy"));
+
+    public static final RegistryObject<EntityType<LatexCatteEntity>> LATEX_CATTE = REGISTRY.register("latex_catte",
+            () -> EntityType.Builder.of(LatexCatteEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("latex_catte"));
+
 }

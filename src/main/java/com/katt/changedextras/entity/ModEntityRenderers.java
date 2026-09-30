@@ -2,15 +2,8 @@ package com.katt.changedextras.entity;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.client.renderer.ProtoBeeRenderer;
-import com.katt.changedextras.entity.model.ConeKatFemaleEntityModel;
-import com.katt.changedextras.entity.model.ConeKatMaleEntityModel;
-import com.katt.changedextras.entity.model.ArtistEntityModel;
-import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardFemaleEntityModel;
-import com.katt.changedextras.entity.model.FluffedUpLatexSnowLeopardMaleEntityModel;
-import com.katt.changedextras.entity.model.FurredLatexTigerSharkEntityModel;
-import com.katt.changedextras.entity.model.KattEntityModel;
-import com.katt.changedextras.entity.model.Scp009EntityModel;
-import com.katt.changedextras.entity.model.WhiteCatEntityModel;
+import com.katt.changedextras.entity.LatexCatteRenderer;
+import com.katt.changedextras.entity.model.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +29,8 @@ public class ModEntityRenderers {
                 JammerRenderer::new);
         registerHumanoid(event, ModEntities.PROTO_BEE.get(),
                 ProtoBeeRenderer::new);
+        registerHumanoid(event, ModEntities.LATEX_CATTE.get(),
+                context -> new LatexCatteRenderer<>(context, new LatexCatteEntityModel<>(context.bakeLayer(LatexCatteEntityModel.LAYER_LOCATION))));
         registerHumanoid(event, ModEntities.FURRED_LATEX_TIGER_SHARK.get(),
                 context -> new ModEntityRenderer<>(context,
                         new FurredLatexTigerSharkEntityModel(context.bakeLayer(FurredLatexTigerSharkEntityModel.LAYER_LOCATION)),

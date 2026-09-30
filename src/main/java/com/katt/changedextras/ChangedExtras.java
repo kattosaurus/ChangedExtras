@@ -26,6 +26,7 @@ import com.katt.changedextras.init.ChangedExtrasStructurePieceTypes;
 import com.katt.changedextras.init.ChangedExtrasStructureTypes;
 import com.katt.changedextras.item.ArtistBrushItem;
 import com.katt.changedextras.item.ArtistSketchItem;
+import com.katt.changedextras.item.CatteBucketArmorItem;
 import com.katt.changedextras.item.JammerHeadphonesItem;
 import com.katt.changedextras.item.LongSleeveShirt;
 import com.katt.changedextras.item.PaleTestItem;
@@ -136,6 +137,8 @@ public class ChangedExtras {
     private static final int SCP_009_SECONDARY = 0x4A000E;
     private static final int LATEX_HAZZY_PRIMARY = 0xCD5452;
     private static final int LATEX_HAZZY_SECONDARY = 0xF6F7F7;
+    private static final int LATEX_CATTE_PRIMARY = 0xF59842;
+    private static final int LATEX_CATTE_SECONDARY = 0x9E5816;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
@@ -200,6 +203,8 @@ public class ChangedExtras {
             ITEMS.register("scp_009_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_HAZZY_SYRINGE =
             ITEMS.register("latex_hazzy_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_CATTE_SYRINGE =
+            ITEMS.register("latex_catte_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -216,6 +221,9 @@ public class ChangedExtras {
             ITEMS.register("processed_vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> PALE_TEST =
             ITEMS.register("pale_test", () -> new PaleTestItem(new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> CATTE_BUCKET =
+            ITEMS.register("catte_bucket", () -> new CatteBucketArmorItem(new Item.Properties().stacksTo(1)));
 
     // Medicines
     public static final RegistryObject<Item> HYDROXYUREA =
@@ -320,6 +328,10 @@ public class ChangedExtras {
             ITEMS.register("latex_hazzy_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.LATEX_HAZZY, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY, new Item.Properties()));
 
+    public static final RegistryObject<ForgeSpawnEggItem> LATEX_CATTE_SPAWN_EGG =
+            ITEMS.register("latex_catte_spawn_egg",
+                    () -> new ForgeSpawnEggItem(ModEntities.LATEX_CATTE, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY, new Item.Properties()));
+
     public static final RegistryObject<CreativeModeTab> SYRINGES_TAB =
             CREATIVE_MODE_TABS.register("changedextras_syringes", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.changedextras.changedextras_syringes"))
@@ -337,15 +349,7 @@ public class ChangedExtras {
                         output.accept(createVariantSyringeStack(SCP_009_SYRINGE.get(), "scp_009"));
                         output.accept(createVariantSyringeStack(LATEX_HAZZY_SYRINGE.get(), "latex_hazzy"));
                         output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "katt"));
-                        output.accept(KATT_SPAWN_EGG.get());
-                        output.accept(JAMMER_SPAWN_EGG.get());
-                        output.accept(PROTO_BEE_SPAWN_EGG.get());
-                        output.accept(FURRED_LATEX_TIGER_SHARK_SPAWN_EGG.get());
-                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG.get());
-                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
-                        output.accept(ARTIST_MOB_SPAWN_EGG.get());
-                        output.accept(SCP_009_SPAWN_EGG.get());
-                        output.accept(LATEX_HAZZY_SPAWN_EGG.get());
+                        output.accept(createVariantSyringeStack(LATEX_CATTE_SYRINGE.get(), "latex_catte"));
                     })
                     .build());
 
@@ -368,7 +372,9 @@ public class ChangedExtras {
                         output.accept(ARTIST_MOB_SPAWN_EGG.get());
                         output.accept(SCP_009_SPAWN_EGG.get());
                         output.accept(LATEX_HAZZY_SPAWN_EGG.get());
+                        output.accept(LATEX_CATTE_SPAWN_EGG.get());
                         output.accept(JAMMER_HEADPHONES.get());
+                        output.accept(CATTE_BUCKET.get());
                     })
                     .build());
 
@@ -434,6 +440,7 @@ public class ChangedExtras {
         registerEntityColor("fluffed_up_latex_snow_leopard_female", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
         registerEntityColor("scp_009", SCP_009_PRIMARY, SCP_009_SECONDARY);
         registerEntityColor("latex_hazzy", LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY);
+        registerEntityColor("latex_catte", LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY);
     }
 
     private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
@@ -470,6 +477,7 @@ public class ChangedExtras {
             event.accept(HYDROXYUREA.get());
             event.accept(CRIZANLIZUMAB.get());
             event.accept(VOXELOTOR.get());
+            event.accept(CATTE_BUCKET.get());
         }
     }
 
@@ -595,6 +603,8 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "scp_009"));
         } else if (stack.is(LATEX_HAZZY_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_hazzy"));
+        } else if (stack.is(LATEX_CATTE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_catte"));
         } else if (stack.is(CONEKAT_MALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat_male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
@@ -643,6 +653,10 @@ public class ChangedExtras {
                     ChangedExtras.JAMMER_HEADPHONES.get(),
                     JammerHeadphonesRenderer::new
             );
+            AccessoryLayer.registerRenderer(
+                    ChangedExtras.CATTE_BUCKET.get(),
+                    SimpleClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.HEAD)
+            );
             event.enqueueWork(() -> ItemProperties.register(
                     ChangedExtras.PALE_TEST.get(),
                     ResourceLocation.fromNamespaceAndPath(MODID, "positive"),
@@ -678,6 +692,8 @@ public class ChangedExtras {
                     ChangedExtras.SCP_009_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY),
                     ChangedExtras.LATEX_HAZZY_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY),
+                    ChangedExtras.LATEX_CATTE_SYRINGE.get());
         }
 
         private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {

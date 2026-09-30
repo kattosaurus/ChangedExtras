@@ -2,12 +2,16 @@ package com.katt.changedextras.client;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.init.ChangedExtrasParticles;
+import com.katt.changedextras.model.catte_bucket;
 import com.katt.changedextras.network.JackpotClientHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -16,6 +20,18 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 public class ClientEventHandler {
+
+    @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static class ClientModBusEvents {
+
+        @SubscribeEvent
+        public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+            event.registerLayerDefinition(
+                    new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "catte_bucket"), "main"),
+                    catte_bucket::createBodyLayer
+            );
+        }
+    }
 
     @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     public static class ClientParticleHandler {
@@ -60,7 +76,7 @@ public class ClientEventHandler {
                 double ox = (random.nextDouble() - 0.5) * 1.2 * auraScale;
                 double oy = 0.5 + random.nextDouble() * 1.5 * auraScale;
                 double oz = (random.nextDouble() - 0.5) * 1.2 * auraScale;
-                
+
                 level.addParticle(
                         ChangedExtrasParticles.JACKPOT_AURA.get(),
                         px + ox,
