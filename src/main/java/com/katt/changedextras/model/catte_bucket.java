@@ -21,21 +21,25 @@ public class catte_bucket<T extends LivingEntity> extends HumanoidModel<T> {
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
-        PartDefinition partdefinition = meshdefinition.getRoot();
+        PartDefinition root = meshdefinition.getRoot();
 
-        PartDefinition head = partdefinition.getChild("head");
+        for (String name : new String[]{"hat", "body", "right_arm", "left_arm", "right_leg", "left_leg"}) {
+            root.addOrReplaceChild(name, CubeListBuilder.create(), PartPose.ZERO);
+        }
 
-        PartDefinition catte_bucket_part = head.addOrReplaceChild("catte_bucket_part", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition bucket = head.addOrReplaceChild("catte_bucket_part", CubeListBuilder.create(),
+                PartPose.offset(0.0F, -8.0F, 0.0F));
 
-        catte_bucket_part.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 28)
+        bucket.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 28)
                         .addBox(-5.0F, -8.0F, -4.0F, 10.0F, 9.0F, 1.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(0.0F, 9.0F, 2.0F, -0.0873F, 0.0F, 0.0F));
 
-        catte_bucket_part.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 12)
+        bucket.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 12)
                         .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, -0.0873F, 0.0F, 0.0F));
 
-        catte_bucket_part.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0)
+        bucket.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0)
                         .addBox(-5.0F, -2.0F, -5.0F, 10.0F, 2.0F, 10.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.0873F, 0.0F, 0.0F));
 

@@ -1,5 +1,6 @@
 package com.katt.changedextras;
 
+import com.katt.changedextras.block.CatteBucketBlock;
 import com.katt.changedextras.block.Scp009CrystalBlock;
 import com.katt.changedextras.block.Scp009CrystalSmallBlock;
 import com.katt.changedextras.client.FeralCatClientRenderer;
@@ -144,8 +145,17 @@ public class ChangedExtras {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final RegistryObject<Block> ICECREAM_BLOCK =
-            BLOCKS.register("icecream_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)));
+            BLOCKS.register("icecream_block", () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .sound(SoundType.SLIME_BLOCK)
+            )
+    );
 
+    public static final RegistryObject<Block> CATTE_BUCKET_BLOCK = BLOCKS.register("catte_bucket",
+            () -> new CatteBucketBlock(BlockBehaviour.Properties.of()
+                    .requiresCorrectToolForDrops()
+            )
+    );
     public static final RegistryObject<Block> SCP009_CRYSTAL = BLOCKS.register("scp009_crystal",
             () -> new Scp009CrystalBlock(BlockBehaviour.Properties.of()
                     .instrument(NoteBlockInstrument.CHIME)
@@ -652,10 +662,6 @@ public class ChangedExtras {
             AccessoryLayer.registerRenderer(
                     ChangedExtras.JAMMER_HEADPHONES.get(),
                     JammerHeadphonesRenderer::new
-            );
-            AccessoryLayer.registerRenderer(
-                    ChangedExtras.CATTE_BUCKET.get(),
-                    SimpleClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.HEAD)
             );
             event.enqueueWork(() -> ItemProperties.register(
                     ChangedExtras.PALE_TEST.get(),
