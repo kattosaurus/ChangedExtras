@@ -18,10 +18,12 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public final class LatexAiUtil {
-    private static final TagKey<EntityType<?>> CHANGED_HUMANOIDS =
+    public static final TagKey<EntityType<?>> CHANGED_HUMANOIDS =
             TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("changed", "humanoids"));
-    private static final TagKey<EntityType<?>> CHANGED_LATEXES =
+    public static final TagKey<EntityType<?>> CHANGED_LATEXES =
             TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("changed", "latexes"));
+    public static final TagKey<EntityType<?>> CHANGED_ORGANIC_LATEX =
+            TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("changed", "organic_latex"));
 
     private static final Set<String> SMART_AI_EXCLUDED_FORMS = Set.of(
             "changedextras:artist",
@@ -37,6 +39,25 @@ public final class LatexAiUtil {
     }
 
     private LatexAiUtil() {
+    }
+
+    public static boolean isInLatexesTag(@Nullable LivingEntity entity) {
+        return entity != null && entity.getType().is(CHANGED_LATEXES);
+    }
+
+    public static boolean isOrganicLatex(@Nullable LivingEntity entity) {
+        return entity != null && entity.getType().is(CHANGED_ORGANIC_LATEX);
+    }
+
+    public static boolean isHumanoid(@Nullable LivingEntity entity) {
+        if (entity == null) return false;
+        if (entity instanceof Player player) {
+            return !isPlayerTransfurred(player);
+        }
+        if (entity.getType().is(CHANGED_LATEXES)) {
+            return false;
+        }
+        return entity.getType().is(CHANGED_HUMANOIDS);
     }
 
     public static boolean isSmartAiExcluded(ChangedEntity mob) {
@@ -102,14 +123,17 @@ public final class LatexAiUtil {
 
     public static boolean isTransfurrable(LivingEntity entity) {
         if (!entity.isAlive()) return false;
+        if (entity.getType().is(CHANGED_LATEXES)) {
+            return false;
+        }
         if (entity instanceof Player player) {
             if (player.isCreative() || player.isSpectator()) return false;
             return !isPlayerTransfurred(player);
         }
-        if (entity instanceof Villager) {
+        if (entity.getType().is(CHANGED_HUMANOIDS)) {
             return true;
         }
-        if (entity.getType().is(CHANGED_HUMANOIDS)) {
+        if (entity instanceof Villager) {
             return true;
         }
         return false;

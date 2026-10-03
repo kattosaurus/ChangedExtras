@@ -171,6 +171,7 @@
   "message.changedextras.locked_syringe": "A benne lévő latex elutasít, úgy tűnik, \"másik\" gazdatestet akar helyetted.",
   "message.changedextras.pale_test.positive": "A pale teszt két vonalat és egy számot mutat: pozitív. Pale kitettség: %s",
   "message.changedextras.pale_test.negative": "A pale teszt egy vonalat és egy nullát mutat: negatív. Pale kitettség: %s",
+  "entity.changedextras.artist.death.1": "*Sob* I'm sorry, I'll give you what I have.",
 
   "11 | Type": "Játékszabályok",
   "gamerule.changedextrasLatexEquipmentEnabled": "Latex lény felszerelése",
