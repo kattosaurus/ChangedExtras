@@ -370,6 +370,7 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         addWeighted(pool, templateManager, "biological_studies_facility/rooms/office_safe", 2);
         addWeighted(pool, templateManager, "biological_studies_facility/rooms/office_danger", 1);
         addWeighted(pool, templateManager, "biological_studies_facility/rooms/storage_dark", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/exp12_room", 1);
 
         return pool;
     }

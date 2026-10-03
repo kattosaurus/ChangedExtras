@@ -18,14 +18,14 @@ public class ModTransfurVariants {
             ChangedRegistry.TRANSFUR_VARIANT.createDeferred(ChangedExtras.MODID);
 
     public static final RegistryObject<TransfurVariant<ConeKatMaleEntity>> CONEKAT_MALE =
-            REGISTRY.register("conekat_male", () -> TransfurVariant.Builder.of(ModEntities.CONEKAT_MALE)
+            REGISTRY.register("conekat/male", () -> TransfurVariant.Builder.of(ModEntities.CONEKAT_MALE)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .addAbility(ChangedAbilities.SWITCH_GENDER)
                     .build());
 
     public static final RegistryObject<TransfurVariant<ConeKatFemaleEntity>> CONEKAT_FEMALE =
-            REGISTRY.register("conekat_female",
+            REGISTRY.register("conekat/female",
                     () -> TransfurVariant.Builder.of(ModEntities.CONEKAT_FEMALE)
                             .nightVision()
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
@@ -36,7 +36,7 @@ public class ModTransfurVariants {
             ChangedTransfurVariants.Gendered.registerPair(CONEKAT_MALE, CONEKAT_FEMALE);
 
     public static final RegistryObject<TransfurVariant<WhiteCatEntity>> WHITE_CAT =
-            REGISTRY.register("white_cat",
+            REGISTRY.register("latex_white_cat",
                     () -> TransfurVariant.Builder.of(ModEntities.WHITE_CAT)
                             .nightVision()
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
@@ -47,7 +47,7 @@ public class ModTransfurVariants {
                             .build());
 
     public static final RegistryObject<TransfurVariant<KattEntity>> KATT =
-            REGISTRY.register("katt",
+            REGISTRY.register("latex_katto",
                     () -> TransfurVariant.Builder.of(ModEntities.KATT)
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
@@ -62,7 +62,7 @@ public class ModTransfurVariants {
                             .build());
 
     public static final RegistryObject<TransfurVariant<JammerEntity>> JAMMER =
-            REGISTRY.register("jammer",
+            REGISTRY.register("latex_jammer",
                     () -> TransfurVariant.Builder.of(ModEntities.JAMMER)
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
@@ -91,7 +91,7 @@ public class ModTransfurVariants {
                             .build());
 
     public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardMaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE =
-            REGISTRY.register("fluffed_up_latex_snow_leopard_male",
+            REGISTRY.register("fluffed_up_latex_snow_leopard/male",
                     () -> TransfurVariant.Builder.of(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE)
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
@@ -102,7 +102,7 @@ public class ModTransfurVariants {
                             .build());
 
     public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardFemaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE =
-            REGISTRY.register("fluffed_up_latex_snow_leopard_female",
+            REGISTRY.register("fluffed_up_latex_snow_leopard/female",
                     () -> TransfurVariant.Builder.of(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE)
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
@@ -114,7 +114,7 @@ public class ModTransfurVariants {
             ChangedTransfurVariants.Gendered.registerPair(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE);
 
     public static final RegistryObject<TransfurVariant<ArtistEntity>> ARTIST =
-            REGISTRY.register("artist",
+            REGISTRY.register("latex_artist",
                     () -> TransfurVariant.Builder.of(ModEntities.ARTIST)
                             .nightVision()
                             .addAbility(ChangedExtrasAbilities.PAINT_BALL)

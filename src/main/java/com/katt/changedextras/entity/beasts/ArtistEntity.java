@@ -1,6 +1,7 @@
 package com.katt.changedextras.entity.beasts;
 
 import com.katt.changedextras.ChangedExtras;
+import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -36,7 +38,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-public class ArtistEntity extends AbstractWhiteCatEntity {
+public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatReaction {
     public static final int ATTACK_POSE_NONE = 0;
     public static final int ATTACK_POSE_BRUSH = 1;
     public static final int ATTACK_POSE_DASH = 2;
@@ -54,6 +56,24 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     private static final double PHASE_TWO_HEALTH = 600.0D;
     private static final int PHASE_ONE_RELOAD_TICKS = 32;
     private static final int PHASE_TWO_RELOAD_TICKS = 22;
+
+    // Dialogue
+    private static final String[] PAT_LINES = {
+            "entity.changedextras.artist.pat.1",
+            "entity.changedextras.artist.pat.2",
+            "entity.changedextras.artist.pat.3"
+    };
+    private static final String[] PHASE_TWO_LINES = {
+            "entity.changedextras.artist.phase_two.1",
+            "entity.changedextras.artist.phase_two.2",
+            "entity.changedextras.artist.phase_two.3"
+    };
+    private static final String[] SPAWN_LINES = {
+            "entity.changedextras.artist.spawn.1"
+    };
+    private static final double SPEECH_RANGE = 32.0D;
+    private static final int PAT_LINE_COOLDOWN_TICKS = 60;
+
     private static final EntityDataAccessor<Integer> ATTACK_POSE =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ATTACK_POSE_TICKS =
@@ -71,6 +91,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     private int dashTicks = 0;
     private int comboCooldown = 30;
     private int teleportCooldown = 90;
+    private int patLineCooldown = 0;
     private boolean secondPhaseTriggered = false;
 
     public ArtistEntity(EntityType<? extends ArtistEntity> type, Level level) {
@@ -123,6 +144,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData spawnData, CompoundTag dataTag) {
         SpawnGroupData finalData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         this.applyBossStats();
+        if (this.getUnderlyingPlayer() == null) {
+            this.speak(SPAWN_LINES);
+        }
         return finalData;
     }
 
@@ -188,6 +212,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
         }
         if (teleportCooldown > 0) {
             teleportCooldown--;
+        }
+        if (patLineCooldown > 0) {
+            patLineCooldown--;
         }
         if (this.getOpeningTicks() > 0) {
             int remainingOpeningTicks = this.getOpeningTicks() - 1;
@@ -273,6 +300,47 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
         dashCooldown = phaseTwo ? 8 + this.random.nextInt(6) : 30 + this.random.nextInt(15);
     }
 
+    // ------------------------------------------------------------------
+    // Dialogue
+    // ------------------------------------------------------------------
+
+    /**
+     * Sends a random line from the given translation keys to every player nearby,
+     * formatted like a chat message: <Artist> line
+     */
+    private void speak(String[] translationKeys) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        Component line = Component.translatable(translationKeys[this.random.nextInt(translationKeys.length)]);
+        Component message = Component.literal("<")
+                .append(this.getDisplayName())
+                .append(Component.literal("> "))
+                .append(line);
+        for (ServerPlayer nearby : serverLevel.getEntitiesOfClass(
+                ServerPlayer.class, this.getBoundingBox().inflate(SPEECH_RANGE))) {
+            nearby.sendSystemMessage(message);
+        }
+    }
+
+    /**
+     * Called by Changed Addon's PatFeatureHandle when the Artist gets patted.
+     * Only this method is overridden (not the Specific/Simple variants) so she speaks once per pat.
+     */
+    @Override
+    public void whenPattedReaction(LivingEntity patter, InteractionHand hand) {
+        if (this.level().isClientSide || this.getUnderlyingPlayer() != null) {
+            return;
+        }
+        if (patLineCooldown > 0) {
+            return;
+        }
+        patLineCooldown = PAT_LINE_COOLDOWN_TICKS;
+        this.speak(PAT_LINES);
+    }
+
+    // ------------------------------------------------------------------
+
     private void spawnInkPool(double x, double y, double z) {
         AreaEffectCloud cloud = new AreaEffectCloud(this.level(), x, y, z);
         cloud.setRadius(this.isPhaseTwo() ? 1.8F : 1.2F);
@@ -312,6 +380,8 @@ public class ArtistEntity extends AbstractWhiteCatEntity {
         }
         this.triggerAttackPose(ATTACK_POSE_TELEPORT, 14);
         this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.35F);
+        this.speak(PHASE_TWO_LINES);
+        patLineCooldown = PAT_LINE_COOLDOWN_TICKS;
     }
 
     private void applySecondPhasePressure(LivingEntity target) {
