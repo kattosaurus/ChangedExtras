@@ -1,8 +1,7 @@
 {
   "type": "minecraft:chest",
   "pools": [
-    {
-      "rolls": {
+    {\n      "rolls": {
         "type": "minecraft:uniform",
         "min": 5,
         "max": 9
@@ -61,11 +60,6 @@
         {
           "type": "minecraft:item",
           "name": "changed:gas_mask",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "name": "changed:exoskeleton",
           "weight": 10
         }
       ]

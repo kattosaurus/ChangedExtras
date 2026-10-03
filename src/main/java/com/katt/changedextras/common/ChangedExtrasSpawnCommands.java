@@ -9,7 +9,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
-import net.ltxprogrammer.changed.item.ExoskeletonItem;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -30,7 +29,6 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ChangedExtrasSpawnCommands {
-    private static final com.mojang.brigadier.exceptions.SimpleCommandExceptionType NO_EXOSKELETON = new com.mojang.brigadier.exceptions.SimpleCommandExceptionType(Component.literal("Target has no equipped exoskeleton."));
 
     private ChangedExtrasSpawnCommands() {
     }
@@ -74,11 +72,6 @@ public final class ChangedExtrasSpawnCommands {
                         .requires(source -> source.hasPermission(2))
                         .executes(context -> openScreen(context.getSource()))
                 )
-                .then(Commands.literal("visorstyle")
-                        .then(Commands.literal("hypnosis")
-                                .executes(context -> setOwnVisorStyle(context.getSource(), ExoskeletonVisorStyle.Pattern.PATTERN1)))
-                        .then(Commands.literal("default")
-                                .executes(context -> setOwnVisorStyle(context.getSource(), ExoskeletonVisorStyle.Pattern.PATTERN2))))
                 .then(Commands.literal("jammer")
                         .then(Commands.literal("vip")
                                 .executes(context -> toggleOwnJammerVip(context.getSource()))
@@ -114,21 +107,7 @@ public final class ChangedExtrasSpawnCommands {
                                                                 context.getSource(),
                                                                 EntityArgument.getPlayers(context, "targets"),
                                                                 false
-                                                        ))))))
-                        .then(Commands.literal("visorstyle")
-                                .then(Commands.argument("targets", EntityArgument.entities())
-                                        .then(Commands.literal("hypnosis")
-                                                .executes(context -> setVisorStyle(
-                                                        context.getSource(),
-                                                        EntityArgument.getEntities(context, "targets"),
-                                                        ExoskeletonVisorStyle.Pattern.PATTERN1
-                                                )))
-                                        .then(Commands.literal("default")
-                                                .executes(context -> setVisorStyle(
-                                                        context.getSource(),
-                                                        EntityArgument.getEntities(context, "targets"),
-                                                        ExoskeletonVisorStyle.Pattern.PATTERN2
-                                                ))))))
+                                                        )))))))
         );
     }
 
@@ -206,55 +185,6 @@ public final class ChangedExtrasSpawnCommands {
         List<LatexSpawnVariantEntry> entries = LatexSpawnRegistry.buildEntries(player.serverLevel().getServer());
         ChangedExtrasNetwork.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new OpenLatexSpawnControlScreenPacket(allowDaySpawns, entries));
         return 1;
-    }
-
-    private static int setOwnVisorStyle(CommandSourceStack source, ExoskeletonVisorStyle.Pattern pattern) throws CommandSyntaxException {
-        ServerPlayer player = source.getPlayerOrException();
-        boolean success = applyVisorStyle(player, pattern);
-        if (!success) {
-            throw NO_EXOSKELETON.create();
-        }
-
-        source.sendSuccess(() -> Component.literal("Exoskeleton visor style set to " + pattern.id() + "."), false);
-        return 1;
-    }
-
-    private static int setVisorStyle(CommandSourceStack source, Collection<? extends Entity> targets, ExoskeletonVisorStyle.Pattern pattern) throws CommandSyntaxException {
-        int count = 0;
-        for (Entity target : targets) {
-            if (applyVisorStyle(target, pattern)) {
-                count++;
-            }
-        }
-
-        if (count == 0) {
-            throw NO_EXOSKELETON.create();
-        }
-
-        int finalCount = count;
-        source.sendSuccess(() -> Component.literal("Exoskeleton visor style set to " + pattern.id() + " for " + finalCount + " target(s)."), true);
-        return count;
-    }
-
-    private static boolean applyVisorStyle(Entity target, ExoskeletonVisorStyle.Pattern pattern) {
-        if (target instanceof LivingEntity living) {
-            ItemStack stack = findEquippedExoskeleton(living);
-            if (!stack.isEmpty()) {
-                ExoskeletonVisorStyle.Data current = ExoskeletonVisorStyle.read(stack);
-                ExoskeletonVisorStyle.write(stack, new ExoskeletonVisorStyle.Data(pattern, current.primaryColor(), current.secondaryColor(), current.customColors()));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static ItemStack findEquippedExoskeleton(LivingEntity living) {
-        for (ItemStack itemStack : living.getArmorSlots()) {
-            if (itemStack.getItem() instanceof ExoskeletonItem) {
-                return itemStack;
-            }
-        }
-        return ItemStack.EMPTY;
     }
 
     private static int toggleOwnJammerVip(CommandSourceStack source) throws CommandSyntaxException {

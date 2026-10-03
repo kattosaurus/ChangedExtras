@@ -1,17 +1,18 @@
 {
   "entities": [
-    "changedextras:artist",
-    "changedextras:conekat_female",
-    "changedextras:conekat_male",
-    "changedextras:jammer",
-    "changedextras:katt",
-    "changedextras:white_cat",
+    "changedextras:latex_artist",
+    "changedextras:conekat/female",
+    "changedextras:conekat/male",
+    "changedextras:latex_jammer",
+    "changedextras:latex_katto",
+    "changedextras:latex_white_cat",
     "changedextras:latex_hazzy",
     "changedextras:scp_009",
-    "changedextras:fluffed_up_latex_snow_leopard_male",
-    "changedextras:fluffed_up_latex_snow_leopard_female",
+    "changedextras:fluffed_up_latex_snow_leopard/male",
+    "changedextras:fluffed_up_latex_snow_leopard/female",
     "changedextras:furred_latex_tiger_shark",
-    "changedextras:latex_catte"
+    "changedextras:latex_catte",
+    "changedextras:proto_bee"
   ],
   "slots": [
     "changed:body",

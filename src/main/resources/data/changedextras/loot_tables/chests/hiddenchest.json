@@ -2,63 +2,58 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 4,
-      "entries": [
+      "type": "minecraft:item",
+      "name": "minecraft:netherite_scrap",
+      "weight": 1,
+      "functions": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:netherite_scrap",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 2,
-                "max": 3
-              }
-            }
-            ]
-        },
+          "function": "minecraft:set_count",
+          "count": {
+            "min": 2,
+            "max": 3
+          }
+        }
+      ]
+    },
+    {
+      "type": "minecraft:item",
+      "name": "minecraft:diamond",
+      "weight": 4,
+      "functions": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 15,
-                "max": 35
-              }
-            }
-        ]
-        },
+          "function": "minecraft:set_count",
+          "count": {
+            "min": 5,
+            "max": 20
+          }
+        }
+      ]
+    },
+    {
+      "type": "minecraft:item",
+      "name": "minecraft:iron_ingot",
+      "weight": 4,
+      "functions": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_ingot",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 15,
-                "max": 64
-              }
-            }
-          ]
-        },
+          "function": "minecraft:set_count",
+          "count": {
+            "min": 15,
+            "max": 32
+          }
+        }
+      ]
+    },
+    {
+      "type": "minecraft:item",
+      "name": "minecraft:gold_ingot",
+      "weight": 3,
+      "functions": [
         {
-          "type": "minecraft:item",
-          "name": "minecraft:gold_ingot",
-          "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 3,
-                "max": 20
-              }
-            }
-          ]
+          "function": "minecraft:set_count",
+          "count": {
+            "min": 3,
+            "max": 20
+          }
         }
       ]
     }

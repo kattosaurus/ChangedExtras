@@ -40,6 +40,8 @@ import com.katt.changedextras.network.DiscoveryNetwork;
 import com.mojang.logging.LogUtils;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
+import net.ltxprogrammer.changed.init.ChangedTabs;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.init.ChangedEntities;
@@ -223,6 +225,8 @@ public class ChangedExtras {
             ITEMS.register("sterile_swab", () -> new SterileSwabItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> USED_SWAB =
             ITEMS.register("used_swab", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> FLASK_OF_TEARS =
+            ITEMS.register("flask_of_tears", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> VIAL =
             ITEMS.register("vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> USED_VIAL =
@@ -289,7 +293,6 @@ public class ChangedExtras {
     public static final RegistryObject<Item> PILL_BOTTLE =
             ITEMS.register("pill_bottle", () -> new PillBottleItem(new Item.Properties()));
 
-    // The Katt Syringe (Usable by everyone)
     public static final RegistryObject<LatexSyringe> KATT_SYRINGE =
             ITEMS.register("katt_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
@@ -342,31 +345,37 @@ public class ChangedExtras {
             ITEMS.register("latex_catte_spawn_egg",
                     () -> new ForgeSpawnEggItem(ModEntities.LATEX_CATTE, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY, new Item.Properties()));
 
-    public static final RegistryObject<CreativeModeTab> SYRINGES_TAB =
-            CREATIVE_MODE_TABS.register("changedextras_syringes", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.changedextras.changedextras_syringes"))
-                    .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> createVariantSyringeStack(CONEKAT_MALE_SYRINGE.get(), "conekat_male"))
+    public static final RegistryObject<CreativeModeTab> ITEMS_TAB =
+            CREATIVE_MODE_TABS.register("changedextras_items", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.changedextras.changedextras_items"))
+                    .icon(() -> createVariantSyringeStack(FLASK_OF_TEARS.get(), "flask_of_tears"))
                     .displayItems((parameters, output) -> {
-                        output.accept(createVariantSyringeStack(CONEKAT_MALE_SYRINGE.get(), "conekat_male"));
-                        output.accept(createVariantSyringeStack(CONEKAT_FEMALE_SYRINGE.get(), "conekat_female"));
-                        output.accept(createVariantSyringeStack(WHITE_CAT_SYRINGE.get(), "white_cat"));
-                        output.accept(createVariantSyringeStack(ARTIST_SYRINGE.get(), "artist"));
-                        output.accept(createVariantSyringeStack(PROTO_BEE_SYRINGE.get(), "proto_bee"));
-                        output.accept(createVariantSyringeStack(FURRED_LATEX_TIGER_SHARK_SYRINGE.get(), "furred_latex_tiger_shark"));
-                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_male"));
-                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard_female"));
-                        output.accept(createVariantSyringeStack(SCP_009_SYRINGE.get(), "scp_009"));
-                        output.accept(createVariantSyringeStack(LATEX_HAZZY_SYRINGE.get(), "latex_hazzy"));
-                        output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "katt"));
-                        output.accept(createVariantSyringeStack(LATEX_CATTE_SYRINGE.get(), "latex_catte"));
+                        output.accept(FLASK_OF_TEARS.get());
+                        output.accept(THE_PALETTE.get());
+                        output.accept(ICECREAM_ITEM.get());
+                        output.accept(ICECREAM_BLOCK_ITEM.get());
+                        output.accept(JAMMER_HEADPHONES.get());
+                        output.accept(CATTE_BUCKET.get());
+                        output.accept(THE_PALETTE.get());
+                        output.accept(ARTIST_SPAWN_EGG.get());
+                        output.accept(STERILE_SWAB.get());
+                        output.accept(USED_SWAB.get());
+                        output.accept(VIAL.get());
+                        output.accept(USED_VIAL.get());
+                        output.accept(PROCESSED_VIAL.get());
+                        output.accept(PALE_TEST.get());
+                        output.accept(PILL_BOTTLE.get());
+                        output.accept(HYDROXYUREA.get());
+                        output.accept(CRIZANLIZUMAB.get());
+                        output.accept(VOXELOTOR.get());
+                        output.accept(ARTIST_BRUSH.get());
                     })
                     .build());
 
     public static final RegistryObject<CreativeModeTab> MOBS_TAB =
             CREATIVE_MODE_TABS.register("changedextras_mobs", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.changedextras.changedextras_mobs"))
-                    .withTabsBefore(SYRINGES_TAB.getKey())
+                    .withTabsBefore(ITEMS_TAB.getKey())
                     .icon(() -> CONEKAT_MALE_SPAWN_EGG.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(CONEKAT_MALE_SPAWN_EGG.get());
@@ -385,25 +394,18 @@ public class ChangedExtras {
                         output.accept(LATEX_CATTE_SPAWN_EGG.get());
                         output.accept(JAMMER_HEADPHONES.get());
                         output.accept(CATTE_BUCKET.get());
-                    })
-                    .build());
-
-    public static final RegistryObject<CreativeModeTab> MEDICINE_TAB =
-            CREATIVE_MODE_TABS.register("changedextras_medicine", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.changedextras.changedextras_medicine"))
-                    .withTabsBefore(MOBS_TAB.getKey())
-                    .icon(() -> PILL_BOTTLE.get().getDefaultInstance())
-                    .displayItems((parameters, output) -> {
-                        output.accept(STERILE_SWAB.get());
-                        output.accept(USED_SWAB.get());
-                        output.accept(VIAL.get());
-                        output.accept(USED_VIAL.get());
-                        output.accept(PROCESSED_VIAL.get());
-                        output.accept(PALE_TEST.get());
-                        output.accept(PILL_BOTTLE.get());
-                        output.accept(HYDROXYUREA.get());
-                        output.accept(CRIZANLIZUMAB.get());
-                        output.accept(VOXELOTOR.get());
+                        output.accept(createVariantSyringeStack(CONEKAT_MALE_SYRINGE.get(), "conekat/male"));
+                        output.accept(createVariantSyringeStack(CONEKAT_FEMALE_SYRINGE.get(), "conekat/female"));
+                        output.accept(createVariantSyringeStack(WHITE_CAT_SYRINGE.get(), "latex_white_cat"));
+                        output.accept(createVariantSyringeStack(ARTIST_SYRINGE.get(), "latex_artist"));
+                        output.accept(createVariantSyringeStack(PROTO_BEE_SYRINGE.get(), "proto_bee"));
+                        output.accept(createVariantSyringeStack(FURRED_LATEX_TIGER_SHARK_SYRINGE.get(), "furred_latex_tiger_shark"));
+                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard/male"));
+                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard/female"));
+                        output.accept(createVariantSyringeStack(SCP_009_SYRINGE.get(), "scp_009"));
+                        output.accept(createVariantSyringeStack(LATEX_HAZZY_SYRINGE.get(), "latex_hazzy"));
+                        output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "latex_katto"));
+                        output.accept(createVariantSyringeStack(LATEX_CATTE_SYRINGE.get(), "latex_catte"));
                     })
                     .build());
 
@@ -440,6 +442,8 @@ public class ChangedExtras {
         ChangedExtrasNetwork.register();
         event.enqueueWork(ChangedExtras::registerTransfurColors);
         event.enqueueWork(ChangedExtrasSpawnController::registerSpawnPlacements);
+        ChangedExtras.LOGGER.info("opposite of male: {}",
+                ChangedTransfurVariants.Gendered.getOpposite(ModTransfurVariants.CONEKAT_MALE.get()));
         LOGGER.info("[Changed Extras] Loaded in!");
     }
 
