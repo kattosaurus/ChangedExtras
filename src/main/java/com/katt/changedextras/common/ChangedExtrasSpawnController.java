@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
 
+@SuppressWarnings("deprecation")
 public final class ChangedExtrasSpawnController {
     private ChangedExtrasSpawnController() {
     }

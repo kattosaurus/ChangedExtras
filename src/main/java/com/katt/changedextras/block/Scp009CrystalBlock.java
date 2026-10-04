@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 
+@SuppressWarnings("deprecation")
 public class Scp009CrystalBlock extends Block {
     private static final int CONVERSION_RADIUS = 4;
     private static final int CONVERSION_INTERVAL_TICKS = 20;

@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+@SuppressWarnings("deprecation")
 public class JammerHeadphonesBlock extends Block {
     private static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 5.0D, 14.0D, 6.4D, 14.0D);
 

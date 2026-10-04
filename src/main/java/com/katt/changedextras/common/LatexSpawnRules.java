@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public final class LatexSpawnRules {
     private static volatile Map<EntityType<?>, ResourceLocation> entityTypeToVariant = Map.of();
 

@@ -17,6 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@SuppressWarnings("deprecation")
 public final class LatexCuddleHandler {
     private static final String CUDDLE_SESSION_TAG = "changedextras.cuddle_session_checked";
     private static final String CUDDLE_NOTICE_TAG = "changedextras.cuddle_transfur_notice";

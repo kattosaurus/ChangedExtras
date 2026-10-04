@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@SuppressWarnings("deprecation")
 public final class LatexAggroHandler {
     private static final int GRUDGE_MEMORY_TICKS = 20 * 60 * 20; // 20 minutes of memory for killing an ally
     private static final double ALLY_ALERT_RADIUS = 24.0D;

@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "changedextras:fluffed_up_latex_snow_leopard_female",
-    "changedextras:fluffed_up_latex_snow_leopard_male"
+    "changedextras:fluffed_up_latex_snow_leopard/female",
+    "changedextras:fluffed_up_latex_snow_leopard/male"
   ]
 }

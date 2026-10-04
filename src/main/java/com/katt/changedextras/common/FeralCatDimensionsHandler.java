@@ -11,6 +11,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = "changedextras")
+@SuppressWarnings("removal")
 public class FeralCatDimensionsHandler {
 
     // Vanilla cat hitbox is 0.6 x 0.7

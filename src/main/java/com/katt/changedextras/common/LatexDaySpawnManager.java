@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@SuppressWarnings("deprecation")
 public final class LatexDaySpawnManager {
     private static final int SPAWN_INTERVAL = 20;
     private static final int MAX_NEARBY_LATEX = 14;

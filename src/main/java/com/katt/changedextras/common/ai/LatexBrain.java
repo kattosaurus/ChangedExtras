@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("deprecation")
 public class LatexBrain {
     private static final TagKey<net.minecraft.world.entity.EntityType<?>> CHANGED_HUMANOIDS =
             TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("changed", "humanoids"));

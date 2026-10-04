@@ -16,6 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = "changedextras")
+@SuppressWarnings("removal")
 public class FeralCatEvents {
 
     @SubscribeEvent

@@ -1,12 +1,12 @@
 {
   "replace": false,
   "values": [
-    "changedextras:artist",
-    "changedextras:conekat_female",
-    "changedextras:conekat_male",
-    "changedextras:katt",
+    "changedextras:latex_artist",
+    "changedextras:conekat/female",
+    "changedextras:conekat/male",
+    "changedextras:latex_katto",
     "changedextras:latex_hazzy",
-    "changedextras:white_cat",
+    "changedextras:latex_white_cat",
     "changedextras:latex_catte"
   ]
 }

@@ -9,6 +9,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+@SuppressWarnings("deprecation")
 public class CatteBucketBlock extends Block {
     // Usamos Shapes.box en lugar de VoxelShapes.box
     private static final VoxelShape SHAPE = Shapes.box(

@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID)
+@SuppressWarnings("deprecation")
 public final class KattoReplicationHandler {
     private KattoReplicationHandler() {
     }

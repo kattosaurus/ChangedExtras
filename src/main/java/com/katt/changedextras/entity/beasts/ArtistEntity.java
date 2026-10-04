@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
@@ -538,6 +539,11 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     public void stopSeenByPlayer(ServerPlayer player) {
         super.stopSeenByPlayer(player);
         bossEvent.removePlayer(player);
+    }
+
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
+        return ResourceLocation.fromNamespaceAndPath("changedextras", "entities/latex_artist");
     }
 
     @Override
