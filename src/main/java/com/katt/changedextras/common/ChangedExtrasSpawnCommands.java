@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@SuppressWarnings("deprecation")
 public final class ChangedExtrasSpawnCommands {
 
     private ChangedExtrasSpawnCommands() {

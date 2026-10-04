@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("deprecation")
 public class LatexBrain {
     private static final TagKey<net.minecraft.world.entity.EntityType<?>> CHANGED_HUMANOIDS =
             TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("changed", "humanoids"));
@@ -2720,6 +2721,10 @@ public class LatexBrain {
             return true;
         }
 
+        if (LatexAiUtil.isOrganicLatex(mob)) {
+            return mind.isRetaliationTarget(mob, target);
+        }
+
         if (target instanceof ChangedEntity otherLatex) {
             if (LatexAiUtil.isSameLatexType(mob, otherLatex)) {
                 return false;
@@ -2755,11 +2760,11 @@ public class LatexBrain {
             return LatexAiUtil.areHostileLatexFactions(mob, player) || mind.isRetaliationTarget(mob, player);
         }
 
-        if (target instanceof Villager) {
+        if (isHumanoidTransfurTarget(target)) {
             return true;
         }
 
-        return isHumanoidTransfurTarget(target);
+        return mind.isRetaliationTarget(mob, target);
     }
 
     private boolean isValidVisibleTarget(ChangedEntity mob, LivingEntity target, LatexMind mind) {

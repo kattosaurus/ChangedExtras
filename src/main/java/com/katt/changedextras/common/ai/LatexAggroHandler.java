@@ -6,9 +6,12 @@ import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.common.inventory.LatexInventory;
 import com.katt.changedextras.common.inventory.LatexInventoryProvider;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@SuppressWarnings("deprecation")
 public final class LatexAggroHandler {
     private static final int GRUDGE_MEMORY_TICKS = 20 * 60 * 20; // 20 minutes of memory for killing an ally
     private static final double ALLY_ALERT_RADIUS = 24.0D;
@@ -60,6 +64,38 @@ public final class LatexAggroHandler {
 
         // Alert nearby same-faction allies to assist
         alertNearbyAllies(mob, attacker);
+    }
+
+    @SubscribeEvent
+    public static void onLivingDamage(LivingDamageEvent event) {
+        LivingEntity victim = event.getEntity();
+        if (victim.level().isClientSide()) {
+            return;
+        }
+
+        if (event.getSource().getEntity() instanceof ChangedEntity latexMob) {
+            if (LatexAiUtil.isTransfurrable(victim)) {
+                TransfurVariant<?> variant = latexMob.getSelfVariant();
+                if (variant == null) {
+                    variant = TransfurVariant.findEntityTransfurVariant(latexMob);
+                }
+                if (variant == null) {
+                    return;
+                }
+
+                // If the damage is fatal, cancel normal death so the victim is transfurred instead of just killed
+                if (event.getAmount() >= victim.getHealth()) {
+                    if (event.isCancelable()) {
+                        event.setCanceled(true);
+                    }
+                    event.setAmount(0.0F);
+                    if (victim instanceof Player player) {
+                        player.setHealth(Math.max(1.0F, player.getMaxHealth() * 0.5F));
+                    }
+                    ProcessTransfur.transfur(victim, victim.level(), variant, false, latexMob.getReplicateContext());
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -134,6 +170,13 @@ public final class LatexAggroHandler {
     private static boolean isValidRetaliationTarget(LivingEntity victim, LivingEntity attacker) {
         if (!attacker.isAlive() || attacker == victim) {
             return false;
+        }
+
+        if (LatexAiUtil.isOrganicLatex(victim)) {
+            if (attacker instanceof Player player) {
+                return !player.isCreative() && !player.isSpectator();
+            }
+            return true;
         }
 
         // Same faction allies don't retaliate against each other unless hostile factions

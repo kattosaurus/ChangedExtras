@@ -20,6 +20,7 @@ import java.util.EnumSet;
  *
  * Sneaking hides the nametag, so a sneaking player is invisible to this goal.
  */
+@SuppressWarnings("deprecation")
 public class MineTowardPlayerGoal extends Goal {
 
     // ── Tuning constants ──────────────────────────────────────────────────────

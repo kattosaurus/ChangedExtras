@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class LatexInventory extends ItemStackHandler {
 
     public static final int HOTBAR_SLOTS = 9;

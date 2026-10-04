@@ -18,6 +18,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("deprecation")
 public class Scp009WaterBlock extends LiquidBlock {
     private static final String LAST_PROCESSED_TICK_TAG = "changedextras_scp009_last_tick";
 

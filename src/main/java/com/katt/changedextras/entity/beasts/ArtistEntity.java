@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
@@ -48,14 +49,14 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
     private static final double MIN_DASH_RANGE_SQR = 9.0D;
     private static final double MAX_DASH_RANGE_SQR = 256.0D;
-    private static final double PHASE_ONE_HEALTH = 800.0D;
-    private static final double PHASE_ONE_SPEED = 0.36D;
-    private static final double PHASE_TWO_SPEED = 0.58D;
+    private static final double PHASE_ONE_HEALTH = 620.0D;
+    private static final double PHASE_ONE_SPEED = 0.32D;
+    private static final double PHASE_TWO_SPEED = 0.46D;
     private static final double PHASE_ONE_DASH_SPEED = 1.45D;
-    private static final double PHASE_TWO_DASH_SPEED = 2.45D;
-    private static final double PHASE_TWO_HEALTH = 600.0D;
-    private static final int PHASE_ONE_RELOAD_TICKS = 32;
-    private static final int PHASE_TWO_RELOAD_TICKS = 22;
+    private static final double PHASE_TWO_DASH_SPEED = 1.85D;
+    private static final double PHASE_TWO_HEALTH = 460.0D;
+    private static final int PHASE_ONE_RELOAD_TICKS = 36;
+    private static final int PHASE_TWO_RELOAD_TICKS = 34;
 
     // Dialogue
     private static final String[] PAT_LINES = {
@@ -70,6 +71,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     };
     private static final String[] SPAWN_LINES = {
             "entity.changedextras.artist.spawn.1"
+    };
+    private static final String[] DEATH_LINES = {
+            "entity.changedextras.artist.death.1"
     };
     private static final double SPEECH_RANGE = 32.0D;
     private static final int PAT_LINE_COOLDOWN_TICKS = 60;
@@ -124,7 +128,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         }
         var attackDamage = this.getAttribute(Attributes.ATTACK_DAMAGE);
         if (attackDamage != null) {
-            attackDamage.setBaseValue(14.0D);
+            attackDamage.setBaseValue(secondPhaseTriggered ? 10.0D : 11.0D);
         }
         var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
         if (speed != null) {
@@ -173,7 +177,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         boolean hit = super.doHurtTarget(target);
         if (hit && !this.level().isClientSide) {
             if (target instanceof Player) {
-                float lifesteal = (float)Math.max(2.0D, this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.65D);
+                float lifesteal = (float)Math.max(1.0D, this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.35D);
                 this.heal(lifesteal);
             }
             if (target instanceof LivingEntity living) {
@@ -262,7 +266,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
                 spawnInkPool(this.getX(), this.getY(), this.getZ());
             }
 
-            if (phaseTwo && this.distanceToSqr(target) < 9.0D && this.tickCount % 6 == 0) {
+            if (phaseTwo && this.distanceToSqr(target) < 9.0D && this.tickCount % 8 == 0) {
                 this.doHurtTarget(target);
             }
             if (dashTicks <= 0) {
@@ -286,7 +290,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
         double distanceSqr = this.distanceToSqr(target);
         if (distanceSqr < MIN_DASH_RANGE_SQR || distanceSqr > MAX_DASH_RANGE_SQR || !this.hasLineOfSight(target)) {
-            dashCooldown = phaseTwo ? 4 : 12;
+            dashCooldown = phaseTwo ? 8 : 14;
             return;
         }
 
@@ -296,8 +300,8 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         this.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.1F, 0.6F + this.random.nextFloat() * 0.25F);
         this.hasImpulse = true;
         this.triggerAttackPose(ATTACK_POSE_DASH, phaseTwo ? 12 : 9);
-        dashTicks = phaseTwo ? 14 : 8;
-        dashCooldown = phaseTwo ? 8 + this.random.nextInt(6) : 30 + this.random.nextInt(15);
+        dashTicks = phaseTwo ? 12 : 8;
+        dashCooldown = phaseTwo ? 18 + this.random.nextInt(10) : 36 + this.random.nextInt(16);
     }
 
     // ------------------------------------------------------------------
@@ -370,10 +374,10 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         secondPhaseTriggered = true;
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(PHASE_TWO_HEALTH);
         this.setHealth((float)PHASE_TWO_HEALTH);
-        dashCooldown = 20;
+        dashCooldown = 35;
         dashTicks = 0;
-        comboCooldown = 15;
-        teleportCooldown = 20;
+        comboCooldown = 35;
+        teleportCooldown = 45;
         this.entityData.set(OPENING_TICKS, 0);
         if (target != null) {
             this.teleportAroundTarget(target, 1.6D);
@@ -388,7 +392,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         double desiredHeight = target.getY() + 0.9D;
         double verticalDelta = desiredHeight - this.getY();
         Vec3 movement = this.getDeltaMovement();
-        double verticalSpeed = Math.max(-0.12D, Math.min(0.12D, verticalDelta * 0.08D));
+        double verticalSpeed = Math.max(-0.08D, Math.min(0.08D, verticalDelta * 0.05D));
         this.setDeltaMovement(movement.x, verticalSpeed, movement.z);
         this.fallDistance = 0.0F;
     }
@@ -406,8 +410,8 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
         boolean teleported = this.teleportAroundTarget(target, -1.6D);
         if (teleported) {
-            teleportCooldown = 40 + this.random.nextInt(15);
-            dashCooldown = 6;
+            teleportCooldown = 70 + this.random.nextInt(25);
+            dashCooldown = 14;
             this.triggerAttackPose(ATTACK_POSE_TELEPORT, 10);
             this.beginPaintReload(14);
             this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.2F);
@@ -422,12 +426,12 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
         Vec3 towardTarget = target.position().subtract(this.position()).normalize();
         Vec3 sideways = new Vec3(-towardTarget.z, 0.0D, towardTarget.x).scale(this.random.nextBoolean() ? 0.9D : -0.9D);
-        Vec3 comboMotion = towardTarget.scale(1.4D).add(sideways);
-        this.setDeltaMovement(comboMotion.x, 0.08D, comboMotion.z);
+        Vec3 comboMotion = towardTarget.scale(1.05D).add(sideways.scale(0.75D));
+        this.setDeltaMovement(comboMotion.x, 0.05D, comboMotion.z);
         this.hasImpulse = true;
         this.triggerAttackPose(ATTACK_POSE_COMBO, 12);
-        dashTicks = 8;
-        comboCooldown = 24 + this.random.nextInt(10);
+        dashTicks = 6;
+        comboCooldown = 45 + this.random.nextInt(18);
         spawnInkPool(target.getX(), target.getY(), target.getZ());
         this.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK, 1.0F, 0.85F + this.random.nextFloat() * 0.3F);
         return true;
@@ -472,6 +476,14 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             return false;
         }
         return super.hurt(source, amount);
+    }
+
+    @Override
+    public void die(DamageSource source) {
+        if (!this.level().isClientSide && this.getUnderlyingPlayer() == null) {
+            this.speak(DEATH_LINES);
+        }
+        super.die(source);
     }
 
     @Override
@@ -527,6 +539,11 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     public void stopSeenByPlayer(ServerPlayer player) {
         super.stopSeenByPlayer(player);
         bossEvent.removePlayer(player);
+    }
+
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
+        return ResourceLocation.fromNamespaceAndPath("changedextras", "entities/latex_artist");
     }
 
     @Override

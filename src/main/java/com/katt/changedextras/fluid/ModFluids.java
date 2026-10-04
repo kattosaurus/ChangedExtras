@@ -44,12 +44,12 @@ public class ModFluids {
                     consumer.accept(new IClientFluidTypeExtensions() {
                         @Override
                         public ResourceLocation getStillTexture() {
-                            return new ResourceLocation("minecraft", "block/water_still");
+                            return ResourceLocation.fromNamespaceAndPath("minecraft", "block/water_still");
                         }
 
                         @Override
                         public ResourceLocation getFlowingTexture() {
-                            return new ResourceLocation("minecraft", "block/water_flow");
+                            return ResourceLocation.fromNamespaceAndPath("minecraft", "block/water_flow");
                         }
 
                         @Override

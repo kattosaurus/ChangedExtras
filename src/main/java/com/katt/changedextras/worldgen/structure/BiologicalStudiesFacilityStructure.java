@@ -152,9 +152,11 @@ public class BiologicalStudiesFacilityStructure extends Structure {
             }
         }
 
+        List<WeightedTemplate> intersectionPool = buildIntersectionPool(templateManager);
         List<WeightedTemplate> corridorPool = buildCorridorPool(templateManager);
         List<WeightedTemplate> roomPool = buildRoomPool(templateManager);
         List<WeightedTemplate> capPool = buildCapPool(templateManager);
+        List<WeightedTemplate> wallPool = buildWallPool(templateManager);
 
         int maxPieces = Math.max(MIN_PIECES, Config.biologicalFacilityMaxRooms);
         int targetPieceCount = random.nextIntBetweenInclusive(MIN_PIECES, maxPieces);
@@ -162,24 +164,53 @@ public class BiologicalStudiesFacilityStructure extends Structure {
 
         List<OpenGluConnection> terminalDeadEnds = new ArrayList<>();
 
+        if (!openGluConnections.isEmpty()) {
+            OpenGluConnection entranceConnection = openGluConnections.remove(0);
+            PlacementResult placement = tryPlacePiece(builder, templateManager, entranceConnection, intersectionPool, placedBoxes, openGluConnections, minBuildHeight, random, true, entranceOrigin, true);
+            if (placement == PlacementResult.PLACED) {
+                pieceCount++;
+            } else if (placement == PlacementResult.RANGE_BLOCKED
+                    && tryPlacePiece(builder, templateManager, entranceConnection, wallPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, false) == PlacementResult.PLACED) {
+                pieceCount++;
+            } else {
+                terminalDeadEnds.add(entranceConnection);
+            }
+        }
+
         while (!openGluConnections.isEmpty()
                 && pieceCount < targetPieceCount
                 && pieceCount + openGluConnections.size() + terminalDeadEnds.size() < maxPieces) {
             OpenGluConnection currentGlu = openGluConnections.remove(0);
 
             boolean tryRoomFirst = currentGlu.depth > 1 && !openGluConnections.isEmpty() && random.nextFloat() < 0.25F;
-            boolean placed = false;
+            PlacementResult placement = PlacementResult.FAILED;
+
+            if (currentGlu.depth == 0) {
+                placement = tryPlacePiece(builder, templateManager, currentGlu, intersectionPool, placedBoxes, openGluConnections, minBuildHeight, random, true, entranceOrigin, true);
+                if (placement == PlacementResult.PLACED) {
+                    pieceCount++;
+                } else if (placement == PlacementResult.RANGE_BLOCKED
+                        && tryPlacePiece(builder, templateManager, currentGlu, wallPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, false) == PlacementResult.PLACED) {
+                    pieceCount++;
+                } else {
+                    terminalDeadEnds.add(currentGlu);
+                }
+                continue;
+            }
 
             if (tryRoomFirst) {
-                placed = tryPlacePiece(builder, templateManager, currentGlu, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin);
-                if (placed) {
+                placement = tryPlacePiece(builder, templateManager, currentGlu, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, true);
+                if (placement == PlacementResult.PLACED) {
                     pieceCount++;
                     continue;
                 }
             }
 
-            placed = tryPlacePiece(builder, templateManager, currentGlu, corridorPool, placedBoxes, openGluConnections, minBuildHeight, random, true, entranceOrigin);
-            if (placed) {
+            placement = tryPlacePiece(builder, templateManager, currentGlu, corridorPool, placedBoxes, openGluConnections, minBuildHeight, random, true, entranceOrigin, true);
+            if (placement == PlacementResult.PLACED) {
+                pieceCount++;
+            } else if (placement == PlacementResult.RANGE_BLOCKED
+                    && tryPlacePiece(builder, templateManager, currentGlu, wallPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, false) == PlacementResult.PLACED) {
                 pieceCount++;
             } else {
                 terminalDeadEnds.add(currentGlu);
@@ -194,12 +225,16 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         int failedCaps = 0;
 
         for (OpenGluConnection deadEnd : allRemainingEnds) {
-            boolean placedCap = tryPlacePiece(builder, templateManager, deadEnd, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin);
-            if (!placedCap) {
-                placedCap = tryPlacePiece(builder, templateManager, deadEnd, capPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin);
+            PlacementResult roomPlacement = tryPlacePiece(builder, templateManager, deadEnd, roomPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, true);
+            PlacementResult capPlacement = PlacementResult.FAILED;
+            if (roomPlacement != PlacementResult.PLACED) {
+                capPlacement = tryPlacePiece(builder, templateManager, deadEnd, capPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, true);
             }
 
-            if (placedCap) {
+            if (roomPlacement == PlacementResult.PLACED || capPlacement == PlacementResult.PLACED) {
+                pieceCount++;
+            } else if ((roomPlacement == PlacementResult.RANGE_BLOCKED || capPlacement == PlacementResult.RANGE_BLOCKED)
+                    && tryPlacePiece(builder, templateManager, deadEnd, wallPool, placedBoxes, openGluConnections, minBuildHeight, random, false, entranceOrigin, false) == PlacementResult.PLACED) {
                 pieceCount++;
             } else {
                 failedCaps++;
@@ -241,13 +276,14 @@ public class BiologicalStudiesFacilityStructure extends Structure {
                 && box.maxZ() <= startOrigin.getZ() + radius;
     }
 
-    private static boolean tryPlacePiece(StructurePiecesBuilder builder, StructureTemplateManager templateManager,
-                                         OpenGluConnection currentGlu, List<WeightedTemplate> pool,
-                                         List<BoundingBox> placedBoxes, List<OpenGluConnection> openGluConnections,
-                                         int minBuildHeight, RandomSource random, boolean addOpenConnectors,
-                                         BlockPos startOrigin) {
+    private static PlacementResult tryPlacePiece(StructurePiecesBuilder builder, StructureTemplateManager templateManager,
+                                                 OpenGluConnection currentGlu, List<WeightedTemplate> pool,
+                                                 List<BoundingBox> placedBoxes, List<OpenGluConnection> openGluConnections,
+                                                 int minBuildHeight, RandomSource random, boolean addOpenConnectors,
+                                                 BlockPos startOrigin, boolean enforceRange) {
         Direction targetFacing = currentGlu.worldFront.getOpposite();
         BlockPos targetConnectPos = currentGlu.worldPos.relative(currentGlu.worldFront);
+        boolean rangeBlocked = false;
 
         List<WeightedTemplate> candidates = new ArrayList<>(pool);
         Collections.shuffle(candidates, new java.util.Random(random.nextLong()));
@@ -270,7 +306,8 @@ public class BiologicalStudiesFacilityStructure extends Structure {
                     continue;
                 }
 
-                if (!isWithinRange(candidateBox, startOrigin)) {
+                if (enforceRange && !isWithinRange(candidateBox, startOrigin)) {
+                    rangeBlocked = true;
                     continue;
                 }
 
@@ -301,12 +338,12 @@ public class BiologicalStudiesFacilityStructure extends Structure {
                         }
                     }
 
-                    return true;
+                    return PlacementResult.PLACED;
                 }
             }
         }
 
-        return false;
+        return rangeBlocked ? PlacementResult.RANGE_BLOCKED : PlacementResult.FAILED;
     }
 
     private static boolean isSameDoorway(GluData a, GluData b) {
@@ -345,6 +382,15 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         return gluList;
     }
 
+    private static List<WeightedTemplate> buildIntersectionPool(StructureTemplateManager templateManager) {
+        List<WeightedTemplate> pool = new ArrayList<>();
+
+        addWeighted(pool, templateManager, "biological_studies_facility/intersections/corridor_turn", 8);
+        addWeighted(pool, templateManager, "biological_studies_facility/intersections/corridor_circle", 4);
+
+        return pool;
+    }
+
     private static List<WeightedTemplate> buildCorridorPool(StructureTemplateManager templateManager) {
         List<WeightedTemplate> pool = new ArrayList<>();
 
@@ -379,6 +425,14 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         List<WeightedTemplate> pool = new ArrayList<>();
 
         addWeighted(pool, templateManager, "biological_studies_facility/end_cap", 1, false);
+
+        return pool;
+    }
+
+    private static List<WeightedTemplate> buildWallPool(StructureTemplateManager templateManager) {
+        List<WeightedTemplate> pool = new ArrayList<>();
+
+        addWeighted(pool, templateManager, "biological_studies_facility/walls/wall_1", 1);
 
         return pool;
     }
@@ -427,4 +481,10 @@ public class BiologicalStudiesFacilityStructure extends Structure {
     private record WeightedTemplate(ResourceLocation templateId, Vec3i size, List<GluData> gluBlocks) {}
 
     private record OpenGluConnection(BlockPos worldPos, Direction worldFront, GluBlockEntity.JointType jointType, int size, int doorId, int depth) {}
+
+    private enum PlacementResult {
+        PLACED,
+        RANGE_BLOCKED,
+        FAILED
+    }
 }

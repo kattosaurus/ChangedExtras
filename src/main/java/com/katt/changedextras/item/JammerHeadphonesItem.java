@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+@SuppressWarnings("deprecation")
 public class JammerHeadphonesItem extends ClothingItem {
     private static final String TIMER_TAG = "changedextras.jammer_headphones_ticks";
     private static final int TRANSFUR_TICKS = 200;

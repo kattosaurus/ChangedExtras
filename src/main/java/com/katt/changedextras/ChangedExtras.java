@@ -97,6 +97,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 @Mod(ChangedExtras.MODID)
+@SuppressWarnings("deprecation")
 public class ChangedExtras {
 
     private static final String ICECREAM_STREAK_TAG = "changedextras.icecream_streak";
@@ -594,25 +595,24 @@ public class ChangedExtras {
     @SubscribeEvent
     public void onItemUseStart(LivingEntityUseItemEvent.Start event) {
         ItemStack stack = event.getItem();
-
-        // Katt Syringe is now usable by everyone
+        
         if (stack.is(KATT_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "katt"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_katto"));
         }
 
         // Standard variant forcing for other syringes
         if (stack.is(WHITE_CAT_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "white_cat"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_white_cat"));
         } else if (stack.is(ARTIST_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "artist"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_artist"));
         } else if (stack.is(PROTO_BEE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "proto_bee"));
         } else if (stack.is(FURRED_LATEX_TIGER_SHARK_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "furred_latex_tiger_shark"));
         } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_male"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard/male"));
         } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard_female"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard/female"));
         } else if (stack.is(SCP_009_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "scp_009"));
         } else if (stack.is(LATEX_HAZZY_SYRINGE.get())) {
@@ -620,9 +620,9 @@ public class ChangedExtras {
         } else if (stack.is(LATEX_CATTE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_catte"));
         } else if (stack.is(CONEKAT_MALE_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat_male"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat/male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat_female"));
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat/female"));
         }
     }
 

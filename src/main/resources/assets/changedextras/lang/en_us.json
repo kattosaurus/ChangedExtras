@@ -184,6 +184,7 @@
   "entity.changedextras.artist.phase_two.2": "*Sob* Please help me",
   "entity.changedextras.artist.phase_two.3": "... Please... *sob*",
   "entity.changedextras.artist.spawn.1": "PLEASE, Go away.. I can't- I can't. Please. I don't want to hurt you!",
+  "entity.changedextras.artist.death.1": "*Sob* I'm sorry, I'll give you what I have.",
 
   "11 | Type": "Game rules",
   "gamerule.changedextrasLatexEquipmentEnabled": "Latex Creature Equipment",

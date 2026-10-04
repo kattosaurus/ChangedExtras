@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
  * or any of the 4 walls - the same way an amethyst bud or a trapdoor attaches.
  * Transfurs on touch, same as the full-size crystal.
  */
+@SuppressWarnings("deprecation")
 public class Scp009CrystalSmallBlock extends DirectionalBlock {
     // Small bud-like hitboxes, one per facing direction (roughly a 6x6x6 nub offset from center).
     protected static final VoxelShape UP_SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D);

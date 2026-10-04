@@ -54,10 +54,9 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
                             .addAbility(ChangedExtrasAbilities.PARRY)
-                            .addAbility(ChangedAbilities.HYPNOSIS)
                             .addAbility(ChangedExtrasAbilities.TURN_FERAL)
                             .reducedFall(true)
-                            .extraJumps(2)
+                            .extraJumps(4)
                             .transfurMode(TransfurMode.REPLICATION)
                             .build());
 
