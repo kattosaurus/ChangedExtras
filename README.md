@@ -9,70 +9,202 @@
     <a href="https://github.com/kattosaurus/ChangedExtras/tree/main/src/main/resources/assets/changedextras/lang" rel="Translate"><img src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/translate/generic-plural_vector.svg"></a>
 </p>
 
-A mod made to add things to the changed mods that don't fit in either the Changed Add-on (@Foxyas) or the Changed: Minecraft Mod (@ltxprogrammer), like characters from other verses.
+**The** Changed: Minecraft Mod Addon that adds **creatures, features and structures** that just won't be implemented by the other addons or the main mod.
 
-# The new AI
 
-Currently on the mod, there's an improved AI for the latex creatures, but it comes disabled by default, to enable it, do the following:
+Featuring new bosses, latex and organic variants, structures, items, blocks and other features.
 
-* do /gamerule and look for the smart AI gamerule and enable it
-# My plans
+Requires **Changed Mod 0.15.0 or higher** and the **Changed Addon Plus**.
 
-I'm planning to add multiple species from other verses that aren't changed, the first example: I added the conekat (Resurgenced) to the add-on, the Jammer from KP, in addition to a cafeteria and recreation room in the changed facilities.
+*** 
 
-You can join my discord and give me suggestions for what to add, either new transfurs, features, structures or other stuff
+Features currently in the mod, ordered from most important or experience changing to least experience changing
 
-# Features to be added
+## Improved latex intelligence
 
-· New transfurs, like:
+Enabled by setting the *gamerule* **"changedextrasSmartLatexAiEnabled"** to **true**, by default on **false**.
 
-*   Fire Cat and Dog
-*   More KP transfurs
+Makes the beasts **smarter** giving them:
+- Memory
+  > The latex creatures can remember you, and hold a grudge against you. Lowered and raised by the server config **"latexAttackerMemoryTicks"**
+  
+  
+- Better pathfinding
+  > They won't be stuck on a 1 block wide jump now. They can jump and get you.
 
-# Current features
+  
+- The ability to heal (via eating) and running
+  > Whenever the latex creature is in danger, they run to avoid the grasp of death, looking for food and using it to regenerate
 
-### Transfurs:
+  
+- Shoot bows
+  > They can shoot bows like a skeleton now, they will get you, even if you bridge away.
 
-*   Conekat
-*   White Cat
-*   Jammer
-*   Fluffed up snow leopards
-*   Furred Tiger Shark
-*   Artist
+  
+- Equip armor
+  > They can find, and equip armor and tools on the floor, your death will help them a lot.
 
-### New rooms and structures:
+  > They can also spawn with armor, toggleable via the **"changedextrasLatexEquipmentEnabled"** gamerule. You can control the chances of armor and equipment via the other two gamerules, **"changedextrasLatexArmorChance"** and **"changedextrasLatexToolChance"**
 
-*   New cafeteria room in the facilities
-*   Recreation room in facilities
-*   SCP-009 Structure
-*   Bunker
+## New transfur variants
 
-### New foods and items:
+This mod has multiple variants, here they are, ordered by origin:
 
-*   New Ice Cream food item, and block
-*   Artist brush, Sketch, and palette
-*   Jammer headphones
-*   Pale medicine
+### Kaiju paradise
 
-### A new boss: Artist
+- Latex Jammer
+- Latex Hazzy
+- Latex Catte
 
-*   The boss, apparently a cat, with a brush, crafted from expensive materials, paper, and paint, it drops a paint brush, which can be used to customize custom latex to a bigger extent
+![Image of the Kaiju paradise variants](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.19.09.png)
+  
+### SCP foundation or Contagious Revival
 
-# FAQ
+- SCP-009
 
-### Where do I find the cafeteria?
+![Image of the SCP-009 variant](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.46.07.png)
+    
+### Resurgenced
 
-*   In the blue-stripped zone in facilities
+- Cone Kat
 
-### How do I get the conekat transfur?
+![Cone Kat, male and female variants](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.20.41.png)
 
-*   Either using its syringe, or eating 3 Ice cream
+### Original
 
-### How do I get the Jammer transfur?
+- Latex White Cat
+- Latex Artist
+- Latex Katto
+- Protogen bee
+- Fluffed Up Latex Snow Leopard
+- Furred Latex Tiger Shark
 
-*   Currently, the headphones are found on the recreation room, if you're reading this, you can also get the VIP variant! its more rare but you can force it with a command (/changedextras)
-# Extra notes
+![Image of the original variants](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.28.17.png)
 
-None of these features are in the changed mod, or add-on, and they won't since they don't fit in either of them. Since they are characters or species from other verses, related or not to changed and latex, or some extra transfurs that don't have a reason to be in either.
+All these variants were textured and modeled by me, except the Snow Leopard and Tiger Shark (originally by LTXProgrammer) and the Protogen (based on foxyas's model). I got permission from both to modify them.
 
-These features, not fitting in any may be of multiple player's liking, even mine, that's why I made this mod in the first place, to add features that aren't in both mods and probably won't be in.
+## New structure and facility rooms
+
+This mod adds **two** new structures, and two facility rooms for the main mod's Facility
+
+### Structures
+
+- Bunker
+  > A bunker, where Dr. [REDACTED] hid after TSC fell.
+
+  ![Bunker entrance](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.29.14.png)
+  
+- Biological studies facility
+  > The Biological studies facility comes with rooms, the list of them is found next
+  
+  ![Biological studies facility entrance](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.29.57.png)
+
+### Biological studies facility rooms
+- White latex cafeteria / room
+- Office
+- EXP-012 containment chamber
+- SCP-009 containment chamber
+- Armory room
+
+### Facility (Main mod structure) rooms
+
+- Cafeteria
+- Recreation room
+
+## A new boss — **An** artist or EXP-012
+
+The artist, **an** artist, also known as EXP-012 is a boss, specializing in "art".
+
+
+There's multiple attacks she can perform, a swipe, a dash, etc. It has a vulnerability window where you can hit her. **Normal** attacks won't work unless she's reloading
+
+
+She has lore, but it's your job to find it.
+
+
+The crafting recipe requires bio-mass, latex base, an orange, a totem of undying, **the palette** (craftable), a **flask of tears** (found in the EXP-012 room) and three paper.
+
+![Image of the recipe](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/IMG_20261006_173534.jpg)
+
+
+The reward for winning against her is the next feature.
+
+## Custom latex color and texture editing
+
+Lets the player customize further custom latex, changing its color and texture.
+
+
+To do this, you must have EXP-012's paint brush.
+
+## New blocks, food and medicine
+
+The blocks include the **ice cream** block, the **SCP-009 crystals**, an **orange bucket** and **headphones**.
+
+
+The food is the ice cream cone, found in the cafeteria.
+
+
+The medicine helps against pale, the crafting recipe must be found by you.
+
+## Gamerules and server configuration
+
+Gamerules:
+- changedextrasLatexSpawnInDay. Default set to false
+  > Lets latex creatures spawn more in the day and surface.
+  
+  
+- changedextrasLatexEquipmentEnabled. Default set to true
+  > Spawns latex creatures with armor and tools, configurable via the other gamerules
+  
+  
+- changedextrasSmartLatexAiEnabled. Default set to false
+  > Enables the smart latex AI.
+  
+  
+- changedextrasLatexToolChance. Default set to 15
+  > Defines the percentage chance of latex creatures spawning with tools
+
+  
+- changedextrasLatexArmorChance. Default set to 30
+  > Defines the percentage chance of latex creatures spawning with armor
+  
+
+Server configuration:
+- latexAttackerMemoryTicks. Default set to 160 (range: 0 - 36000)
+  > How long smart latex creatures remember and pursue a player after being attacked or otherwise acquiring a target. Set to 0 to disable attacker memory.
+
+
+- useCustomDeathScreen. Default set to false
+  > Determines if the custom death screen with the death messages is used
+
+
+- biologicalFacilityMaxRooms. Default set to 50 (range: 10 - 100)
+  > The maximum number of rooms that can generate in a Biological Studies Facility. A facility always aims for at least 10 rooms, so this cannot be set lower than that.
+
+***
+
+## FAQ (Frequently asked questions)
+
+### How do I find the biological studies facility?
+- It's found the same way, and in the same places as the original facilities
+
+### Does this mod have a discord server?
+- Yes! It does. You could help me a lot by joining, it's attached at the top.
+
+### Can I put this mod in my modpack?
+- Yes, even if it's public
+
+### Does this mod work well in multiplayer?
+- Yes, the AI doesn't affect the TPS much, I've personally tested this.
+
+### Is this compatible with the other addons?
+- It should be. It works with Changed Synergy, and as far as I know, with every other addon.
+
+***
+
+## Final words
+
+Thank you for looking at my addon's page. It seriously means a lot to me. If you like my mod, you can **contribute** to it via the link also attached (Source), **join my discord** (also attached) or **commission me** (Join my discord for more info)
+
+
+If you're visiting on behalf of a company, and you are interested in a partnership, or want me to take down a variant (for example, the KP ones), you can do so through my email (attached on my personal site) or my discord (Also attached here, and on my website)
