@@ -32,13 +32,13 @@ public final class ChangedExtrasGameRules {
     public static final GameRules.Key<GameRules.IntegerValue> LATEX_TOOL_CHANCE = GameRules.register(
             "changedextrasLatexToolChance",
             GameRules.Category.SPAWNING,
-            GameRules.IntegerValue.create(15)
+            GameRules.IntegerValue.create(5)
     );
 
     public static final GameRules.Key<GameRules.IntegerValue> LATEX_ARMOR_CHANCE = GameRules.register(
             "changedextrasLatexArmorChance",
             GameRules.Category.SPAWNING,
-            GameRules.IntegerValue.create(30)
+            GameRules.IntegerValue.create(10)
     );
 
     private ChangedExtrasGameRules() {

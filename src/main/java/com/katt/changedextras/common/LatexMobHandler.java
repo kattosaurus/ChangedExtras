@@ -3,6 +3,9 @@ package com.katt.changedextras.common;
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.ai.LatexAiUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.LatexTaur;
+import net.ltxprogrammer.changed.entity.variant.EntityShape;
+import net.ltxprogrammer.changed.item.QuadrupedalArmor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -19,9 +22,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.ltxprogrammer.changed.entity.beast.LatexTaur;
-import net.ltxprogrammer.changed.entity.variant.EntityShape;
-import net.ltxprogrammer.changed.item.QuadrupedalArmor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,9 @@ public class LatexMobHandler {
             ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "latex_tools"));
     private static final TagKey<Item> LATEX_ARMOR = TagKey.create(Registries.ITEM,
             ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "latex_armor"));
+
+    private static final float MIN_DROP_CHANCE = 0.05f;
+    private static final float MAX_DROP_CHANCE = 0.10f;
 
     private static final EquipmentSlot[] ARMOR_SLOTS = {
             EquipmentSlot.HEAD,
@@ -79,6 +82,8 @@ public class LatexMobHandler {
             return;
         }
 
+        applyDropChances(mob, mob.getRandom());
+
         if (event.getSpawnType() == MobSpawnType.CONVERSION) {
             return;
         }
@@ -95,12 +100,24 @@ public class LatexMobHandler {
 
         float armorChance = ChangedExtrasGameRules.getArmorChance(mob.level().getGameRules());
         if (random.nextFloat() < armorChance) {
-            equipRandomArmor(mob, random);
+            equipRandomArmor(mob, random, isTaur(mob));
         }
     }
 
     private static boolean isLatexCreature(Mob mob) {
         return mob instanceof ChangedEntity || LatexAiUtil.isInLatexesTag(mob);
+    }
+
+    private static boolean isTaur(Mob mob) {
+        return mob instanceof LatexTaur<?>
+                || (mob instanceof ChangedEntity changed && changed.getEntityShape() == EntityShape.TAUR);
+    }
+
+    private static void applyDropChances(Mob mob, RandomSource random) {
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            float chance = MIN_DROP_CHANCE + random.nextFloat() * (MAX_DROP_CHANCE - MIN_DROP_CHANCE);
+            mob.setDropChance(slot, chance);
+        }
     }
 
     private static Item getRandomTool(RandomSource random) {
@@ -111,16 +128,26 @@ public class LatexMobHandler {
         return TOOL_POOL[random.nextInt(TOOL_POOL.length)];
     }
 
-    private static void equipRandomArmor(Mob mob, RandomSource random) {
+    private static boolean fitsSlot(Item item, EquipmentSlot slot, boolean taur) {
+        if (!(item instanceof ArmorItem armor) || armor.getEquipmentSlot() != slot) {
+            return false;
+        }
+        if (!QuadrupedalArmor.useQuadrupedalModel(slot)) {
+            return true;
+        }
+        return (item instanceof QuadrupedalArmor) == taur;
+    }
+
+    private static void equipRandomArmor(Mob mob, RandomSource random, boolean taur) {
         List<Item> taggedArmor = tagItems(LATEX_ARMOR);
         if (taggedArmor.isEmpty()) {
-            equipRandomArmorSet(mob, random);
+            equipRandomArmorSet(mob, random, taur);
             return;
         }
         for (EquipmentSlot slot : ARMOR_SLOTS) {
             List<Item> matches = new ArrayList<>();
             for (Item item : taggedArmor) {
-                if (item instanceof ArmorItem armor && armor.getEquipmentSlot() == slot) {
+                if (fitsSlot(item, slot, taur)) {
                     matches.add(item);
                 }
             }
@@ -130,12 +157,14 @@ public class LatexMobHandler {
         }
     }
 
-    private static void equipRandomArmorSet(Mob mob, RandomSource random) {
+    private static void equipRandomArmorSet(Mob mob, RandomSource random, boolean taur) {
         Item[] armorSet = ARMOR_POOLS[random.nextInt(ARMOR_POOLS.length)];
         mob.setItemSlot(EquipmentSlot.HEAD, new ItemStack(armorSet[0]));
         mob.setItemSlot(EquipmentSlot.CHEST, new ItemStack(armorSet[1]));
-        mob.setItemSlot(EquipmentSlot.LEGS, new ItemStack(armorSet[2]));
-        mob.setItemSlot(EquipmentSlot.FEET, new ItemStack(armorSet[3]));
+        if (!taur) {
+            mob.setItemSlot(EquipmentSlot.LEGS, new ItemStack(armorSet[2]));
+            mob.setItemSlot(EquipmentSlot.FEET, new ItemStack(armorSet[3]));
+        }
     }
 
     private static List<Item> tagItems(TagKey<Item> tag) {
