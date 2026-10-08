@@ -1,16 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "NNN",
-    "IOI",
+    "NEQ",
+    "IOR",
     "PPP"
   ],
   "key": {
+    "Q" : {
+      "item": "changed:orange"
+    },
     "N": {
-      "item": "minecraft:netherite_scrap"
+      "item": "changed_addon:biomass"
+    },
+    "E" : {
+      "item": "changed:latex_base"
     },
     "I": {
-      "item": "minecraft:netherite_ingot"
+      "item": "minecraft:totem_of_undying"
+    },
+    "R": {
+      "item": "changedextras:flask_of_tears"
     },
     "O": {
       "item": "changedextras:the_palette"

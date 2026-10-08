@@ -25,9 +25,11 @@ import com.katt.changedextras.init.ChangedExtrasParticles;
 import com.katt.changedextras.init.ChangedExtrasSounds;
 import com.katt.changedextras.init.ChangedExtrasStructurePieceTypes;
 import com.katt.changedextras.init.ChangedExtrasStructureTypes;
+import com.katt.changedextras.init.InitCrTabs;
 import com.katt.changedextras.item.ArtistBrushItem;
 import com.katt.changedextras.item.ArtistSketchItem;
 import com.katt.changedextras.item.CatteBucketArmorItem;
+import com.katt.changedextras.item.ChangedExtrasGuideItem;
 import com.katt.changedextras.item.JammerHeadphonesItem;
 import com.katt.changedextras.item.LongSleeveShirt;
 import com.katt.changedextras.item.PaleTestItem;
@@ -49,7 +51,6 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -59,7 +60,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -91,6 +94,8 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -99,6 +104,8 @@ import java.util.function.Supplier;
 @Mod(ChangedExtras.MODID)
 @SuppressWarnings("deprecation")
 public class ChangedExtras {
+
+    public static final Map<RegistryObject<? extends EntityType<? extends Mob>>, RegistryObject<ForgeSpawnEggItem>> SPAWN_EGGS = new LinkedHashMap<>();
 
     private static final String ICECREAM_STREAK_TAG = "changedextras.icecream_streak";
     public static final String RECEIVED_STARTER_KIT_TAG = "changedextras.received_starter_kit";
@@ -145,7 +152,6 @@ public class ChangedExtras {
     private static final int LATEX_CATTE_SECONDARY = 0x9E5816;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public static final RegistryObject<Block> ICECREAM_BLOCK =
             BLOCKS.register("icecream_block", () -> new Block(BlockBehaviour.Properties.of()
@@ -228,6 +234,8 @@ public class ChangedExtras {
             ITEMS.register("used_swab", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> FLASK_OF_TEARS =
             ITEMS.register("flask_of_tears", () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> CHANGED_EXTRAS_GUIDE =
+            ITEMS.register("changed_extras_guide", () -> new ChangedExtrasGuideItem(new Item.Properties()));
     public static final RegistryObject<Item> VIAL =
             ITEMS.register("vial", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> USED_VIAL =
@@ -298,14 +306,11 @@ public class ChangedExtras {
             ITEMS.register("katt_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final RegistryObject<ForgeSpawnEggItem> CONEKAT_MALE_SPAWN_EGG =
-            ITEMS.register("conekat_male_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.CONEKAT_MALE, 0xE3D2BF, 0x5A3A2E, new Item.Properties()));
+            registerSpawnEgg("conekat_male_spawn_egg", ModEntities.CONEKAT_MALE, 0xE3D2BF, 0x5A3A2E);
     public static final RegistryObject<ForgeSpawnEggItem> CONEKAT_FEMALE_SPAWN_EGG =
-            ITEMS.register("conekat_female_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.CONEKAT_FEMALE, 0xE3D2BF, 0xC86A7B, new Item.Properties()));
+            registerSpawnEgg("conekat_female_spawn_egg", ModEntities.CONEKAT_FEMALE, 0xE3D2BF, 0xC86A7B);
     public static final RegistryObject<ForgeSpawnEggItem> WHITE_CAT_SPAWN_EGG =
-            ITEMS.register("white_cat_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.WHITE_CAT, 0xF6F3F3, 0xF1CF6E, new Item.Properties()));
+            registerSpawnEgg("white_cat_spawn_egg", ModEntities.WHITE_CAT, 0xF6F3F3, 0xF1CF6E);
     public static final RegistryObject<Item> ARTIST_SPAWN_EGG =
             ITEMS.register("sketch",
                     () -> new ArtistSketchItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
@@ -315,100 +320,38 @@ public class ChangedExtras {
             () -> new JammerHeadphonesItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
     public static final RegistryObject<ForgeSpawnEggItem> KATT_SPAWN_EGG =
-            ITEMS.register("katt_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.KATT, 0xFFFFFF, 0xF0F0F0, new Item.Properties()));
+            registerSpawnEgg("katt_spawn_egg", ModEntities.KATT, 0xFFFFFF, 0xF0F0F0);
     public static final RegistryObject<ForgeSpawnEggItem> JAMMER_SPAWN_EGG =
-            ITEMS.register("jammer_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.JAMMER, 0x36323e, 0x797881, new Item.Properties()));
+            registerSpawnEgg("jammer_spawn_egg", ModEntities.JAMMER, 0x36323e, 0x797881);
     public static final RegistryObject<ForgeSpawnEggItem> PROTO_BEE_SPAWN_EGG =
-            ITEMS.register("proto_bee_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.PROTO_BEE, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("proto_bee_spawn_egg", ModEntities.PROTO_BEE, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> FURRED_LATEX_TIGER_SHARK_SPAWN_EGG =
-            ITEMS.register("furred_latex_tiger_shark_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.FURRED_LATEX_TIGER_SHARK, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("furred_latex_tiger_shark_spawn_egg", ModEntities.FURRED_LATEX_TIGER_SHARK, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG =
-            ITEMS.register("fluffed_up_latex_snow_leopard_male_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("fluffed_up_latex_snow_leopard_male_spawn_egg", ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG =
-            ITEMS.register("fluffed_up_latex_snow_leopard_female_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("fluffed_up_latex_snow_leopard_female_spawn_egg", ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> ARTIST_MOB_SPAWN_EGG =
-            ITEMS.register("artist_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.ARTIST, 0x5C6BC0, 0xF5F5F5, new Item.Properties()));
+            registerSpawnEgg("artist_spawn_egg", ModEntities.ARTIST, 0x5C6BC0, 0xF5F5F5);
     public static final RegistryObject<ForgeSpawnEggItem> SCP_009_SPAWN_EGG =
-            ITEMS.register("scp_009_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.SCP_009, SCP_009_PRIMARY, SCP_009_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("scp_009_spawn_egg", ModEntities.SCP_009, SCP_009_PRIMARY, SCP_009_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> LATEX_HAZZY_SPAWN_EGG =
-            ITEMS.register("latex_hazzy_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.LATEX_HAZZY, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("latex_hazzy_spawn_egg", ModEntities.LATEX_HAZZY, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY);
 
     public static final RegistryObject<ForgeSpawnEggItem> LATEX_CATTE_SPAWN_EGG =
-            ITEMS.register("latex_catte_spawn_egg",
-                    () -> new ForgeSpawnEggItem(ModEntities.LATEX_CATTE, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY, new Item.Properties()));
+            registerSpawnEgg("latex_catte_spawn_egg", ModEntities.LATEX_CATTE, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY);
 
-    public static final RegistryObject<CreativeModeTab> ITEMS_TAB =
-            CREATIVE_MODE_TABS.register("changedextras_items", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.changedextras.changedextras_items"))
-                    .icon(() -> createVariantSyringeStack(FLASK_OF_TEARS.get(), "flask_of_tears"))
-                    .displayItems((parameters, output) -> {
-                        output.accept(FLASK_OF_TEARS.get());
-                        output.accept(THE_PALETTE.get());
-                        output.accept(ICECREAM_ITEM.get());
-                        output.accept(ICECREAM_BLOCK_ITEM.get());
-                        output.accept(JAMMER_HEADPHONES.get());
-                        output.accept(CATTE_BUCKET.get());
-                        output.accept(THE_PALETTE.get());
-                        output.accept(ARTIST_SPAWN_EGG.get());
-                        output.accept(STERILE_SWAB.get());
-                        output.accept(USED_SWAB.get());
-                        output.accept(VIAL.get());
-                        output.accept(USED_VIAL.get());
-                        output.accept(PROCESSED_VIAL.get());
-                        output.accept(PALE_TEST.get());
-                        output.accept(PILL_BOTTLE.get());
-                        output.accept(HYDROXYUREA.get());
-                        output.accept(CRIZANLIZUMAB.get());
-                        output.accept(VOXELOTOR.get());
-                        output.accept(ARTIST_BRUSH.get());
-                    })
-                    .build());
-
-    public static final RegistryObject<CreativeModeTab> MOBS_TAB =
-            CREATIVE_MODE_TABS.register("changedextras_mobs", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.changedextras.changedextras_mobs"))
-                    .withTabsBefore(ITEMS_TAB.getKey())
-                    .icon(() -> CONEKAT_MALE_SPAWN_EGG.get().getDefaultInstance())
-                    .displayItems((parameters, output) -> {
-                        output.accept(CONEKAT_MALE_SPAWN_EGG.get());
-                        output.accept(CONEKAT_FEMALE_SPAWN_EGG.get());
-                        output.accept(WHITE_CAT_SPAWN_EGG.get());
-                        output.accept(ARTIST_SPAWN_EGG.get());
-                        output.accept(KATT_SPAWN_EGG.get());
-                        output.accept(JAMMER_SPAWN_EGG.get());
-                        output.accept(PROTO_BEE_SPAWN_EGG.get());
-                        output.accept(FURRED_LATEX_TIGER_SHARK_SPAWN_EGG.get());
-                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG.get());
-                        output.accept(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG.get());
-                        output.accept(ARTIST_MOB_SPAWN_EGG.get());
-                        output.accept(SCP_009_SPAWN_EGG.get());
-                        output.accept(LATEX_HAZZY_SPAWN_EGG.get());
-                        output.accept(LATEX_CATTE_SPAWN_EGG.get());
-                        output.accept(JAMMER_HEADPHONES.get());
-                        output.accept(CATTE_BUCKET.get());
-                        output.accept(createVariantSyringeStack(CONEKAT_MALE_SYRINGE.get(), "conekat/male"));
-                        output.accept(createVariantSyringeStack(CONEKAT_FEMALE_SYRINGE.get(), "conekat/female"));
-                        output.accept(createVariantSyringeStack(WHITE_CAT_SYRINGE.get(), "latex_white_cat"));
-                        output.accept(createVariantSyringeStack(ARTIST_SYRINGE.get(), "latex_artist"));
-                        output.accept(createVariantSyringeStack(PROTO_BEE_SYRINGE.get(), "proto_bee"));
-                        output.accept(createVariantSyringeStack(FURRED_LATEX_TIGER_SHARK_SYRINGE.get(), "furred_latex_tiger_shark"));
-                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard/male"));
-                        output.accept(createVariantSyringeStack(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get(), "fluffed_up_latex_snow_leopard/female"));
-                        output.accept(createVariantSyringeStack(SCP_009_SYRINGE.get(), "scp_009"));
-                        output.accept(createVariantSyringeStack(LATEX_HAZZY_SYRINGE.get(), "latex_hazzy"));
-                        output.accept(createVariantSyringeStack(KATT_SYRINGE.get(), "latex_katto"));
-                        output.accept(createVariantSyringeStack(LATEX_CATTE_SYRINGE.get(), "latex_catte"));
-                    })
-                    .build());
+    private static RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(
+            String name,
+            RegistryObject<? extends EntityType<? extends Mob>> entityType,
+            int primaryColor,
+            int secondaryColor
+    ) {
+        RegistryObject<ForgeSpawnEggItem> spawnEgg = ITEMS.register(name,
+                () -> new ForgeSpawnEggItem(entityType, primaryColor, secondaryColor, new Item.Properties()));
+        SPAWN_EGGS.put(entityType, spawnEgg);
+        return spawnEgg;
+    }
 
     public ChangedExtras(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
@@ -422,7 +365,7 @@ public class ChangedExtras {
         ModFluids.FLUIDS.register(modEventBus);
         ChangedExtrasEffects.REGISTRY.register(modEventBus);
         ChangedExtrasMenus.REGISTRY.register(modEventBus);
-        CREATIVE_MODE_TABS.register(modEventBus);
+        InitCrTabs.CT_TAB_REGISTRY.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
