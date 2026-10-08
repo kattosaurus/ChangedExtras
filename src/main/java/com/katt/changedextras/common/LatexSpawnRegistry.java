@@ -4,14 +4,11 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import com.katt.changedextras.entity.ModTransfurVariants;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -47,23 +44,6 @@ public final class LatexSpawnRegistry {
         return variantsById.values().stream()
                 .sorted(Comparator.comparing(variant -> variant.getFormId().toString()))
                 .toList();
-    }
-
-    public static List<LatexSpawnVariantEntry> buildEntries(MinecraftServer server) {
-        LatexSpawnSelectionData data = LatexSpawnSelectionData.get(server);
-        List<LatexSpawnVariantEntry> entries = new ArrayList<>();
-        for (TransfurVariant<?> variant : getAllVariants()) {
-            ResourceLocation entityTypeId = getEntityTypeId(variant);
-            if (entityTypeId == null) {
-                continue;
-            }
-            entries.add(new LatexSpawnVariantEntry(
-                    entityTypeId.toString(),
-                    getDisplayName(variant),
-                    data.isEnabled(entityTypeId)
-            ));
-        }
-        return entries;
     }
 
     public static Map<EntityType<?>, ResourceLocation> buildEntityTypeMap() {
@@ -108,15 +88,5 @@ public final class LatexSpawnRegistry {
         }
 
         variantsById.putIfAbsent(variant.getFormId(), variant);
-    }
-
-    private static String getDisplayName(TransfurVariant<?> variant) {
-        Component description = variant.getEntityType().getDescription();
-        String name = description.getString();
-        ResourceLocation entityTypeId = getEntityTypeId(variant);
-        if (name == null || name.isBlank()) {
-            name = entityTypeId != null ? entityTypeId.getPath() : variant.getFormId().getPath();
-        }
-        return entityTypeId != null ? name + " [" + entityTypeId + "]" : name;
     }
 }

@@ -1,5 +1,7 @@
 package com.katt.changedextras.common.ai;
 
+import com.katt.changedextras.Config;
+import com.katt.changedextras.common.LatexCuddleHelper;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
@@ -58,6 +60,19 @@ public final class LatexAiUtil {
             return false;
         }
         return entity.getType().is(CHANGED_HUMANOIDS);
+    }
+
+    public static boolean isAlwaysAggroPlayerTarget(@Nullable ChangedEntity mob, @Nullable LivingEntity target) {
+        if (!Config.latexAlwaysAttackPlayers || !(target instanceof Player player)) {
+            return false;
+        }
+        if (player.isCreative() || player.isSpectator()) {
+            return false;
+        }
+        if (mob != null && LatexCuddleHelper.isTamingOwner(mob, player)) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean isSmartAiExcluded(ChangedEntity mob) {

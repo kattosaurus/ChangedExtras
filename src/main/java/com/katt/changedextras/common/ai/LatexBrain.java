@@ -2717,6 +2717,10 @@ public class LatexBrain {
             return false;
         }
 
+        if (LatexAiUtil.isAlwaysAggroPlayerTarget(mob, target)) {
+            return true;
+        }
+
         if (mind.isGrudgeKiller(target.getUUID(), mob.tickCount)) {
             return true;
         }

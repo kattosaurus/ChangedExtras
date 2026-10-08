@@ -37,6 +37,8 @@ public class ModEntityRenderers {
                 ProtoBeeRenderer::new);
         registerHumanoid(event, ModEntities.LATEX_CATTE.get(),
                 context -> new LatexCatteRenderer<>(context, new LatexCatteEntityModel<>(context.bakeLayer(LatexCatteEntityModel.LAYER_LOCATION))));
+        registerHumanoid(event, ModEntities.LATEX_HAKU.get(),
+                LatexHakuRenderer::new);
         registerHumanoid(event, ModEntities.FURRED_LATEX_TIGER_SHARK.get(),
                 context -> new ModEntityRenderer<>(context,
                         new FurredLatexTigerSharkEntityModel(context.bakeLayer(FurredLatexTigerSharkEntityModel.LAYER_LOCATION)),

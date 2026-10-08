@@ -11,30 +11,6 @@ public final class ChangedExtrasGameRules {
             GameRules.BooleanValue.create(false)
     );
 
-    public static final GameRules.Key<GameRules.BooleanValue> CONEKAT_MALE_NATURAL_SPAWNS = GameRules.register(
-            "changedextrasConekatMaleNaturalSpawns",
-            GameRules.Category.SPAWNING,
-            GameRules.BooleanValue.create(true)
-    );
-
-    public static final GameRules.Key<GameRules.BooleanValue> CONEKAT_FEMALE_NATURAL_SPAWNS = GameRules.register(
-            "changedextrasConekatFemaleNaturalSpawns",
-            GameRules.Category.SPAWNING,
-            GameRules.BooleanValue.create(true)
-    );
-
-    public static final GameRules.Key<GameRules.BooleanValue> WHITE_CAT_NATURAL_SPAWNS = GameRules.register(
-            "changedextrasWhiteCatNaturalSpawns",
-            GameRules.Category.SPAWNING,
-            GameRules.BooleanValue.create(true)
-    );
-
-    public static final GameRules.Key<GameRules.BooleanValue> ARTIST_NATURAL_SPAWNS = GameRules.register(
-            "changedextrasArtistNaturalSpawns",
-            GameRules.Category.SPAWNING,
-            GameRules.BooleanValue.create(true)
-    );
-
     public static final GameRules.Key<GameRules.BooleanValue> LATEX_EQUIPMENT_ENABLED = GameRules.register(
             "changedextrasLatexEquipmentEnabled",
             GameRules.Category.SPAWNING,
@@ -44,6 +20,12 @@ public final class ChangedExtrasGameRules {
     public static final GameRules.Key<GameRules.BooleanValue> SMART_LATEX_AI_ENABLED = GameRules.register(
             "changedextrasSmartLatexAiEnabled",
             GameRules.Category.MOBS,
+            GameRules.BooleanValue.create(false)
+    );
+
+    public static final GameRules.Key<GameRules.BooleanValue> GIVE_GUIDE_BOOK = GameRules.register(
+            "changedextrasGiveGuideBook",
+            GameRules.Category.PLAYER,
             GameRules.BooleanValue.create(false)
     );
 

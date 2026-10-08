@@ -1,13 +1,9 @@
 package com.katt.changedextras.client;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.client.discovery.DiscoveryScreen;
-import com.katt.changedextras.client.discovery.DiscoverySupport;
 import com.katt.changedextras.network.ChangedExtrasNetwork;
 import com.katt.changedextras.network.LatexDebugTogglePacket;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -33,20 +29,6 @@ public final class ChangedExtrasClientCommands {
         dispatcher.register(Commands.literal("changedextrasclient")
                 .then(Commands.literal("debug")
                         .executes(context -> toggleDebug(context.getSource())))
-                .then(Commands.literal("discovery")
-                        .executes(context -> {
-                            Minecraft mc = Minecraft.getInstance();
-                            mc.tell(() -> {
-                                if (DiscoverySupport.isAuthorizedUser(mc)) {
-                                    mc.setScreen(new DiscoveryScreen(new JoinMultiplayerScreen(null)));
-                                } else {
-                                    if (mc.player != null) {
-                                        mc.player.sendSystemMessage(Component.literal("Discovery screen is only available to authorized users."));
-                                    }
-                                }
-                            });
-                            return 1;
-                        }))
         );
 
         dispatcher.register(Commands.literal("changedextras")

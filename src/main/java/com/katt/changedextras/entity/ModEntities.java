@@ -90,4 +90,10 @@ public class ModEntities {
                     .sized(0.7F, 1.93F)
                     .build("latex_catte"));
 
+    public static final RegistryObject<EntityType<LatexHakuEntity>> LATEX_HAKU = REGISTRY.register("latex_haku",
+            () -> EntityType.Builder.of(LatexHakuEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(1.25F, 2.0F)
+                    .build("latex_haku"));
+
 }
