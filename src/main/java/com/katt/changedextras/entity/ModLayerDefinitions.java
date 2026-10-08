@@ -25,5 +25,6 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(Scp009EntityModel.LAYER_LOCATION, Scp009EntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexHazzyEntityModel.LAYER_LOCATION, LatexHazzyEntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexCatteEntityModel.LAYER_LOCATION, LatexCatteEntityModel::createBodyLayer);
+        event.registerLayerDefinition(LatexHakuEntityModel.LAYER_LOCATION, LatexHakuEntityModel::createBodyLayer);
     }
 }

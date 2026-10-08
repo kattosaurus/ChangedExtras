@@ -38,7 +38,6 @@ import com.katt.changedextras.item.PillItem;
 import com.katt.changedextras.item.SterileSwabItem;
 import com.katt.changedextras.item.UsedVialItem;
 import com.katt.changedextras.network.ChangedExtrasNetwork;
-import com.katt.changedextras.network.DiscoveryNetwork;
 import com.mojang.logging.LogUtils;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
@@ -150,6 +149,8 @@ public class ChangedExtras {
     private static final int LATEX_HAZZY_SECONDARY = 0xF6F7F7;
     private static final int LATEX_CATTE_PRIMARY = 0xF59842;
     private static final int LATEX_CATTE_SECONDARY = 0x9E5816;
+    private static final int LATEX_HAKU_PRIMARY = 0xF0F0F0;
+    private static final int LATEX_HAKU_SECONDARY = 0x8B0000;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
@@ -224,6 +225,8 @@ public class ChangedExtras {
             ITEMS.register("latex_hazzy_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_CATTE_SYRINGE =
             ITEMS.register("latex_catte_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_HAKU_SYRINGE =
+            ITEMS.register("latex_haku_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -340,6 +343,8 @@ public class ChangedExtras {
 
     public static final RegistryObject<ForgeSpawnEggItem> LATEX_CATTE_SPAWN_EGG =
             registerSpawnEgg("latex_catte_spawn_egg", ModEntities.LATEX_CATTE, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> LATEX_HAKU_SPAWN_EGG =
+            registerSpawnEgg("latex_haku_spawn_egg", ModEntities.LATEX_HAKU, LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY);
 
     private static RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(
             String name,
@@ -355,7 +360,6 @@ public class ChangedExtras {
 
     public ChangedExtras(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-        DiscoveryNetwork.bootstrap();
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModEntityAttributes::registerEntityAttributes);
@@ -399,6 +403,7 @@ public class ChangedExtras {
         registerEntityColor("scp_009", SCP_009_PRIMARY, SCP_009_SECONDARY);
         registerEntityColor("latex_hazzy", LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY);
         registerEntityColor("latex_catte", LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY);
+        registerEntityColor("latex_haku", LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY);
     }
 
     private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
@@ -562,6 +567,8 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_hazzy"));
         } else if (stack.is(LATEX_CATTE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_catte"));
+        } else if (stack.is(LATEX_HAKU_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_haku"));
         } else if (stack.is(CONEKAT_MALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat/male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
@@ -647,6 +654,8 @@ public class ChangedExtras {
                     ChangedExtras.LATEX_HAZZY_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY),
                     ChangedExtras.LATEX_CATTE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY),
+                    ChangedExtras.LATEX_HAKU_SYRINGE.get());
         }
 
         private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {

@@ -46,6 +46,9 @@ public class ClientEventHandler {
 
             for (Player player : mc.level.players()) {
                 if (JackpotSoundManager.isActive(player.getUUID())) {
+                    if (player == mc.player && mc.options.getCameraType().isFirstPerson()) {
+                        continue;
+                    }
                     spawnJackpotParticles(player);
                 }
             }

@@ -1,6 +1,7 @@
 package com.katt.changedextras.common.ai;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.Config;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -56,6 +57,8 @@ public final class LatexMobAIHandler {
         }
         if (ChangedExtrasGameRules.isSmartLatexAiEnabled(event.getLevel().getGameRules())) {
             ensureSmartAiInstalled(mob);
+        } else {
+            ensurePlayerAggroGoal(mob);
         }
     }
 
@@ -72,6 +75,7 @@ public final class LatexMobAIHandler {
                 LatexMindStore.forget(mob);
                 restoreNativeGoals(mob);
             }
+            ensurePlayerAggroGoal(mob);
             return;
         }
 
@@ -118,7 +122,6 @@ public final class LatexMobAIHandler {
 
     private static void ensureSmartAiInstalled(ChangedEntity mob) {
         if (INSTALLED_MOBS.contains(mob)) return;
-
         removeConflictingLookGoals(mob);
         removeConflictingCombatGoals(mob);
         installTargetShareGoal(mob);
@@ -158,6 +161,18 @@ public final class LatexMobAIHandler {
 
     private static void installTargetShareGoal(ChangedEntity mob) {
         mob.targetSelector.addGoal(2, new ShareTargetGoal(mob, 12.0D, 10));
+    }
+
+    private static void ensurePlayerAggroGoal(ChangedEntity mob) {
+        if (!Config.latexAlwaysAttackPlayers) {
+            return;
+        }
+
+        boolean present = mob.targetSelector.getAvailableGoals().stream()
+                .anyMatch(wrapped -> wrapped.getGoal() instanceof PlayerAggroTargetGoal);
+        if (!present) {
+            mob.targetSelector.addGoal(3, new PlayerAggroTargetGoal(mob));
+        }
     }
 
     private static void restoreNativeGoals(ChangedEntity mob) {

@@ -31,14 +31,6 @@ public class ChangedExtrasNetwork {
                 SyncArtistColorPacket::encode,
                 SyncArtistColorPacket::decode,
                 SyncArtistColorPacket::handle);
-        INSTANCE.registerMessage(id++, OpenLatexSpawnControlScreenPacket.class,
-                OpenLatexSpawnControlScreenPacket::encode,
-                OpenLatexSpawnControlScreenPacket::decode,
-                OpenLatexSpawnControlScreenPacket::handle);
-        INSTANCE.registerMessage(id++, UpdateLatexSpawnRulesPacket.class,
-                UpdateLatexSpawnRulesPacket::encode,
-                UpdateLatexSpawnRulesPacket::decode,
-                UpdateLatexSpawnRulesPacket::handle);
         INSTANCE.registerMessage(id++, LatexDebugTogglePacket.class,
                 LatexDebugTogglePacket::encode,
                 LatexDebugTogglePacket::decode,

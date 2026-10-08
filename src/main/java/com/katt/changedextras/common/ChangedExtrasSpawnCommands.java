@@ -3,8 +3,6 @@ package com.katt.changedextras.common;
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.debug.LatexDebugManager;
 import com.katt.changedextras.entity.beasts.JammerEntity;
-import com.katt.changedextras.network.ChangedExtrasNetwork;
-import com.katt.changedextras.network.OpenLatexSpawnControlScreenPacket;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -22,10 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Collection;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 @SuppressWarnings("deprecation")
@@ -69,10 +65,6 @@ public final class ChangedExtrasSpawnCommands {
                 .then(Commands.literal("client")
                         .then(Commands.literal("debug")
                                 .executes(context -> toggleDebug(context.getSource()))))
-                .then(Commands.literal("spawns")
-                        .requires(source -> source.hasPermission(2))
-                        .executes(context -> openScreen(context.getSource()))
-                )
                 .then(Commands.literal("jammer")
                         .then(Commands.literal("vip")
                                 .executes(context -> toggleOwnJammerVip(context.getSource()))
@@ -84,8 +76,6 @@ public final class ChangedExtrasSpawnCommands {
                                         .executes(context -> setOwnJammerVip(context.getSource(), BoolArgumentType.getBool(context, "enabled"))))))
                 .then(Commands.literal("admin")
                         .requires(source -> source.hasPermission(2))
-                        .then(Commands.literal("spawns")
-                                .executes(context -> openScreen(context.getSource())))
                         .then(Commands.literal("choice")
                                 .then(Commands.argument("targets", EntityArgument.players())
                                         .then(Commands.literal("reset")
@@ -177,14 +167,6 @@ public final class ChangedExtrasSpawnCommands {
         ServerPlayer player = source.getPlayerOrException();
         boolean enabled = LatexDebugManager.toggle(player);
         source.sendSuccess(() -> Component.literal("§b[ChangedExtras] §fAI debug overlay: " + (enabled ? "§aENABLED" : "§cDISABLED")), false);
-        return 1;
-    }
-
-    private static int openScreen(CommandSourceStack source) throws CommandSyntaxException {
-        ServerPlayer player = source.getPlayerOrException();
-        boolean allowDaySpawns = player.serverLevel().getGameRules().getBoolean(ChangedExtrasGameRules.LATEX_SPAWN_IN_DAY);
-        List<LatexSpawnVariantEntry> entries = LatexSpawnRegistry.buildEntries(player.serverLevel().getServer());
-        ChangedExtrasNetwork.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new OpenLatexSpawnControlScreenPacket(allowDaySpawns, entries));
         return 1;
     }
 

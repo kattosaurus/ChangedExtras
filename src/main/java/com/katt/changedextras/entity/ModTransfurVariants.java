@@ -148,4 +148,18 @@ public class ModTransfurVariants {
                             .replicating()
                             .build());
 
+    public static final RegistryObject<TransfurVariant<LatexHakuEntity>> LATEX_HAKU =
+            REGISTRY.register("latex_haku",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_HAKU)
+                            .quadrupedal()
+                            .cameraZOffset(0.4375f)
+                            .rideable()
+                            .nightVision()
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
+                            .build());
+
 }

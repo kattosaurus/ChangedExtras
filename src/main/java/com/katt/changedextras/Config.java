@@ -16,10 +16,6 @@ public final class Config {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-    private static final ForgeConfigSpec.BooleanValue SERVER_DISCOVERY_ENABLED = BUILDER
-            .comment("When enabled, clients can list this server in the Changed Extras discovery tab.")
-            .define("serverDiscoveryEnabled", true);
-
     private static final ForgeConfigSpec.BooleanValue SMART_LATEX_AI_ENABLED = BUILDER
             .comment("When enabled, Changed Extras latex creatures use the smart AI behavior package.")
             .define("smartLatexAiEnabled", false);
@@ -27,6 +23,11 @@ public final class Config {
     private static final ForgeConfigSpec.IntValue LATEX_ATTACKER_MEMORY_TICKS = BUILDER
             .comment("How long smart latex creatures remember and pursue a player after being attacked or otherwise acquiring a target. Set to 0 to disable attacker memory.")
             .defineInRange("latexAttackerMemoryTicks", 160, 0, 20 * 60 * 30);
+
+    private static final ForgeConfigSpec.BooleanValue LATEX_ALWAYS_ATTACK_PLAYERS = BUILDER
+            .comment("When enabled, latex creatures always attack players on sight, including players that are already "
+                    + "transfurred (infected). Creative and spectator players, and the owner of a tame latex, are still ignored.")
+            .define("latexAlwaysAttackPlayers", false);
 
     private static final ForgeConfigSpec.BooleanValue USE_CUSTOM_DEATH_SCREEN = BUILDER
             .comment("Determines if the custom death screen with the death messages is used")
@@ -40,9 +41,9 @@ public final class Config {
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
-    public static boolean serverDiscoveryEnabled = true;
     public static boolean smartLatexAiEnabled = false;
     public static boolean useCustomDeathScreen = false;
+    public static boolean latexAlwaysAttackPlayers = false;
     public static int latexAttackerMemoryTicks = 160;
     public static int biologicalFacilityMaxRooms = BIOLOGICAL_FACILITY_DEFAULT_MAX_ROOMS;
 
@@ -55,9 +56,9 @@ public final class Config {
             return;
         }
 
-        serverDiscoveryEnabled = SERVER_DISCOVERY_ENABLED.get();
         smartLatexAiEnabled = SMART_LATEX_AI_ENABLED.get();
         latexAttackerMemoryTicks = LATEX_ATTACKER_MEMORY_TICKS.get();
+        latexAlwaysAttackPlayers = LATEX_ALWAYS_ATTACK_PLAYERS.get();
         useCustomDeathScreen = USE_CUSTOM_DEATH_SCREEN.get();
         biologicalFacilityMaxRooms = BIOLOGICAL_FACILITY_MAX_ROOMS.get();
     }

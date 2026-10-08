@@ -7,84 +7,85 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_scrap",
-          "weight": 1,
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": {
-                "min": 2,
-                "max": 3
-              }
+              "count": { "min": 2, "max": 3 }
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "changedextras:flask_of_tears",
-          "weight": 4,
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 3
-              }
+              "count": { "min": 1, "max": 3 }
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "changed_addon:laethin",
-          "weight": 4,
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 5
-              }
+              "count": { "min": 1, "max": 5 }
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "changed_addon:golden_orange",
-          "weight": 3,
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": {
-                "min": 10,
-                "max": 15
-              }
+              "count": { "min": 10, "max": 15 }
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "changedextras:the_palette",
-          "weight": 3,
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 5
-              }
+              "count": { "min": 1, "max": 5 }
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "changed_addon:litix_camonia",
-          "weight": 3,
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": {
-                "min": 3,
-                "max": 10
-              }
+              "count": { "min": 3, "max": 10 }
             }
           ]
         }

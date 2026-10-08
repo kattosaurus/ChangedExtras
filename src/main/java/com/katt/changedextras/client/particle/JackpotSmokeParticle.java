@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -55,6 +56,12 @@ public class JackpotSmokeParticle extends TextureSheetParticle {
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (this.target != null && this.target == minecraft.player
+                && minecraft.options.getCameraType().isFirstPerson()) {
+            return;
+        }
+
         float originalSize = this.quadSize;
         float originalAlpha = this.alpha;
 

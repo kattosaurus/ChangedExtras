@@ -1,10 +1,14 @@
 package com.katt.changedextras.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -13,6 +17,7 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public class ChangedExtrasGuideScreen extends Screen {
     private static final ResourceLocation BOOK_TEXTURE = ResourceLocation.fromNamespaceAndPath("changedextras", "textures/gui/book.png");
+    private static final ResourceLocation COVER_TEXTURE = ResourceLocation.fromNamespaceAndPath("changedextras", "textures/gui/guide.png");
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
     private static final int BOOK_SOURCE_WIDTH = 164;
@@ -31,6 +36,7 @@ public class ChangedExtrasGuideScreen extends Screen {
     private static final int QUOTE_BAR_WIDTH = 2;
 
     private final List<List<GuideLine>> pages;
+    private final boolean hasCover;
     private int page;
     private Button previousButton;
     private Button nextButton;
@@ -38,24 +44,30 @@ public class ChangedExtrasGuideScreen extends Screen {
     public ChangedExtrasGuideScreen(List<List<GuideLine>> pages) {
         super(Component.translatable("item.changedextras.changed_extras_guide"));
         this.pages = pages.isEmpty() ? List.of(List.of()) : pages;
+        this.hasCover = Minecraft.getInstance().getResourceManager().getResource(COVER_TEXTURE).isPresent();
+        if (!this.hasCover) {
+            this.page = 1;
+        }
     }
 
     @Override
     protected void init() {
         int left = (this.width - SCALED_BOOK_WIDTH) / 2;
         int top = (this.height - SCALED_BOOK_HEIGHT) / 2;
-        this.previousButton = addRenderableWidget(Button.builder(Component.literal("<"), button -> {
-            if (this.page > 0) {
+        this.previousButton = addRenderableWidget(new PageTurnButton(left + 44 + ARROW_RIGHT_OFFSET, top + ARROW_TOP_OFFSET, 24, 20,
+                Component.literal("<"), button -> {
+            if (this.page > firstPage()) {
                 this.page--;
                 updateButtons();
             }
-        }).bounds(left + 44 + ARROW_RIGHT_OFFSET, top + ARROW_TOP_OFFSET, 24, 20).build());
-        this.nextButton = addRenderableWidget(Button.builder(Component.literal(">"), button -> {
-            if (this.page < this.pages.size() - 1) {
+        }));
+        this.nextButton = addRenderableWidget(new PageTurnButton(left + 162 + ARROW_RIGHT_OFFSET, top + ARROW_TOP_OFFSET, 24, 20,
+                Component.literal(">"), button -> {
+            if (this.page < this.pages.size()) {
                 this.page++;
                 updateButtons();
             }
-        }).bounds(left + 162 + ARROW_RIGHT_OFFSET, top + ARROW_TOP_OFFSET, 24, 20).build());
+        }));
         updateButtons();
     }
 
@@ -64,6 +76,13 @@ public class ChangedExtrasGuideScreen extends Screen {
         this.renderBackground(graphics);
         int left = (this.width - SCALED_BOOK_WIDTH) / 2;
         int top = (this.height - SCALED_BOOK_HEIGHT) / 2;
+
+        if (isCover()) {
+            graphics.blit(COVER_TEXTURE, left, top, SCALED_BOOK_WIDTH, SCALED_BOOK_HEIGHT, 0.0F, 0.0F, BOOK_SOURCE_WIDTH, BOOK_SOURCE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            super.render(graphics, mouseX, mouseY, partialTick);
+            return;
+        }
+
         graphics.blit(BOOK_TEXTURE, left, top, SCALED_BOOK_WIDTH, SCALED_BOOK_HEIGHT, 0.0F, 0.0F, BOOK_SOURCE_WIDTH, BOOK_SOURCE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
         int textX = left + TEXT_LEFT_OFFSET;
@@ -71,7 +90,7 @@ public class ChangedExtrasGuideScreen extends Screen {
         int lineHeight = this.font.lineHeight;
         int bottom = textY + TEXT_HEIGHT;
         int y = textY;
-        for (GuideLine line : this.pages.get(this.page)) {
+        for (GuideLine line : this.pages.get(this.page - 1)) {
             if (y >= bottom) {
                 break;
             }
@@ -104,7 +123,7 @@ public class ChangedExtrasGuideScreen extends Screen {
             }
         }
 
-        Component pageIndicator = Component.translatable("book.pageIndicator", this.page + 1, this.pages.size());
+        Component pageIndicator = Component.translatable("book.pageIndicator", this.page, this.pages.size());
         int pageIndicatorWidth = this.font.width(pageIndicator);
         graphics.drawString(this.font, pageIndicator, textX + (TEXT_WIDTH - pageIndicatorWidth) / 2, textY + TEXT_HEIGHT + 4, 0, false);
 
@@ -116,8 +135,27 @@ public class ChangedExtrasGuideScreen extends Screen {
         return false;
     }
 
+    private boolean isCover() {
+        return this.hasCover && this.page == 0;
+    }
+
+    private int firstPage() {
+        return this.hasCover ? 0 : 1;
+    }
+
     private void updateButtons() {
-        this.previousButton.visible = this.page > 0;
-        this.nextButton.visible = this.page < this.pages.size() - 1;
+        this.previousButton.visible = this.page > firstPage();
+        this.nextButton.visible = this.page < this.pages.size();
+    }
+
+    private static final class PageTurnButton extends Button {
+        PageTurnButton(int x, int y, int width, int height, Component message, Button.OnPress onPress) {
+            super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
+        }
+
+        @Override
+        public void playDownSound(SoundManager manager) {
+            manager.play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+        }
     }
 }

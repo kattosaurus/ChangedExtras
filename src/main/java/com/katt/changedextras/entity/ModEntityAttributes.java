@@ -24,6 +24,7 @@ public final class ModEntityAttributes {
         event.put(ModEntities.SCP_009.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.LATEX_HAZZY.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.LATEX_CATTE.get(), AbstractLatexCatteEntity.createAttributes().build());
+        event.put(ModEntities.LATEX_HAKU.get(), LatexHakuEntity.createAttributes().build());
 
         event.put(ModEntities.KATT.get(), KattEntity.createAttributes()
                 .add(Attributes.MAX_HEALTH, 40.0)

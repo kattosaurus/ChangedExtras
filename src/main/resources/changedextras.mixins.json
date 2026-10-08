@@ -10,11 +10,8 @@
     "AdvancedHumanoidRendererMixin",
     "CustomEyesLayerMixin",
     "CustomLatexRendererMixin",
-    "ForgeHooksClientMixin",
     "LivingEntityRendererMixin",
-    "OnlineServerEntryMixin",
-    "PlayerRendererMixin",
-    "ServerDataMixin"
+    "PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 0

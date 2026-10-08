@@ -20,9 +20,12 @@ public class LatexSpawnSelectionData extends SavedData {
     private static final String DEFAULTS_VERSION_TAG = "DefaultsVersion";
     private static final String REVISION_TAG = "Revision";
     private static final int CURRENT_DEFAULTS_VERSION = 3;
-    private static final String ARTIST_FORM_ID = ChangedExtras.MODID + ":artist";
+    private static final String ARTIST_FORM_ID = ChangedExtras.MODID + ":latex_artist";
     private static final String EXPERIMENT_009_FORM_ID = "changed_addon:form_experiment_009";
     private static final String EXPERIMENT_10_FORM_ID = "changed_addon:form_experiment_10";
+    private static final String EXPERIMENT_009_BOSS_FORM_ID = "changed_addon:form_experiment_009_boss";
+    private static final String EXPERIMENT_10_BOSS_FORM_ID = "changed_addon:form_experiment_10_boss";
+    private static final String VOID_FOX_FORM_ID = "changed_addon:void_fox";
 
     private final Set<String> disabledVariantIds = new HashSet<>();
     private int defaultsVersion;
@@ -80,14 +83,6 @@ public class LatexSpawnSelectionData extends SavedData {
         setDirty();
     }
 
-    public void replaceDisabledIds(Set<String> disabledIds) {
-        disabledVariantIds.clear();
-        disabledVariantIds.addAll(disabledIds);
-        migrateLegacyIds();
-        revision++;
-        setDirty();
-    }
-
     public Set<String> getDisabledVariantIds() {
         return Set.copyOf(disabledVariantIds);
     }
@@ -100,6 +95,9 @@ public class LatexSpawnSelectionData extends SavedData {
         disabledVariantIds.add(resolveLegacyId(ARTIST_FORM_ID));
         disabledVariantIds.add(resolveLegacyId(EXPERIMENT_009_FORM_ID));
         disabledVariantIds.add(resolveLegacyId(EXPERIMENT_10_FORM_ID));
+        disabledVariantIds.add(resolveLegacyId(EXPERIMENT_009_BOSS_FORM_ID));
+        disabledVariantIds.add(resolveLegacyId(EXPERIMENT_10_BOSS_FORM_ID));
+        disabledVariantIds.add(resolveLegacyId(VOID_FOX_FORM_ID));
         defaultsVersion = CURRENT_DEFAULTS_VERSION;
         revision++;
     }

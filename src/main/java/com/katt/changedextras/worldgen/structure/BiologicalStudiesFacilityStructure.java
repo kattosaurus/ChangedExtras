@@ -387,6 +387,7 @@ public class BiologicalStudiesFacilityStructure extends Structure {
 
         addWeighted(pool, templateManager, "biological_studies_facility/intersections/corridor_turn", 8);
         addWeighted(pool, templateManager, "biological_studies_facility/intersections/corridor_circle", 4);
+        addWeighted(pool, templateManager, "biological_studies_facility/intersections/intersection_plus", 4);
 
         return pool;
     }
@@ -404,6 +405,7 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         addWeighted(pool, templateManager, "biological_studies_facility/hallways/stair_up_no_chest", 3);
         addWeighted(pool, templateManager, "biological_studies_facility/hallways/stairs_down", 4);
         addWeighted(pool, templateManager, "biological_studies_facility/hallways/latex_cafeteria", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/hallways/bathroom_hallway", 3);
 
         return pool;
     }
@@ -417,6 +419,7 @@ public class BiologicalStudiesFacilityStructure extends Structure {
         addWeighted(pool, templateManager, "biological_studies_facility/rooms/office_danger", 1);
         addWeighted(pool, templateManager, "biological_studies_facility/rooms/storage_dark", 1);
         addWeighted(pool, templateManager, "biological_studies_facility/rooms/exp12_room", 1);
+        addWeighted(pool, templateManager, "biological_studies_facility/rooms/recreation_room2", 1);
 
         return pool;
     }
