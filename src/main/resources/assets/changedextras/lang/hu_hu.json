@@ -41,6 +41,7 @@
   "entity.changedextras.scp_009": "SCP-009",
   "entity.changedextras.latex_hazzy": "Latex Hazzy",
   "entity.changedextras.latex_catte": "Latex Catte",
+  "entity.changedextras.latex_haku": "Latex Haku",
 
   "4 | Type": "Különleges fecskendők",
   "item.changedextras.katt_syringe": "Katto fájdalom és szenvedés fecskendője",
@@ -70,7 +71,9 @@
   "item.changedextras.scp009_crystal": "SCP-009 kristály",
   "item.changedextras.catte_bucket": "Narancssárga vödör",
   "item.changedextras.latex_catte_syringe": "Latex Catte fecskendője",
+  "item.changedextras.latex_haku_syringe": "Latex Haku fecskendője",
   "item.changedextras.latex_catte_spawn_egg": "Latex Catte-t idéző tojás",
+  "item.changedextras.latex_haku_spawn_egg": "Latex Hakut idéző tojás",
   "item.changedextras.katt_spawn_egg": "Latex Kattot idéző tojás",
   "item.changedextras.jammer_spawn_egg": "Latex zavarót idéző tojás",
   "item.changedextras.artist_spawn_egg": "Művészt idéző tojás",
@@ -97,7 +100,7 @@
   "item.changedextras.voxelotor": "Voxelotor",
   "item.changedextras.pill_bottle": "Gyógyszeres doboz",
   "item.changedextras.flask_of_tears": "Könnyes lombik",
-  "item.changedextras.changed_extras_guide": "Latex útmutató",
+  "item.changedextras.changed_extras_guide": "Latex lények kézikönyve",
 
   "6 | Type": "Blokkok",
   "block.changedextras.icecream_block": "Fagylaltblokk",
@@ -195,6 +198,8 @@
   "gamerule.changedextrasLatexToolChance.description": "A százalékos esély, hogy a Changed Extras latex lények véletlenszerű eszközzel idéződnek.",
   "gamerule.changedextrasLatexArmorChance": "Latex lény páncéllal idéződési esélye",
   "gamerule.changedextrasLatexArmorChance.description": "A százalékos esély, hogy a Changed Extras latex lények véletlenszerű páncélzattal idéződnek.",
+  "gamerule.changedextrasGiveGuideBook": "Kézikönyv adása új játékosoknak",
+  "gamerule.changedextrasGiveGuideBook.description": "Adjál latex kézikönyvet az első alkalommal csatlakozó játékosoknak.",
 
   "12 | Type": "Feliratok",
   "subtitles.changedextras.jackpot_song": "\"Magánjellegű, tiszta szerelemről szóló zene\" szól",
