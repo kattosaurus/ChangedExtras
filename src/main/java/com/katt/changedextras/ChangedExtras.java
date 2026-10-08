@@ -129,10 +129,12 @@ public class ChangedExtras {
 
     public static final UUID SPECIAL_PLAYER_UUID = UUID.fromString("70080b3e-8cf3-46f3-922e-7b3a32269935");
     public static final UUID JAMMER_PLAYER_UUID = UUID.fromString("28a686cf-a2e5-49a0-8420-3c4ca52d6b5c");
+    public static final UUID HAKU_PLAYER_UUID = UUID.fromString("35ac8af6-bde9-4e50-babf-8b6369f5de54");
 
     public static final Map<UUID, SpecialPlayerData> SPECIAL_PLAYERS = Map.of(
-            SPECIAL_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.KATT, () -> ChangedExtras.KATT_SYRINGE.get(), "katt", "Katt"),
-            JAMMER_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.JAMMER, () -> null, "jammer", "Jammer", () -> List.of(new ItemStack(ChangedExtras.JAMMER_HEADPHONES.get())))
+            SPECIAL_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.KATT, () -> null, "latex_katto", "Katto"),
+            JAMMER_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.JAMMER, () -> null, "latex_jammer", "Latex Jammer"),
+            HAKU_PLAYER_UUID, new SpecialPlayerData(ModTransfurVariants.LATEX_HAKU, () -> null, "latex_haku", "Latex Haku")
     );
 
     public static final String MODID = "changedextras";
