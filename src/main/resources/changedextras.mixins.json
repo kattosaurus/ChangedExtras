@@ -11,7 +11,8 @@
     "CustomEyesLayerMixin",
     "CustomLatexRendererMixin",
     "LivingEntityRendererMixin",
-    "PlayerRendererMixin"
+    "PlayerRendererMixin",
+    "CarryPassengerOffsetMixin"
   ],
   "injectors": {
     "defaultRequire": 0

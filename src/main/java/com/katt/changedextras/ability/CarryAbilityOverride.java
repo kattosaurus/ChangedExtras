@@ -51,7 +51,7 @@ public class CarryAbilityOverride extends AbstractAbility<CarryAbilityInstance> 
 
         Optional<TransfurVariant<?>> variant = Optional.ofNullable(entity.getTransfurVariantInstance()).map(TransfurVariantInstance::getParent);
 
-        return variant.filter(v ->
+        boolean canUse = variant.filter(v ->
                 v.is(ChangedAddonTransfurVariants.Gendered.EXP2.getFemaleVariant())
                         || v.is(ChangedAddonTransfurVariants.Gendered.EXP2.getMaleVariant())
                         || v.is(ChangedAddonTransfurVariants.Gendered.ORGANIC_SNOW_LEOPARD.getFemaleVariant())
@@ -61,5 +61,9 @@ public class CarryAbilityOverride extends AbstractAbility<CarryAbilityInstance> 
                         || v.is(ChangedAddonTags.TransfurVariants.ABLE_TO_CARRY)
                         || v == ModTransfurVariants.LATEX_THORNIII.get()
         ).isPresent();
+
+        System.out.println("Carry ability - Variant: " + (variant.isPresent() ? variant.get().getFormId() : "NONE") + " Can Use: " + canUse);
+
+        return canUse;
     }
 }
