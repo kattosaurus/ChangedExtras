@@ -96,4 +96,9 @@ public class ModEntities {
                     .sized(1.25F, 2.0F)
                     .build("latex_haku"));
 
+    public static final RegistryObject<EntityType<LatexThorniiiEntity>> LATEX_THORNIII = REGISTRY.register("latex_thorniii",
+            () -> EntityType.Builder.of(LatexThorniiiEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("latex_thorniii"));
 }

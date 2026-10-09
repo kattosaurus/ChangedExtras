@@ -163,4 +163,17 @@ public class ModTransfurVariants {
                             .replicating()
                             .build());
 
+    public static final RegistryObject<TransfurVariant<LatexThorniiiEntity>> LATEX_THORNIII =
+            REGISTRY.register("latex_thorniii",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_THORNIII)
+                            .extraHands()
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAddonAbilities.CARRY)
+                            .addAbility(ChangedAbilities.CREATE_INKBALL)
+                            .addAbility(ChangedAddonAbilities.DASH)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
+                            .build());
+
 }
