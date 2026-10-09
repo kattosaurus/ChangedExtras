@@ -43,6 +43,7 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .transfurMode(TransfurMode.REPLICATION)
+                            .addAbility(ChangedExtrasAbilities.TURN_FERAL)
                             .replicating()
                             .build());
 

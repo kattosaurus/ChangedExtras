@@ -7,6 +7,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,12 +20,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @OnlyIn(Dist.CLIENT)
 public final class ChangedExtrasGuideClientAccess {
-    private static final String GUIDE_RESOURCE = "/assets/changedextras/guide.md";
     private static final Pattern MARKDOWN_IMAGE = Pattern.compile("!\\[[^\\]]*]\\([^)]*\\)");
     private static final Pattern HTML_IMAGE = Pattern.compile("(?i)<img\\b[^>]*>");
     private static final Pattern BLOCKQUOTE = Pattern.compile("^>\\s?(.*)$");
@@ -53,13 +55,17 @@ public final class ChangedExtrasGuideClientAccess {
         return paginate(blocks, font);
     }
 
+    private static final ResourceLocation GUIDE_LOCATION =
+            new ResourceLocation(ChangedExtras.MODID, "guide.md");
+
     private static String readGuide() {
-        try (InputStream stream = ChangedExtrasGuideClientAccess.class.getResourceAsStream(GUIDE_RESOURCE)) {
-            if (stream == null) {
+        Minecraft minecraft = Minecraft.getInstance();
+        try {
+            Optional<Resource> resource = minecraft.getResourceManager().getResource(GUIDE_LOCATION);
+            if (resource.isEmpty()) {
                 return "# Changed Extras Guide\n\nGuide content is missing.";
             }
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+            try (BufferedReader reader = resource.get().openAsReader()) {
                 StringBuilder builder = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {

@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "changedextras:sketch"
+    },
+    "title": {
+      "translate": "advancements.changedextras.katto_title"
+    },
+    "description": {
+      "translate": "advancements.changedextras.katto_desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "changedextras:advancements_root",
+  "criteria": {
+    "kill": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "changedextras:latex_katto"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 200
+  }
+}
