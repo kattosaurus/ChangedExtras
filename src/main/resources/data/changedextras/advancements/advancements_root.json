@@ -1,0 +1,24 @@
+{
+  "display": {
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "icon": {
+      "item": "changedextras:changed_extras_guide"
+    },
+    "title": {
+      "translate": "advancements.changedextras.root_title"
+    },
+    "description": {
+      "translate": "advancements.changedextras.root_desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick",
+      "conditions": {}
+    }
+  }
+}

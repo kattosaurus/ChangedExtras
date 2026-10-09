@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "changedextras:flask_of_tears"
+    },
+    "title": {
+      "translate": "advancements.changedextras.artist_title"
+    },
+    "description": {
+      "translate": "advancements.changedextras.artist_desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "changedextras:advancements_root",
+  "criteria": {
+    "kill": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "changedextras:latex_artist"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 500
+  }
+}

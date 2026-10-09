@@ -131,7 +131,7 @@ public class LatexHakuEntity extends ChangedEntity implements LatexTaur<LatexHak
 
     @Override
     public LatexType getLatexType() {
-        return ChangedLatexTypes.WHITE_LATEX.get();
+        return ChangedLatexTypes.NONE.get();
     }
 
     @Override
