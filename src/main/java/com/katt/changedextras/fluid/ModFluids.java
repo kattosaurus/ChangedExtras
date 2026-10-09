@@ -29,9 +29,9 @@ public class ModFluids {
     public static final DeferredRegister<net.minecraft.world.level.block.Block> BLOCKS = ChangedExtras.BLOCKS;
     public static final DeferredRegister<Item> ITEMS = ChangedExtras.ITEMS;
 
-    public static final RegistryObject<FluidType> SCP009_WATER_TYPE = FLUID_TYPES.register("scp009_water.json",
+    public static final RegistryObject<FluidType> SCP009_WATER_TYPE = FLUID_TYPES.register("scp009_water",
             () -> new FluidType(FluidType.Properties.create()
-                    .descriptionId("fluid.changedextras.scp009_water.json")
+                    .descriptionId("fluid.changedextras.scp009_water")
                     .canSwim(true)
                     .canDrown(true)
                     .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
@@ -61,11 +61,11 @@ public class ModFluids {
             });
 
     public static final RegistryObject<ForgeFlowingFluid.Source> SCP009_WATER =
-            FLUIDS.register("scp009_water.json", () -> new ForgeFlowingFluid.Source(getProperties()));
+            FLUIDS.register("scp009_water", () -> new ForgeFlowingFluid.Source(getProperties()));
     public static final RegistryObject<ForgeFlowingFluid.Flowing> SCP009_WATER_FLOWING =
             FLUIDS.register("scp009_water_flowing", () -> new ForgeFlowingFluid.Flowing(getProperties()));
 
-    public static final RegistryObject<LiquidBlock> SCP009_WATER_BLOCK = BLOCKS.register("scp009_water.json",
+    public static final RegistryObject<LiquidBlock> SCP009_WATER_BLOCK = BLOCKS.register("scp009_water",
             () -> new Scp009WaterBlock(SCP009_WATER, BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_RED)
                     .noCollission()
