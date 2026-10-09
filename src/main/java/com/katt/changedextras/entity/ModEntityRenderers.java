@@ -6,6 +6,7 @@ import com.katt.changedextras.entity.LatexCatteRenderer;
 import com.katt.changedextras.entity.model.*;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexFemaleCatModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleCatModel;
+import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleSquidDogModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -59,5 +60,6 @@ public class ModEntityRenderers {
                         ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/scp_009/scp_009.png")));
         registerHumanoid(event, ModEntities.LATEX_HAZZY.get(),
                 LatexHazzyRenderer::new);
+        registerHumanoid(event, ModEntities.LATEX_THORNIII.get(), LatexThorniiiRenderer::new);
     }
 }
