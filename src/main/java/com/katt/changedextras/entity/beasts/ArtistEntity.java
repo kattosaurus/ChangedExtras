@@ -1,6 +1,7 @@
 package com.katt.changedextras.entity.beasts;
 
 import com.katt.changedextras.ChangedExtras;
+import net.foxyas.changedaddon.enchantment.LatexSolventEnchantment;
 import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,6 +20,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -75,8 +77,16 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private static final String[] DEATH_LINES = {
             "entity.changedextras.artist.death.1"
     };
+    private static final String[] SCREAM_LINES = {
+            "entity.changedextras.artist.scream.1",
+            "entity.changedextras.artist.scream.2",
+            "entity.changedextras.artist.scream.3",
+            "entity.changedextras.artist.scream.4"
+    };
     private static final double SPEECH_RANGE = 32.0D;
     private static final int PAT_LINE_COOLDOWN_TICKS = 60;
+    private static final int SCREAM_LINE_COOLDOWN_TICKS = 40;
+    private static final float POSITIVE_EFFECT_CHANCE = 0.15F;
 
     private static final EntityDataAccessor<Integer> ATTACK_POSE =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
@@ -96,6 +106,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private int comboCooldown = 30;
     private int teleportCooldown = 90;
     private int patLineCooldown = 0;
+    private int screamLineCooldown = 0;
     private boolean secondPhaseTriggered = false;
 
     public ArtistEntity(EntityType<? extends ArtistEntity> type, Level level) {
@@ -181,7 +192,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
                 this.heal(lifesteal);
             }
             if (target instanceof LivingEntity living) {
-                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+                living.addEffect(this.rollHitEffect());
             }
             for (int i = 0; i < 4; i++) {
                 double offsetX = (this.random.nextDouble() - 0.5D) * 1.6D;
@@ -190,6 +201,31 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             }
         }
         return hit;
+    }
+
+    /**
+     * Rolls the effect the artist applies to whoever she hits: an 85% chance of a negative
+     * effect (most commonly slowness) or a 15% chance of a positive one.
+     */
+    private MobEffectInstance rollHitEffect() {
+        if (this.random.nextFloat() < POSITIVE_EFFECT_CHANCE) {
+            return switch (this.random.nextInt(5)) {
+                case 0 -> new MobEffectInstance(MobEffects.REGENERATION, 100, 1);
+                case 1 -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 120, 1);
+                case 2 -> new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 0);
+                case 3 -> new MobEffectInstance(MobEffects.ABSORPTION, 120, 1);
+                default -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0);
+            };
+        }
+        return switch (this.random.nextInt(8)) {
+            case 0 -> new MobEffectInstance(MobEffects.WEAKNESS, 100, 1);
+            case 1 -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100, 1);
+            case 2 -> new MobEffectInstance(MobEffects.BLINDNESS, 60, 0);
+            case 3 -> new MobEffectInstance(MobEffects.POISON, 80, 0);
+            case 4 -> new MobEffectInstance(MobEffects.HUNGER, 100, 1);
+            case 5 -> new MobEffectInstance(MobEffects.CONFUSION, 120, 0);
+            default -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1);
+        };
     }
 
     @Override
@@ -219,6 +255,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         }
         if (patLineCooldown > 0) {
             patLineCooldown--;
+        }
+        if (screamLineCooldown > 0) {
+            screamLineCooldown--;
         }
         if (this.getOpeningTicks() > 0) {
             int remainingOpeningTicks = this.getOpeningTicks() - 1;
@@ -469,13 +508,41 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        boolean latexSolventAttack = this.isLatexSolventAttack(source);
+        if (latexSolventAttack && !this.level().isClientSide) {
+            this.scream();
+        }
         if (!secondPhaseTriggered && this.getHealth() - amount <= 0.0F) {
-            if (!this.level().isClientSide) {
-                this.beginSecondPhase(this.getTarget());
+            // Weapons enchanted with changed_addon:latex_solvent bypass the artist's phase-one
+            // immunity, letting the killing blow actually land instead of triggering phase two.
+            if (!latexSolventAttack) {
+                if (!this.level().isClientSide) {
+                    this.beginSecondPhase(this.getTarget());
+                }
+                return false;
             }
-            return false;
         }
         return super.hurt(source, amount);
+    }
+
+    /**
+     * Returns true when the given damage was dealt by a weapon enchanted with
+     * changed_addon:latex_solvent (or an equivalent source such as an enchanted trident).
+     */
+    private boolean isLatexSolventAttack(DamageSource source) {
+        Entity attacker = source.getDirectEntity();
+        if (attacker == null) {
+            attacker = source.getEntity();
+        }
+        return attacker != null && LatexSolventEnchantment.getLatexSolventLevelOfEntity(attacker) > 0.0D;
+    }
+
+    private void scream() {
+        if (screamLineCooldown > 0 || this.getUnderlyingPlayer() != null) {
+            return;
+        }
+        screamLineCooldown = SCREAM_LINE_COOLDOWN_TICKS;
+        this.speak(SCREAM_LINES);
     }
 
     @Override
