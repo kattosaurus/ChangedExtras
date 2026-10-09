@@ -42,6 +42,7 @@
   "entity.changedextras.latex_hazzy": "Latex Hazzy",
   "entity.changedextras.latex_catte": "Latex Catte",
   "entity.changedextras.latex_haku": "Latex Haku",
+  "entity.changedextras.latex_thorniii": "Latex Thorniii",
 
   "4 | Type": "Special syringes",
   "item.changedextras.katt_syringe": "Katto's Syringe of Pain and Suffering",
@@ -74,6 +75,8 @@
   "item.changedextras.latex_haku_syringe": "Latex Haku Syringe",
   "item.changedextras.latex_catte_spawn_egg": "Latex Catte Spawn Egg",
   "item.changedextras.latex_haku_spawn_egg": "Latex Haku Spawn Egg",
+  "item.changedextras.latex_thorniii_spawn_egg": "Latex Thorniii Spawn Egg",
+  "item.changedextras.latex_thorniii_syringe": "Latex Thorniii Syringe",
   "item.changedextras.katt_spawn_egg": "Katto Spawn Egg",
   "item.changedextras.jammer_spawn_egg": "Jammer Spawn Egg",
   "item.changedextras.artist_spawn_egg": "Artist Spawn Egg",

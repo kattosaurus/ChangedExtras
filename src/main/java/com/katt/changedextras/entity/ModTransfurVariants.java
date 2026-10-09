@@ -174,6 +174,7 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAddonAbilities.DASH)
                             .transfurMode(TransfurMode.REPLICATION)
                             .replicating()
+                            .gills()
                             .build());
 
 }

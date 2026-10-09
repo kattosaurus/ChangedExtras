@@ -155,6 +155,8 @@ public class ChangedExtras {
     private static final int LATEX_CATTE_SECONDARY = 0x9E5816;
     private static final int LATEX_HAKU_PRIMARY = 0xF0F0F0;
     private static final int LATEX_HAKU_SECONDARY = 0x8B0000;
+    private static final int LATEX_THORNIII_PRIMARY = 0x0f0f0f;
+    private static final int LATEX_THORNIII_SECONDARY = 0x8dc7ee;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
@@ -231,6 +233,8 @@ public class ChangedExtras {
             ITEMS.register("latex_catte_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_HAKU_SYRINGE =
             ITEMS.register("latex_haku_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_THORNIII_SYRINGE =
+            ITEMS.register("latex_thorniii_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -318,6 +322,8 @@ public class ChangedExtras {
             registerSpawnEgg("conekat_female_spawn_egg", ModEntities.CONEKAT_FEMALE, 0xE3D2BF, 0xC86A7B);
     public static final RegistryObject<ForgeSpawnEggItem> WHITE_CAT_SPAWN_EGG =
             registerSpawnEgg("white_cat_spawn_egg", ModEntities.WHITE_CAT, 0xF6F3F3, 0xF1CF6E);
+    public static final RegistryObject<ForgeSpawnEggItem> LATEX_THORNIII_SPAWN_EGG =
+            registerSpawnEgg("latex_thorniii_spawn_egg", ModEntities.LATEX_THORNIII, LATEX_THORNIII_PRIMARY, LATEX_THORNIII_SECONDARY);
     public static final RegistryObject<Item> ARTIST_SPAWN_EGG =
             ITEMS.register("sketch",
                     () -> new ArtistSketchItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
