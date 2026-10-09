@@ -126,7 +126,6 @@ public class ModTransfurVariants {
             REGISTRY.register("scp_009",
                     () -> TransfurVariant.Builder.of(ModEntities.SCP_009)
                             .nightVision()
-                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                             .build());
 
