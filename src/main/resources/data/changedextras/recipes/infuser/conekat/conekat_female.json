@@ -8,5 +8,5 @@
     { "item": "minecraft:sweet_berries"},
     { "item": "minecraft:milk_bucket" }
   ],
-  "form": "changedextras:conekat_female"
+  "form": "changedextras:conekat/female"
 }

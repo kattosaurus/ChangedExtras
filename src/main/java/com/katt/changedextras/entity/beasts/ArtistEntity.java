@@ -1,8 +1,11 @@
 package com.katt.changedextras.entity.beasts;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.init.ChangedExtrasSounds;
 import net.foxyas.changedaddon.enchantment.LatexSolventEnchantment;
 import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
+import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -60,6 +63,10 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private static final int PHASE_ONE_RELOAD_TICKS = 36;
     private static final int PHASE_TWO_RELOAD_TICKS = 34;
 
+    // 2.625s scream animation played on entering phase two; cosmetic explosion 2.2s into it.
+    public static final int SCREAM_DURATION_TICKS = 53;
+    private static final int SCREAM_EXPLOSION_DELAY_TICKS = 44;
+
     // Dialogue
     private static final String[] PAT_LINES = {
             "entity.changedextras.artist.pat.1",
@@ -94,6 +101,8 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> OPENING_TICKS =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> SCREAM_TICKS =
+            SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
 
     private final ServerBossEvent bossEvent = new ServerBossEvent(
             Component.translatable("entity.changedextras.artist"),
@@ -107,6 +116,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private int teleportCooldown = 90;
     private int patLineCooldown = 0;
     private int screamLineCooldown = 0;
+    private int screamExplosionTicks = 0;
     private boolean secondPhaseTriggered = false;
 
     public ArtistEntity(EntityType<? extends ArtistEntity> type, Level level) {
@@ -122,6 +132,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         this.entityData.define(ATTACK_POSE, ATTACK_POSE_NONE);
         this.entityData.define(ATTACK_POSE_TICKS, 0);
         this.entityData.define(OPENING_TICKS, 0);
+        this.entityData.define(SCREAM_TICKS, 0);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -258,6 +269,15 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         }
         if (screamLineCooldown > 0) {
             screamLineCooldown--;
+        }
+        if (this.getScreamTicks() > 0) {
+            this.entityData.set(SCREAM_TICKS, this.getScreamTicks() - 1);
+        }
+        if (screamExplosionTicks > 0) {
+            screamExplosionTicks--;
+            if (screamExplosionTicks == 0) {
+                this.spawnScreamExplosion();
+            }
         }
         if (this.getOpeningTicks() > 0) {
             int remainingOpeningTicks = this.getOpeningTicks() - 1;
@@ -422,7 +442,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             this.teleportAroundTarget(target, 1.6D);
         }
         this.triggerAttackPose(ATTACK_POSE_TELEPORT, 14);
-        this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.35F);
+        this.playSound(ChangedExtrasSounds.SCREAM.get(), 1.8F, 1.0F);
+        this.entityData.set(SCREAM_TICKS, SCREAM_DURATION_TICKS);
+        this.screamExplosionTicks = SCREAM_EXPLOSION_DELAY_TICKS;
         this.speak(PHASE_TWO_LINES);
         patLineCooldown = PAT_LINE_COOLDOWN_TICKS;
     }
@@ -587,6 +609,32 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
     public int getOpeningTicks() {
         return this.entityData.get(OPENING_TICKS);
+    }
+
+    public int getScreamTicks() {
+        return this.entityData.get(SCREAM_TICKS);
+    }
+
+    /**
+     * The Artist only deals regular melee damage; she never applies transfur progress to her targets.
+     * With {@link TransfurMode#NONE}, Changed's {@code ChangedEntity.doHurtTarget} skips its
+     * {@code tryTransfurTarget} assimilation step and falls through to normal damage.
+     */
+    @Override
+    public TransfurMode getTransfurMode() {
+        return TransfurMode.NONE;
+    }
+
+    private void spawnScreamExplosion() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        double x = this.getX();
+        double y = this.getY() + this.getBbHeight() * 0.5D;
+        double z = this.getZ();
+        serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+        serverLevel.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 6, 0.6D, 0.6D, 0.6D, 0.02D);
+        this.playSound(SoundEvents.GENERIC_EXPLODE, 1.6F, 0.85F + this.random.nextFloat() * 0.2F);
     }
 
     private void triggerAttackPose(int pose, int ticks) {
