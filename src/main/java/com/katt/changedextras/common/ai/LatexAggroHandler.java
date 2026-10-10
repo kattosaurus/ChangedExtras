@@ -5,6 +5,7 @@ import com.katt.changedextras.common.LatexCuddleHelper;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.common.inventory.LatexInventory;
 import com.katt.changedextras.common.inventory.LatexInventoryProvider;
+import com.katt.changedextras.entity.beasts.ArtistEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -73,8 +74,10 @@ public final class LatexAggroHandler {
             return;
         }
 
-        if (event.getSource().getEntity() instanceof ChangedEntity latexMob) {
-            if (LatexAiUtil.isTransfurrable(victim)) {
+if (event.getSource().getEntity() instanceof ChangedEntity latexMob) {
+            // The Artist is a straight damage boss: her killing blows remain normal deaths and
+            // are never converted into a transfur into her own latex form.
+            if (!(latexMob instanceof ArtistEntity) && LatexAiUtil.isTransfurrable(victim)) {
                 TransfurVariant<?> variant = latexMob.getSelfVariant();
                 if (variant == null) {
                     variant = TransfurVariant.findEntityTransfurVariant(latexMob);

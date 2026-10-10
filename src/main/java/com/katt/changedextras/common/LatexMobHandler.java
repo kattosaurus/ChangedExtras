@@ -2,6 +2,9 @@ package com.katt.changedextras.common;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.ai.LatexAiUtil;
+import com.katt.changedextras.entity.beasts.ArtistEntity;
+import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
+import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.LatexTaur;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
@@ -88,7 +91,8 @@ public class LatexMobHandler {
             return;
         }
 
-        if (!mob.level().getGameRules().getBoolean(ChangedExtrasGameRules.LATEX_EQUIPMENT_ENABLED)) {
+        if (!mob.level().getGameRules().getBoolean(ChangedExtrasGameRules.LATEX_EQUIPMENT_ENABLED)
+                || isEquipmentExempt(mob)) {
             return;
         }
 
@@ -106,6 +110,12 @@ public class LatexMobHandler {
 
     private static boolean isLatexCreature(Mob mob) {
         return mob instanceof ChangedEntity || LatexAiUtil.isInLatexesTag(mob);
+    }
+
+    private static boolean isEquipmentExempt(Mob mob) {
+        return mob instanceof ArtistEntity
+                || mob instanceof Experiment009BossEntity
+                || mob instanceof Experiment10BossEntity;
     }
 
     private static boolean isTaur(Mob mob) {

@@ -131,6 +131,8 @@
   "effect.changedextras.oxygenated.description": "Prevents damage dealt by the Pale Virus.",
   "effect.changedextras.hypoxia": "Hypoxia",
   "effect.changedextras.hypoxia.description": "Causes weakness, slowness, and tissue degradation.",
+  "effect.changedextras.artist_fear": "Fear",
+  "effect.changedextras.artist_fear.description": "You feel uneasy.",
 
   "9 | Type": "GUI and Container",
   "container.changedextras.pill_bottle": "Pill Bottle",

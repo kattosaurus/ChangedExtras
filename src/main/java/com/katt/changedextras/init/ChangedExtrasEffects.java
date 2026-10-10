@@ -1,6 +1,7 @@
 package com.katt.changedextras.init;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.effect.ArtistFearEffect;
 import com.katt.changedextras.effect.HypoxemiaEffect;
 import com.katt.changedextras.effect.MedicatedEffect;
 import com.katt.changedextras.effect.OxygenatedEffect;
@@ -25,4 +26,7 @@ public class ChangedExtrasEffects {
 
     public static final RegistryObject<MobEffect> HYPOXIA =
             REGISTRY.register("hypoxia", HypoxemiaEffect::new);
+
+    public static final RegistryObject<MobEffect> ARTIST_FEAR =
+            REGISTRY.register("artist_fear", ArtistFearEffect::new);
 }
