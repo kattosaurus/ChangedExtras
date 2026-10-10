@@ -114,13 +114,12 @@ public class LatexThorniii<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition RightPad = RightFoot.addOrReplaceChild("RightPad", CubeListBuilder.create().texOffs(52, 32).addBox(-2.0F, 0.25F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 4.55F, -4.8F));
 
-		PartDefinition PawBeans_r1 = RightPad.addOrReplaceChild("PawBeans_r1", CubeListBuilder.create().texOffs(0, 94).addBox(-1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F))
-		.texOffs(0, 94).addBox(-2.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(1.45F, -2.9732F, -1.1F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r1 = RightPad.addOrReplaceChild("PawBeans_r1", CubeListBuilder.create().texOffs(0, 93).addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, -3.1732F, -0.167F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r2 = RightPad.addOrReplaceChild("PawBeans_r2", CubeListBuilder.create().texOffs(0, 94).addBox(-1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F))
-		.texOffs(0, 94).addBox(-4.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(2.45F, -2.9732F, -0.1F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r2 = RightPad.addOrReplaceChild("PawBeans_r2", CubeListBuilder.create().texOffs(0, 93).addBox(-1.525F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F))
+		.texOffs(0, 93).addBox(1.175F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.775F, -2.7232F, -1.1F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r3 = RightPad.addOrReplaceChild("PawBeans_r3", CubeListBuilder.create().texOffs(0, 92).addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 3.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-0.1F, -2.9732F, -0.8F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r3 = RightPad.addOrReplaceChild("PawBeans_r3", CubeListBuilder.create().texOffs(0, 93).addBox(-1.525F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.575F, -2.7232F, -1.6F, 1.5708F, 0.0F, 0.0F));
 
 		PartDefinition LeftLeg = partdefinition.addOrReplaceChild("LeftLeg", CubeListBuilder.create(), PartPose.offset(2.7F, 9.3F, 0.0F));
 
@@ -136,13 +135,12 @@ public class LatexThorniii<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition LeftPad = LeftFoot.addOrReplaceChild("LeftPad", CubeListBuilder.create().texOffs(24, 0).addBox(-2.0F, 0.25F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 4.55F, -4.8F));
 
-		PartDefinition PawBeans_r4 = LeftPad.addOrReplaceChild("PawBeans_r4", CubeListBuilder.create().texOffs(0, 92).mirror().addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 3.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.1F, -2.9732F, -0.8F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r4 = LeftPad.addOrReplaceChild("PawBeans_r4", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(0.0F, -3.1732F, -0.167F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r5 = LeftPad.addOrReplaceChild("PawBeans_r5", CubeListBuilder.create().texOffs(0, 94).mirror().addBox(0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false)
-		.texOffs(0, 94).mirror().addBox(-2.475F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(0.55F, -2.9732F, -0.1F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r5 = LeftPad.addOrReplaceChild("PawBeans_r5", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-0.475F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false)
+		.texOffs(0, 93).mirror().addBox(2.225F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(-1.925F, -2.7232F, -1.1F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r6 = LeftPad.addOrReplaceChild("PawBeans_r6", CubeListBuilder.create().texOffs(0, 94).mirror().addBox(0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false)
-		.texOffs(0, 94).mirror().addBox(-0.475F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.45F, -2.9732F, -1.1F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r6 = LeftPad.addOrReplaceChild("PawBeans_r6", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-0.475F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(-0.575F, -2.7232F, -1.6F, 1.5708F, 0.0F, 0.0F));
 
 		PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
 		.texOffs(37, 0).addBox(-2.0F, -3.0F, -6.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
@@ -277,43 +275,39 @@ public class LatexThorniii<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(32, 44).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(-5.2F, 3.9F, -0.2F));
 
-		PartDefinition PawBeans_r7 = RightArm.addOrReplaceChild("PawBeans_r7", CubeListBuilder.create().texOffs(0, 94).addBox(-1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F))
-		.texOffs(0, 94).addBox(-4.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(1.475F, 4.6268F, 0.4F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r7 = RightArm.addOrReplaceChild("PawBeans_r7", CubeListBuilder.create().texOffs(0, 93).addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-1.05F, 4.4268F, 0.333F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r8 = RightArm.addOrReplaceChild("PawBeans_r8", CubeListBuilder.create().texOffs(0, 94).addBox(-1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F))
-		.texOffs(0, 94).addBox(-0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.525F, 4.6268F, -0.6F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r8 = RightArm.addOrReplaceChild("PawBeans_r8", CubeListBuilder.create().texOffs(0, 93).addBox(-1.525F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F))
+		.texOffs(0, 93).addBox(1.175F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-1.825F, 4.8768F, -0.6F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r9 = RightArm.addOrReplaceChild("PawBeans_r9", CubeListBuilder.create().texOffs(0, 92).addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-1.05F, 4.6268F, -0.3F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r9 = RightArm.addOrReplaceChild("PawBeans_r9", CubeListBuilder.create().texOffs(0, 93).addBox(-1.525F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.475F, 4.8768F, -1.1F, 1.5708F, 0.0F, 0.0F));
 
 		PartDefinition RightArm2 = partdefinition.addOrReplaceChild("RightArm2", CubeListBuilder.create().texOffs(0, 48).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(-5.2F, -0.1F, -0.2F));
 
-		PartDefinition PawBeans_r10 = RightArm2.addOrReplaceChild("PawBeans_r10", CubeListBuilder.create().texOffs(0, 94).addBox(-1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F))
-		.texOffs(0, 94).addBox(-4.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(1.475F, 4.6268F, 0.4F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r10 = RightArm2.addOrReplaceChild("PawBeans_r10", CubeListBuilder.create().texOffs(0, 93).addBox(-1.525F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F))
+		.texOffs(0, 93).addBox(-4.225F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(0.875F, 4.8768F, -0.6F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r11 = RightArm2.addOrReplaceChild("PawBeans_r11", CubeListBuilder.create().texOffs(0, 92).addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-1.05F, 4.6268F, -0.3F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r11 = RightArm2.addOrReplaceChild("PawBeans_r11", CubeListBuilder.create().texOffs(0, 93).addBox(-1.525F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)), PartPose.offsetAndRotation(-0.475F, 4.8768F, -1.1F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r12 = RightArm2.addOrReplaceChild("PawBeans_r12", CubeListBuilder.create().texOffs(0, 94).addBox(-1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F))
-		.texOffs(0, 94).addBox(-2.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.475F, 4.6268F, -0.6F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r12 = RightArm2.addOrReplaceChild("PawBeans_r12", CubeListBuilder.create().texOffs(0, 93).addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-1.05F, 4.4268F, 0.333F, 1.5708F, 0.0F, 0.0F));
 
 		PartDefinition LeftArm = partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(16, 40).addBox(-0.8F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(5.0F, 3.9F, -0.2F));
 
-		PartDefinition PawBeans_r13 = LeftArm.addOrReplaceChild("PawBeans_r13", CubeListBuilder.create().texOffs(0, 92).mirror().addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(1.25F, 4.6268F, -0.3F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r13 = LeftArm.addOrReplaceChild("PawBeans_r13", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(1.25F, 4.4268F, 0.333F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r14 = LeftArm.addOrReplaceChild("PawBeans_r14", CubeListBuilder.create().texOffs(0, 94).mirror().addBox(0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false)
-		.texOffs(0, 94).mirror().addBox(1.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.275F, 4.6268F, -0.6F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r14 = LeftArm.addOrReplaceChild("PawBeans_r14", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-0.475F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false)
+		.texOffs(0, 93).mirror().addBox(2.225F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(-0.675F, 4.8768F, -0.6F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r15 = LeftArm.addOrReplaceChild("PawBeans_r15", CubeListBuilder.create().texOffs(0, 94).mirror().addBox(0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false)
-		.texOffs(0, 94).mirror().addBox(-2.475F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(1.725F, 4.6268F, 0.4F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r15 = LeftArm.addOrReplaceChild("PawBeans_r15", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-0.475F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(0.675F, 4.8768F, -1.1F, 1.5708F, 0.0F, 0.0F));
 
 		PartDefinition LeftArm2 = partdefinition.addOrReplaceChild("LeftArm2", CubeListBuilder.create().texOffs(0, 32).addBox(-0.8F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(5.0F, -0.1F, -0.2F));
 
-		PartDefinition PawBeans_r16 = LeftArm2.addOrReplaceChild("PawBeans_r16", CubeListBuilder.create().texOffs(0, 94).mirror().addBox(0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false)
-		.texOffs(0, 94).mirror().addBox(3.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-1.275F, 4.6268F, 0.4F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r16 = LeftArm2.addOrReplaceChild("PawBeans_r16", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-0.475F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false)
+		.texOffs(0, 93).mirror().addBox(-3.175F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(2.025F, 4.8768F, -0.6F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r17 = LeftArm2.addOrReplaceChild("PawBeans_r17", CubeListBuilder.create().texOffs(0, 94).mirror().addBox(0.525F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false)
-		.texOffs(0, 94).mirror().addBox(-0.475F, -1.1768F, -5.7F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(0.725F, 4.6268F, -0.6F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r17 = LeftArm2.addOrReplaceChild("PawBeans_r17", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-0.475F, -1.1768F, -5.7F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.4F)).mirror(false), PartPose.offsetAndRotation(0.675F, 4.8768F, -1.1F, 1.5708F, 0.0F, 0.0F));
 
-		PartDefinition PawBeans_r18 = LeftArm2.addOrReplaceChild("PawBeans_r18", CubeListBuilder.create().texOffs(0, 92).mirror().addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(1.25F, 4.6268F, -0.3F, 1.5708F, 0.0F, 0.0F));
+		PartDefinition PawBeans_r18 = LeftArm2.addOrReplaceChild("PawBeans_r18", CubeListBuilder.create().texOffs(0, 93).mirror().addBox(-1.0F, -0.4268F, -5.833F, 2.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(1.25F, 4.4268F, 0.333F, 1.5708F, 0.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 96, 96);
 	}

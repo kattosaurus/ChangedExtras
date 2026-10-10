@@ -1,6 +1,7 @@
 package com.katt.changedextras.client;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.init.ChangedExtrasEffects;
 import com.katt.changedextras.init.ChangedExtrasParticles;
 import com.katt.changedextras.model.catte_bucket;
 import com.katt.changedextras.network.JackpotClientHandler;
@@ -11,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -89,6 +91,16 @@ public class ClientEventHandler {
                         (0.05 + random.nextDouble() * 0.02) * auraScale,
                         (random.nextDouble() - 0.5) * 0.02 * auraScale
                 );
+            }
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+    public static class ArtistFovHandler {
+        @SubscribeEvent
+        public static void onComputeFov(ComputeFovModifierEvent event) {
+            if (event.getPlayer().hasEffect(ChangedExtrasEffects.ARTIST_FEAR.get())) {
+                event.setNewFovModifier(0.35F);
             }
         }
     }

@@ -4,7 +4,6 @@ import com.katt.changedextras.inventory.LatexCreatureInventory;
 import net.ltxprogrammer.changed.entity.AttributePresets;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurMode;
-import net.ltxprogrammer.changed.entity.beast.AbstractAquaticEntity;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -22,11 +21,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractLatexThorniii extends AbstractAquaticEntity {
+public abstract class AbstractScp009Entity extends ChangedEntity {
 
     private final LatexCreatureInventory inventory = new LatexCreatureInventory(this);
 
-    protected AbstractLatexThorniii(EntityType<? extends AbstractAquaticEntity> type, Level level) {
+    protected AbstractScp009Entity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
     }
 
@@ -40,7 +39,7 @@ public abstract class AbstractLatexThorniii extends AbstractAquaticEntity {
         AttributeInstance maxHealthAttribute = attributes.getInstance(Attributes.MAX_HEALTH);
         double configuredMaxHealth = maxHealthAttribute != null ? maxHealthAttribute.getBaseValue() : this.getMaxHealth();
         super.setAttributes(attributes);
-        AttributePresets.sharkLike(attributes);
+        AttributePresets.wolfLike(attributes);
         if (maxHealthAttribute != null) {
             maxHealthAttribute.setBaseValue(configuredMaxHealth);
             this.setHealth((float) configuredMaxHealth);

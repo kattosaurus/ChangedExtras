@@ -1,7 +1,12 @@
 package com.katt.changedextras.entity.beasts;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.init.ChangedExtrasEffects;
+import com.katt.changedextras.init.ChangedExtrasSounds;
+import net.foxyas.changedaddon.enchantment.LatexSolventEnchantment;
 import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
+import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -19,6 +24,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,6 +64,11 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private static final int PHASE_ONE_RELOAD_TICKS = 36;
     private static final int PHASE_TWO_RELOAD_TICKS = 34;
 
+    // 2.625s scream animation played on entering phase two. The scream sound and the cosmetic
+    // explosion are both triggered at the 1.5 second mark (30 ticks into the animation).
+    public static final int SCREAM_DURATION_TICKS = 53;
+    public static final int SCREAM_EVENT_DELAY_TICKS = 30;
+
     // Dialogue
     private static final String[] PAT_LINES = {
             "entity.changedextras.artist.pat.1",
@@ -75,14 +86,24 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private static final String[] DEATH_LINES = {
             "entity.changedextras.artist.death.1"
     };
+    private static final String[] SCREAM_LINES = {
+            "entity.changedextras.artist.scream.1",
+            "entity.changedextras.artist.scream.2",
+            "entity.changedextras.artist.scream.3",
+            "entity.changedextras.artist.scream.4"
+    };
     private static final double SPEECH_RANGE = 32.0D;
     private static final int PAT_LINE_COOLDOWN_TICKS = 60;
+    private static final int SCREAM_LINE_COOLDOWN_TICKS = 40;
+    private static final float POSITIVE_EFFECT_CHANCE = 0.15F;
 
     private static final EntityDataAccessor<Integer> ATTACK_POSE =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ATTACK_POSE_TICKS =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> OPENING_TICKS =
+            SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> SCREAM_TICKS =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
 
     private final ServerBossEvent bossEvent = new ServerBossEvent(
@@ -96,7 +117,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private int comboCooldown = 30;
     private int teleportCooldown = 90;
     private int patLineCooldown = 0;
+    private int screamLineCooldown = 0;
     private boolean secondPhaseTriggered = false;
+    private boolean screamEventPlayed = false;
 
     public ArtistEntity(EntityType<? extends ArtistEntity> type, Level level) {
         super(type, level);
@@ -111,6 +134,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         this.entityData.define(ATTACK_POSE, ATTACK_POSE_NONE);
         this.entityData.define(ATTACK_POSE_TICKS, 0);
         this.entityData.define(OPENING_TICKS, 0);
+        this.entityData.define(SCREAM_TICKS, 0);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -181,7 +205,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
                 this.heal(lifesteal);
             }
             if (target instanceof LivingEntity living) {
-                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+                living.addEffect(this.rollHitEffect());
             }
             for (int i = 0; i < 4; i++) {
                 double offsetX = (this.random.nextDouble() - 0.5D) * 1.6D;
@@ -190,6 +214,31 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             }
         }
         return hit;
+    }
+
+    /**
+     * Rolls the effect the artist applies to whoever she hits: an 85% chance of a negative
+     * effect (most commonly slowness) or a 15% chance of a positive one.
+     */
+    private MobEffectInstance rollHitEffect() {
+        if (this.random.nextFloat() < POSITIVE_EFFECT_CHANCE) {
+            return switch (this.random.nextInt(5)) {
+                case 0 -> new MobEffectInstance(MobEffects.REGENERATION, 100, 1);
+                case 1 -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 120, 1);
+                case 2 -> new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 0);
+                case 3 -> new MobEffectInstance(MobEffects.ABSORPTION, 120, 1);
+                default -> new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0);
+            };
+        }
+        return switch (this.random.nextInt(8)) {
+            case 0 -> new MobEffectInstance(MobEffects.WEAKNESS, 100, 1);
+            case 1 -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100, 1);
+            case 2 -> new MobEffectInstance(MobEffects.BLINDNESS, 60, 0);
+            case 3 -> new MobEffectInstance(MobEffects.POISON, 80, 0);
+            case 4 -> new MobEffectInstance(MobEffects.HUNGER, 100, 1);
+            case 5 -> new MobEffectInstance(MobEffects.CONFUSION, 120, 0);
+            default -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1);
+        };
     }
 
     @Override
@@ -220,6 +269,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         if (patLineCooldown > 0) {
             patLineCooldown--;
         }
+        if (screamLineCooldown > 0) {
+            screamLineCooldown--;
+        }
         if (this.getOpeningTicks() > 0) {
             int remainingOpeningTicks = this.getOpeningTicks() - 1;
             this.entityData.set(OPENING_TICKS, remainingOpeningTicks);
@@ -237,6 +289,25 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             if (remainingTicks <= 0) {
                 this.entityData.set(ATTACK_POSE, ATTACK_POSE_NONE);
             }
+        }
+
+        // While the phase-two scream animation is playing, the artist is frozen on the ground and
+        // completely invulnerable. The scream sound and the cosmetic explosion fire at the
+        // 1.5 second mark of the animation (30 ticks in).
+        if (this.getScreamTicks() > 0) {
+            int remainingScreamTicks = this.getScreamTicks() - 1;
+            this.entityData.set(SCREAM_TICKS, remainingScreamTicks);
+            this.setNoGravity(false);
+            this.getNavigation().stop();
+            this.setDeltaMovement(Vec3.ZERO);
+            this.hasImpulse = true;
+            this.fallDistance = 0.0F;
+            if (!this.screamEventPlayed && remainingScreamTicks <= SCREAM_DURATION_TICKS - SCREAM_EVENT_DELAY_TICKS) {
+                this.screamEventPlayed = true;
+                this.playSound(ChangedExtrasSounds.SCREAM.get(), 1.8F, 1.0F);
+                this.spawnScreamExplosion();
+            }
+            return;
         }
 
         if (target == null || !target.isAlive()) {
@@ -383,7 +454,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             this.teleportAroundTarget(target, 1.6D);
         }
         this.triggerAttackPose(ATTACK_POSE_TELEPORT, 14);
-        this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.35F);
+        this.screamEventPlayed = false;
+        this.entityData.set(SCREAM_TICKS, SCREAM_DURATION_TICKS);
+        this.applyAoeBlindness();
         this.speak(PHASE_TWO_LINES);
         patLineCooldown = PAT_LINE_COOLDOWN_TICKS;
     }
@@ -469,13 +542,50 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!secondPhaseTriggered && this.getHealth() - amount <= 0.0F) {
-            if (!this.level().isClientSide) {
-                this.beginSecondPhase(this.getTarget());
-            }
+        // Completely invulnerable while the phase-two scream animation plays.
+        if (this.getScreamTicks() > 0) {
             return false;
         }
+        boolean latexSolventAttack = this.isLatexSolventAttack(source);
+        if (latexSolventAttack && !this.level().isClientSide) {
+            this.scream();
+        }
+        if (!secondPhaseTriggered && this.getHealth() - amount <= 0.0F) {
+            // Weapons enchanted with changed_addon:latex_solvent bypass the artist's phase-one
+            // immunity, letting the killing blow actually land instead of triggering phase two.
+            if (!latexSolventAttack) {
+                if (!this.level().isClientSide) {
+                    this.beginSecondPhase(this.getTarget());
+                }
+                return false;
+            }
+        }
         return super.hurt(source, amount);
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return this.getScreamTicks() > 0 || super.isInvulnerableTo(source);
+    }
+
+    /**
+     * Returns true when the given damage was dealt by a weapon enchanted with
+     * changed_addon:latex_solvent (or an equivalent source such as an enchanted trident).
+     */
+    private boolean isLatexSolventAttack(DamageSource source) {
+        Entity attacker = source.getDirectEntity();
+        if (attacker == null) {
+            attacker = source.getEntity();
+        }
+        return attacker != null && LatexSolventEnchantment.getLatexSolventLevelOfEntity(attacker) > 0.0D;
+    }
+
+    private void scream() {
+        if (screamLineCooldown > 0 || this.getUnderlyingPlayer() != null) {
+            return;
+        }
+        screamLineCooldown = SCREAM_LINE_COOLDOWN_TICKS;
+        this.speak(SCREAM_LINES);
     }
 
     @Override
@@ -520,6 +630,49 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
 
     public int getOpeningTicks() {
         return this.entityData.get(OPENING_TICKS);
+    }
+
+    public int getScreamTicks() {
+        return this.entityData.get(SCREAM_TICKS);
+    }
+
+    /**
+     * The artist only deals regular melee damage; her attacks never apply transfur progress. With
+     * {@link TransfurMode#NONE}, Changed's {@code ChangedEntity.doHurtTarget} skips its
+     * {@code tryTransfurTarget} assimilation step and falls through to normal damage.
+     */
+    @Override
+    public TransfurMode getTransfurMode() {
+        return TransfurMode.NONE;
+    }
+
+    /**
+     * Blinds every living creature within 32 blocks for 10 seconds as the phase-two scream begins,
+     * and applies the artist's fear effect (shrunken FOV + heartbeat) for the same duration.
+     */
+    private void applyAoeBlindness() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        for (LivingEntity living : serverLevel.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(32.0D))) {
+            if (living == this) {
+                continue;
+            }
+            living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 0));
+            living.addEffect(new MobEffectInstance(ChangedExtrasEffects.ARTIST_FEAR.get(), 200, 0));
+        }
+    }
+
+    private void spawnScreamExplosion() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        double x = this.getX();
+        double y = this.getY() + this.getBbHeight() * 0.5D;
+        double z = this.getZ();
+        serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+        serverLevel.sendParticles(ParticleTypes.EXPLOSION, x, y, z, 6, 0.6D, 0.6D, 0.6D, 0.02D);
+        this.playSound(SoundEvents.GENERIC_EXPLODE, 1.6F, 0.85F + this.random.nextFloat() * 0.2F);
     }
 
     private void triggerAttackPose(int pose, int ticks) {

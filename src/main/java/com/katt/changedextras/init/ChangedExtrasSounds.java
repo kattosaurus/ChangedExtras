@@ -61,5 +61,15 @@ public final class ChangedExtrasSounds {
                     SoundEvent.createVariableRangeEvent(
                             ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "heartbeat")));
 
+    /**
+     * Scream sound played by the Artist when entering her second phase.
+     * Audio file at:
+     *   src/main/resources/assets/changedextras/sounds/scream.ogg
+     */
+    public static final RegistryObject<SoundEvent> SCREAM =
+            REGISTRY.register("scream", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "scream")));
+
     private ChangedExtrasSounds() {}
 }

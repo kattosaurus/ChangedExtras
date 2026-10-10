@@ -43,5 +43,14 @@
         "stream": false
       }
     ]
+  },
+  "scream": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:scream",
+        "stream": false
+      }
+    ]
   }
 }

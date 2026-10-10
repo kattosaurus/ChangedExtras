@@ -7,6 +7,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
+import net.minecraft.client.animation.KeyframeAnimations;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -18,8 +20,10 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
     public static final ModelLayerLocation LAYER_LOCATION =
@@ -32,6 +36,34 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
     private final ModelPart head;
     private final ModelPart torso;
     private final HumanoidAnimator<ArtistEntity, ArtistEntityModel> animator;
+
+    // Bridges the vanilla KeyframeAnimations player (which needs a HierarchicalModel) to this
+    // model's parts, so the Blockbench "scream" animation can be played straight from ArtistEntity.
+    private final Vector3f animationCache = new Vector3f();
+    private final HierarchicalModel<ArtistEntity> screamDriver = new HierarchicalModel<>() {
+        @Override
+        public ModelPart root() {
+            return ArtistEntityModel.this.torso;
+        }
+
+        @Override
+        public Optional<ModelPart> getAnyDescendantWithName(String name) {
+            ModelPart part = switch (name) {
+                case "RightLeg" -> ArtistEntityModel.this.rightLeg;
+                case "LeftLeg" -> ArtistEntityModel.this.leftLeg;
+                case "Head" -> ArtistEntityModel.this.head;
+                case "Torso" -> ArtistEntityModel.this.torso;
+                case "RightArm" -> ArtistEntityModel.this.rightArm;
+                case "LeftArm" -> ArtistEntityModel.this.leftArm;
+                default -> null;
+            };
+            return Optional.ofNullable(part);
+        }
+
+        @Override
+        public void setupAnim(ArtistEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        }
+    };
 
     public ArtistEntityModel(ModelPart root) {
         super(root);
@@ -135,7 +167,24 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
     public void setupAnim(@NotNull ArtistEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        applyAttackPose(entity, ageInTicks);
+        if (entity.getScreamTicks() > 0) {
+            applyScream(entity, ageInTicks);
+        } else {
+            applyAttackPose(entity, ageInTicks);
+        }
+    }
+
+    private void applyScream(ArtistEntity entity, float ageInTicks) {
+        rightLeg.resetPose();
+        leftLeg.resetPose();
+        head.resetPose();
+        torso.resetPose();
+        rightArm.resetPose();
+        leftArm.resetPose();
+
+        float partialTick = ageInTicks - entity.tickCount;
+        long elapsedMillis = (long)((ArtistEntity.SCREAM_DURATION_TICKS - entity.getScreamTicks() + partialTick) * 50.0F);
+        KeyframeAnimations.animate(screamDriver, LatexArtistAnimation.scream, elapsedMillis, 1.0F, animationCache);
     }
 
     private void applyAttackPose(ArtistEntity entity, float ageInTicks) {
