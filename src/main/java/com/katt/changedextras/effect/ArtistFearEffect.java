@@ -1,13 +1,11 @@
 package com.katt.changedextras.effect;
 
-import com.katt.changedextras.init.ChangedExtrasSounds;
-import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
+import com.katt.changedextras.client.ClientEffectHandler;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 public class ArtistFearEffect extends MobEffect {
     public ArtistFearEffect() {
@@ -15,19 +13,15 @@ public class ArtistFearEffect extends MobEffect {
     }
 
     @Override
-    public void addAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
-        super.addAttributeModifiers(entity, attributes, amplifier);
-        if (entity instanceof ServerPlayer player) {
-            player.playNotifySound(ChangedExtrasSounds.HEARTBEAT.get(), SoundSource.MASTER, 1.0F, 1.0F);
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
+        if (entity.level().isClientSide) {
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                    () -> () -> ClientEffectHandler.startHeartbeat(entity, this));
         }
     }
 
     @Override
-    public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
-        super.removeAttributeModifiers(entity, attributes, amplifier);
-        if (entity instanceof ServerPlayer player) {
-            player.connection.send(new ClientboundStopSoundPacket(
-                    ChangedExtrasSounds.HEARTBEAT.getId(), SoundSource.MASTER));
-        }
+    public boolean isDurationEffectTick(int duration, int amplifier) {
+        return true;
     }
 }
