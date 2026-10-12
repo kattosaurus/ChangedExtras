@@ -22,29 +22,29 @@ Features currently in the mod, ordered from most important or experience changin
 
 ## Improved latex intelligence
 
-Enabled by setting the *gamerule* **"changedextrasSmartLatexAiEnabled"** to **true**, by default on **false**.
+Toggled by the *gamerule* **"changedextras:smart_latex_ai"**, by default on **true**.
 
 Makes the beasts **smarter** giving them:
 - Memory
   > The latex creatures can remember you, and hold a grudge against you. Lowered and raised by the server config **"latexAttackerMemoryTicks"**
-  
-  
+
+
 - Better pathfinding
   > They won't be stuck on a 1 block wide jump now. They can jump and get you.
 
-  
+
 - The ability to heal (via eating) and running
   > Whenever the latex creature is in danger, they run to avoid the grasp of death, looking for food and using it to regenerate
 
-  
+
 - Shoot bows
   > They can shoot bows like a skeleton now, they will get you, even if you bridge away.
 
-  
+
 - Equip armor
   > They can find, and equip armor and tools on the floor, your death will help them a lot.
 
-  > They can also spawn with armor, toggleable via the **"changedextrasLatexEquipmentEnabled"** gamerule. You can control the chances of armor and equipment via the other two gamerules, **"changedextrasLatexArmorChance"** and **"changedextrasLatexToolChance"**
+  > They can also spawn with armor, toggleable via the **"changedextras:latex_equipment_enabled"** gamerule. You can control the chances of armor and equipment via the other two gamerules, **"changedextras:latex_armor_chance"** and **"changedextras:latex_tool_chance"**
 
 ## New transfur variants
 
@@ -57,18 +57,26 @@ This mod has multiple variants, here they are, ordered by origin:
 - Latex Catte
 
 ![Image of the Kaiju paradise variants](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.19.09.png)
-  
+
 ### SCP foundation or Contagious Revival
 
 - SCP-009
 
 ![Image of the SCP-009 variant](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.46.07.png)
-    
+
 ### Resurgenced
 
 - Cone Kat
 
 ![Cone Kat, male and female variants](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.20.41.png)
+
+### Spirited Away
+
+- Latex Haku
+
+### Content creators
+
+- Latex Thorniii (a squog, a squid dog, based on the YouTuber and streamer Thorniii)
 
 ### Original
 
@@ -93,10 +101,10 @@ This mod adds **two** new structures, and two facility rooms for the main mod's 
   > A bunker, where Dr. [REDACTED] hid after TSC fell.
 
   ![Bunker entrance](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.29.14.png)
-  
+
 - Biological studies facility
   > The Biological studies facility comes with rooms, the list of them is found next
-  
+
   ![Biological studies facility entrance](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/2026-10-06_19.29.57.png)
 
 ### Biological studies facility rooms
@@ -149,25 +157,29 @@ The medicine helps against pale, the crafting recipe must be found by you.
 ## Gamerules and server configuration
 
 Gamerules:
-- changedextrasLatexSpawnInDay. Default set to false
+- changedextras:latex_spawn_in_day. Default set to false
   > Lets latex creatures spawn more in the day and surface.
-  
-  
-- changedextrasLatexEquipmentEnabled. Default set to true
+
+
+- changedextras:latex_equipment_enabled. Default set to true
   > Spawns latex creatures with armor and tools, configurable via the other gamerules
-  
-  
-- changedextrasSmartLatexAiEnabled. Default set to false
+
+
+- changedextras:smart_latex_ai. Default set to true
   > Enables the smart latex AI.
-  
-  
-- changedextrasLatexToolChance. Default set to 15
+
+
+- changedextras:latex_tool_chance. Default set to 5
   > Defines the percentage chance of latex creatures spawning with tools
 
-  
-- changedextrasLatexArmorChance. Default set to 30
+
+- changedextras:latex_armor_chance. Default set to 10
   > Defines the percentage chance of latex creatures spawning with armor
-  
+
+
+- changedextras:give_guidebook. Default set to false
+  > Gives the Latex Guide book to players.
+
 
 Server configuration:
 - latexAttackerMemoryTicks. Default set to 160 (range: 0 - 36000)

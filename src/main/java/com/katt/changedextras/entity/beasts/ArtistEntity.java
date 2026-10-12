@@ -6,6 +6,7 @@ import com.katt.changedextras.init.ChangedExtrasSounds;
 import net.foxyas.changedaddon.enchantment.LatexSolventEnchantment;
 import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
 import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -44,6 +45,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatReaction {
     public static final int ATTACK_POSE_NONE = 0;
@@ -92,10 +97,19 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             "entity.changedextras.artist.scream.3",
             "entity.changedextras.artist.scream.4"
     };
+    private static final String[] RECOGNIZE_KATTO_LINES = {
+            "entity.changedextras.artist.recognize_katto"
+    };
     private static final double SPEECH_RANGE = 32.0D;
     private static final int PAT_LINE_COOLDOWN_TICKS = 60;
     private static final int SCREAM_LINE_COOLDOWN_TICKS = 40;
     private static final float POSITIVE_EFFECT_CHANCE = 0.15F;
+
+    // Latex Katto recognition / passivity
+    private static final ResourceLocation LATEX_KATTO_FORM =
+            ResourceLocation.fromNamespaceAndPath("changedextras", "latex_katto");
+    private static final double RECOGNIZE_RANGE = 16.0D;
+    private static final double RECOGNIZE_FORGET_RANGE_SQR = 24.0D * 24.0D;
 
     private static final EntityDataAccessor<Integer> ATTACK_POSE =
             SynchedEntityData.defineId(ArtistEntity.class, EntityDataSerializers.INT);
@@ -120,6 +134,11 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     private int screamLineCooldown = 0;
     private boolean secondPhaseTriggered = false;
     private boolean screamEventPlayed = false;
+
+    // Katto-form players she has already greeted (reset when they leave range or change form)
+    private final Set<UUID> greetedKattos = new HashSet<>();
+    // Katto-form players who attacked her; she treats them as hostile from then on
+    private final Set<UUID> provokedKattos = new HashSet<>();
 
     public ArtistEntity(EntityType<? extends ArtistEntity> type, Level level) {
         super(type, level);
@@ -189,7 +208,8 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, target ->
                 target instanceof Player player
                         && !player.isCreative()
-                        && !player.isSpectator()));
+                        && !player.isSpectator()
+                        && !this.isPassiveTowards(player)));
     }
 
     @Override
@@ -310,6 +330,18 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
             return;
         }
 
+        if (this.getUnderlyingPlayer() == null) {
+            // Greet Latex Katto players who come nearby
+            if (this.tickCount % 10 == 0) {
+                this.recognizeKattos();
+            }
+            // Drop any target she shouldn't be fighting (e.g. picked up indirectly by another goal)
+            if (target != null && this.isPassiveTowards(target)) {
+                this.setTarget(null);
+                target = null;
+            }
+        }
+
         if (target == null || !target.isAlive()) {
             if (phaseTwo) {
                 this.hoverNearGround();
@@ -412,6 +444,40 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         }
         patLineCooldown = PAT_LINE_COOLDOWN_TICKS;
         this.speak(PAT_LINES);
+    }
+
+    // ------------------------------------------------------------------
+    // Latex Katto recognition / passivity
+    // ------------------------------------------------------------------
+
+    private static boolean isKattoForm(LivingEntity entity) {
+        if (!(entity instanceof Player player)) {
+            return false;
+        }
+        var variant = ProcessTransfur.getPlayerTransfurVariant(player);
+        return variant != null && LATEX_KATTO_FORM.equals(variant.getParent().getFormId());
+    }
+
+    /** True if she should leave this entity alone (Katto form that hasn't attacked her). */
+    private boolean isPassiveTowards(LivingEntity entity) {
+        return isKattoForm(entity) && !provokedKattos.contains(entity.getUUID());
+    }
+
+    private void recognizeKattos() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        // Forget players who left or are no longer Katto, so she greets them again next time
+        greetedKattos.removeIf(id -> {
+            Player p = serverLevel.getPlayerByUUID(id);
+            return p == null || !isKattoForm(p) || this.distanceToSqr(p) > RECOGNIZE_FORGET_RANGE_SQR;
+        });
+        for (ServerPlayer player : serverLevel.getEntitiesOfClass(
+                ServerPlayer.class, this.getBoundingBox().inflate(RECOGNIZE_RANGE))) {
+            if (isKattoForm(player) && !player.isSpectator() && greetedKattos.add(player.getUUID())) {
+                this.speak(RECOGNIZE_KATTO_LINES);
+            }
+        }
     }
 
     // ------------------------------------------------------------------
@@ -545,6 +611,12 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         // Completely invulnerable while the phase-two scream animation plays.
         if (this.getScreamTicks() > 0) {
             return false;
+        }
+        // A Latex Katto player who attacks her is no longer treated as a friend.
+        if (!this.level().isClientSide && this.getUnderlyingPlayer() == null
+                && source.getEntity() instanceof Player attacker && isKattoForm(attacker)) {
+            provokedKattos.add(attacker.getUUID());
+            this.setTarget(attacker);
         }
         boolean latexSolventAttack = this.isLatexSolventAttack(source);
         if (latexSolventAttack && !this.level().isClientSide) {
