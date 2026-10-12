@@ -192,7 +192,7 @@
   "entity.changedextras.artist.spawn.1": "KÉRLEK, menj el... Nem tehetem... nem tehetem. Kérlek. Nem akarlak bántani!",
   "entity.changedextras.artist.death.1": "*Zokogás* Sajnálom, odaadom, amim van.",
   "entity.changedextras.artist.scream.1": "ÁÁÁÁÁÁÁÁÁÁÁÁÁÁ",
-  "entity.changedextras.artist.scream.2": "ÁÁÁÁÁÁÁÁ",
+  "entity.changedextras.artist.scream.2": "ÁÁÁÁÁÁÁÁ ÉGET",
   "entity.changedextras.artist.scream.3": "ÁÁÁÁ KÉRLEK, HAGYD ABBA!",
   "entity.changedextras.artist.scream.4": "ÁÁÁÁÁÁÁÁÁÁÁÁ EZ FÁJ ÁÁÁÁÁÁÁÁÁÁÁÁÁ",
   "advancements.changedextras.root_title": "Changed Extras",
@@ -201,6 +201,7 @@
   "advancements.changedextras.artist_desc": "Győzd le a 012-es kísérletet",
   "advancements.changedextras.katto_title": "Macskaölő",
   "advancements.changedextras.katto_desc": "Ölj meg Kattot. \"Na mindegy, nem számít.\"",
+  "entity.changedextras.artist.recognize_katto": "Várj, felismerlek, te vagy Dr. B! Soha nem felejtelek el, köszönöm mindent.",
 
   "11 | Type": "Játékszabályok",
   "gamerule.changedextrasLatexEquipmentEnabled": "Latex lény felszerelése",
