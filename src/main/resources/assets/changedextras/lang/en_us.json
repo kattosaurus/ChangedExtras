@@ -192,7 +192,7 @@
   "entity.changedextras.artist.spawn.1": "PLEASE, Go away.. I can't- I can't. Please. I don't want to hurt you!",
   "entity.changedextras.artist.death.1": "*Sob* I'm sorry, I'll give you what I have.",
   "entity.changedextras.artist.scream.1": "AHHHHHHHHHHHGG",
-  "entity.changedextras.artist.scream.2": "AWHHHHHG",
+  "entity.changedextras.artist.scream.2": "AWHHHHHG IT BURNS",
   "entity.changedextras.artist.scream.3": "AHHH PLEASE STOP",
   "entity.changedextras.artist.scream.4": "AHHHHHHHHHHH THAT HURTS AGGHHHHHHHHHH",
   "advancements.changedextras.root_title": "Changed Extras",
@@ -201,6 +201,7 @@
   "advancements.changedextras.artist_desc": "Defeat Experiment 012",
   "advancements.changedextras.katto_title": "Cat killer",
   "advancements.changedextras.katto_desc": "Kill Katto. \"Oh well, doesn't matter.\"",
+  "entity.changedextras.artist.recognize_katto": "Wait, I recognize you, you're Dr. B! I would never forget you, thank you for everything.",
 
   "11 | Type": "Game rules",
   "gamerule.changedextrasLatexEquipmentEnabled": "Latex Creature Equipment",

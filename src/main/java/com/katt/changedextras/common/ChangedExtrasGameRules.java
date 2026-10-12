@@ -6,37 +6,37 @@ import net.minecraft.world.level.GameRules;
 
 public final class ChangedExtrasGameRules {
     public static final GameRules.Key<GameRules.BooleanValue> LATEX_SPAWN_IN_DAY = GameRules.register(
-            "changedextrasLatexSpawnInDay",
+            "changedextras:latex_spawn_in_day",
             GameRules.Category.SPAWNING,
             GameRules.BooleanValue.create(false)
     );
 
     public static final GameRules.Key<GameRules.BooleanValue> LATEX_EQUIPMENT_ENABLED = GameRules.register(
-            "changedextrasLatexEquipmentEnabled",
+            "changedextras:latex_equipment_enabled",
             GameRules.Category.SPAWNING,
             GameRules.BooleanValue.create(true)
     );
 
     public static final GameRules.Key<GameRules.BooleanValue> SMART_LATEX_AI_ENABLED = GameRules.register(
-            "changedextrasSmartLatexAiEnabled",
+            "changedextras:smart_latex_ai",
             GameRules.Category.MOBS,
-            GameRules.BooleanValue.create(false)
+            GameRules.BooleanValue.create(true)
     );
 
     public static final GameRules.Key<GameRules.BooleanValue> GIVE_GUIDE_BOOK = GameRules.register(
-            "changedextrasGiveGuideBook",
+            "changedextras:give_guidebook",
             GameRules.Category.PLAYER,
             GameRules.BooleanValue.create(false)
     );
 
     public static final GameRules.Key<GameRules.IntegerValue> LATEX_TOOL_CHANCE = GameRules.register(
-            "changedextrasLatexToolChance",
+            "changedextras:latex_tool_chance",
             GameRules.Category.SPAWNING,
             GameRules.IntegerValue.create(5)
     );
 
     public static final GameRules.Key<GameRules.IntegerValue> LATEX_ARMOR_CHANCE = GameRules.register(
-            "changedextrasLatexArmorChance",
+            "changedextras:latex_armor_chance",
             GameRules.Category.SPAWNING,
             GameRules.IntegerValue.create(10)
     );
