@@ -1,4 +1,4 @@
-// Made with Blockbench 5.2.1
+// Made with Blockbench 5.2.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
@@ -28,7 +28,6 @@ public class FemaleConeKat<T extends Entity> extends EntityModel<T> {
 	private final ModelPart Plantoids;
 	private final ModelPart LeftArm;
 	private final ModelPart RightArm;
-	private final ModelPart Plantoids2;
 
 	public FemaleConeKat(ModelPart root) {
 		this.LeftLeg = root.getChild("LeftLeg");
@@ -53,7 +52,6 @@ public class FemaleConeKat<T extends Entity> extends EntityModel<T> {
 		this.Plantoids = this.Torso.getChild("Plantoids");
 		this.LeftArm = root.getChild("LeftArm");
 		this.RightArm = root.getChild("RightArm");
-		this.Plantoids2 = root.getChild("Plantoids2");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -113,9 +111,9 @@ public class FemaleConeKat<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition CheekBigLeft_r1 = Hair.addOrReplaceChild("CheekBigLeft_r1", CubeListBuilder.create().texOffs(19, 71).mirror().addBox(-1.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 25.0F, 1.0F, 0.0F, -0.9599F, 0.0F));
 
-		PartDefinition CheekBigRight_r1 = Hair.addOrReplaceChild("CheekBigRight_r1", CubeListBuilder.create().texOffs(19, 71).addBox(-4.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 1.0F, 0.0F, 0.9599F, 0.0F));
+		PartDefinition CheekBigRight_r1 = Hair.addOrReplaceChild("CheekBigRight_r1", CubeListBuilder.create().texOffs(0, 90).addBox(-4.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 1.0F, 0.0F, 0.9599F, 0.0F));
 
-		PartDefinition CheekRight_r1 = Hair.addOrReplaceChild("CheekRight_r1", CubeListBuilder.create().texOffs(58, 65).addBox(-3.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 0.0F, 0.0F, 0.9599F, 0.0F));
+		PartDefinition CheekRight_r1 = Hair.addOrReplaceChild("CheekRight_r1", CubeListBuilder.create().texOffs(60, 91).addBox(-3.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 0.0F, 0.0F, 0.9599F, 0.0F));
 
 		PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(28, 28).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(46, 66).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, -0.5F, 0.0F));
@@ -144,15 +142,8 @@ public class FemaleConeKat<T extends Entity> extends EntityModel<T> {
 		PartDefinition LeftArm = partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(0, 44).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(29, 66).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(5.0F, 1.5F, 0.0F));
 
-		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 44).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
-		.texOffs(29, 66).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offset(-5.0F, 1.5F, 0.0F));
-
-		PartDefinition Plantoids2 = partdefinition.addOrReplaceChild("Plantoids2", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.0F));
-
-		PartDefinition RightPlantoid_r2 = Plantoids2.addOrReplaceChild("RightPlantoid_r2", CubeListBuilder.create().texOffs(60, 59).addBox(-4.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F))
-		.texOffs(48, 59).addBox(0.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.2793F, 0.0F, 0.0F));
-
-		PartDefinition Center_r2 = Plantoids2.addOrReplaceChild("Center_r2", CubeListBuilder.create().texOffs(64, 42).addBox(-0.5F, -1.3F, -0.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.192F, 0.0F, 0.0F));
+		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(80, 16).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
+		.texOffs(80, 0).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offset(-5.0F, 1.5F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 96, 96);
 	}
@@ -170,6 +161,5 @@ public class FemaleConeKat<T extends Entity> extends EntityModel<T> {
 		Torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		LeftArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		RightArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		Plantoids2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

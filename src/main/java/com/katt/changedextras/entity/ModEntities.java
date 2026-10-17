@@ -24,6 +24,54 @@ public class ModEntities {
                     .sized(0.7F, 1.93F)
                     .build("conekat/female"));
 
+    public static final RegistryObject<EntityType<ConeKatMaleEntity>> MINT_CONEKAT_MALE = REGISTRY.register("mint_conekat/male",
+            () -> EntityType.Builder.of(ConeKatMaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("mint_conekat/male"));
+
+    public static final RegistryObject<EntityType<ConeKatFemaleEntity>> MINT_CONEKAT_FEMALE = REGISTRY.register("mint_conekat/female",
+            () -> EntityType.Builder.of(ConeKatFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("mint_conekat/female"));
+
+    public static final RegistryObject<EntityType<ConeKatMaleEntity>> CHOCO_CONEKAT_MALE = REGISTRY.register("choco_conekat/male",
+            () -> EntityType.Builder.of(ConeKatMaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("choco_conekat/male"));
+
+    public static final RegistryObject<EntityType<ConeKatFemaleEntity>> CHOCO_CONEKAT_FEMALE = REGISTRY.register("choco_conekat/female",
+            () -> EntityType.Builder.of(ConeKatFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("choco_conekat/female"));
+
+    public static final RegistryObject<EntityType<ConeKatMaleEntity>> STRAWBERRY_CONEKAT_MALE = REGISTRY.register("strawberry_conekat/male",
+            () -> EntityType.Builder.of(ConeKatMaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("strawberry_conekat/male"));
+
+    public static final RegistryObject<EntityType<ConeKatFemaleEntity>> STRAWBERRY_CONEKAT_FEMALE = REGISTRY.register("strawberry_conekat/female",
+            () -> EntityType.Builder.of(ConeKatFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("strawberry_conekat/female"));
+
+    public static final RegistryObject<EntityType<ConeKatMaleEntity>> NEAPOLITAN_CONEKAT_MALE = REGISTRY.register("neapolitan_conekat/male",
+            () -> EntityType.Builder.of(ConeKatMaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("neapolitan_conekat/male"));
+
+    public static final RegistryObject<EntityType<ConeKatFemaleEntity>> NEAPOLITAN_CONEKAT_FEMALE = REGISTRY.register("neapolitan_conekat/female",
+            () -> EntityType.Builder.of(ConeKatFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("neapolitan_conekat/female"));
+
     public static final RegistryObject<EntityType<WhiteCatEntity>> WHITE_CAT = REGISTRY.register("latex_white_cat",
             () -> EntityType.Builder.of(WhiteCatEntity::new, MobCategory.MONSTER)
                     .clientTrackingRange(10)
@@ -47,24 +95,6 @@ public class ModEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F)
                     .build("proto_bee"));
-
-    public static final RegistryObject<EntityType<FurredLatexTigerSharkEntity>> FURRED_LATEX_TIGER_SHARK = REGISTRY.register("furred_latex_tiger_shark",
-            () -> EntityType.Builder.of(FurredLatexTigerSharkEntity::new, MobCategory.MONSTER)
-                    .clientTrackingRange(10)
-                    .sized(0.7F, 1.93F)
-                    .build("furred_latex_tiger_shark"));
-
-    public static final RegistryObject<EntityType<FluffedUpLatexSnowLeopardMaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE = REGISTRY.register("fluffed_up_latex_snow_leopard/male",
-            () -> EntityType.Builder.of(FluffedUpLatexSnowLeopardMaleEntity::new, MobCategory.MONSTER)
-                    .clientTrackingRange(10)
-                    .sized(0.7F, 1.93F)
-                    .build("fluffed_up_latex_snow_leopard/male"));
-
-    public static final RegistryObject<EntityType<FluffedUpLatexSnowLeopardFemaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE = REGISTRY.register("fluffed_up_latex_snow_leopard/female",
-            () -> EntityType.Builder.of(FluffedUpLatexSnowLeopardFemaleEntity::new, MobCategory.MONSTER)
-                    .clientTrackingRange(10)
-                    .sized(0.7F, 1.93F)
-                    .build("fluffed_up_latex_snow_leopard/female"));
 
     public static final RegistryObject<EntityType<ArtistEntity>> ARTIST = REGISTRY.register("latex_artist",
             () -> EntityType.Builder.of(ArtistEntity::new, MobCategory.MONSTER)
@@ -101,4 +131,10 @@ public class ModEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F)
                     .build("latex_thorniii"));
+
+    public static final RegistryObject<EntityType<SnepEntity>> SNEP = REGISTRY.register("snep",
+            () -> EntityType.Builder.of(SnepEntity::new, MobCategory.MISC)
+                    .clientTrackingRange(10)
+                    .sized(0.8F, 2.0F)
+                    .build("snep"));
 }

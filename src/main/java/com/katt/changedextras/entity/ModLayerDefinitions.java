@@ -19,9 +19,6 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(JammerEntityModel.LAYER_LOCATION, JammerEntityModel::createBodyLayer);
         event.registerLayerDefinition(JammerEntityModel.OUTLINE_LAYER_LOCATION, JammerEntityModel::createOutlineLayer);
         event.registerLayerDefinition(ProtoBeeEntityModel.LAYER_LOCATION, ProtoBeeEntityModel::createBodyLayer);
-        event.registerLayerDefinition(FurredLatexTigerSharkEntityModel.LAYER_LOCATION, FurredLatexTigerSharkEntityModel::createBodyLayer);
-        event.registerLayerDefinition(FluffedUpLatexSnowLeopardMaleEntityModel.LAYER_LOCATION, FluffedUpLatexSnowLeopardMaleEntityModel::createBodyLayer);
-        event.registerLayerDefinition(FluffedUpLatexSnowLeopardFemaleEntityModel.LAYER_LOCATION, FluffedUpLatexSnowLeopardFemaleEntityModel::createBodyLayer);
         event.registerLayerDefinition(Scp009EntityModel.LAYER_LOCATION, Scp009EntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexHazzyEntityModel.LAYER_LOCATION, LatexHazzyEntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexCatteEntityModel.LAYER_LOCATION, LatexCatteEntityModel::createBodyLayer);

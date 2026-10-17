@@ -2,17 +2,18 @@ package com.katt.changedextras.events;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.ability.ParryAbility;
+import com.katt.changedextras.common.PlayerFreezeManager;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.network.JackpotStatePacket;
 import com.katt.changedextras.network.ParryStatePacket;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,11 +23,7 @@ public class ChangedExtrasEvents {
 
     private static final String NBT_TAG = "JackpotActive";
     public static final String JACKPOT_TICKS_TAG = "JackpotTicksRemaining";
-    private static final String JACKPOT_SLOWNESS_TICKS_TAG = "JackpotSlownessTicksRemaining";
-    private static final String JACKPOT_NAUSEA_TICKS_TAG = "JackpotNauseaTicksRemaining";
     public static final int JACKPOT_DURATION_TICKS = (4 * 60 + 11) * 20;
-    private static final int JACKPOT_SLOWNESS_DURATION_TICKS = 2 * 60 * 20;
-    private static final int JACKPOT_NAUSEA_DURATION_TICKS = 60 * 20;
 
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
@@ -35,66 +32,33 @@ public class ChangedExtrasEvents {
         if (living.level().isClientSide()) return;
 
         tickJackpot(living);
-        tickJackpotAftermath(living);
-        tickParrySpam(living);
+        tickParryTimeline(living);
     }
 
-    private static void tickParrySpam(LivingEntity living) {
+    private static void tickParryTimeline(LivingEntity living) {
         CompoundTag data = living.getPersistentData();
-        if (data.getBoolean(NBT_TAG)) {
-            if (data.contains(ParryAbility.PARRY_SPAM_COUNT_TAG) || data.contains(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
-                data.remove(ParryAbility.PARRY_COUNT_TAG);
-                data.remove(ParryAbility.PARRY_READY_FOR_SPAM_TAG);
-                data.remove(ParryAbility.PARRY_READY_TIMEOUT_TAG);
-                data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
-                data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
-                data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
-            }
-            return;
+
+        // Tick down parry cooldown
+        int cooldown = data.getInt(ParryAbility.PARRY_COOLDOWN_TAG);
+        if (cooldown > 0) {
+            data.putInt(ParryAbility.PARRY_COOLDOWN_TAG, cooldown - 1);
         }
 
-        if (data.getBoolean(ParryAbility.PARRY_READY_FOR_SPAM_TAG)) {
-            // Check 15-second expiration timer if player does not spam ability key
-            int readyTimer = data.contains(ParryAbility.PARRY_READY_TIMEOUT_TAG)
-                    ? data.getInt(ParryAbility.PARRY_READY_TIMEOUT_TAG)
-                    : ParryAbility.PARRY_READY_TIMEOUT_TICKS;
+        // Tick parry sequence (3.0s = 60 ticks)
+        if (data.getBoolean(ParryAbility.PARRY_SEQUENCE_ACTIVE_TAG)) {
+            int ticks = data.getInt(ParryAbility.PARRY_TICKS_TAG) + 1;
+            data.putInt(ParryAbility.PARRY_TICKS_TAG, ticks);
 
-            readyTimer--;
-            if (readyTimer <= 0) {
-                // 15 seconds elapsed without completing spam - expire parries and reset state
-                data.remove(ParryAbility.PARRY_COUNT_TAG);
-                data.remove(ParryAbility.PARRY_READY_FOR_SPAM_TAG);
-                data.remove(ParryAbility.PARRY_READY_TIMEOUT_TAG);
-                data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
-                data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
-                data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
-                living.removeEffect(MobEffects.BLINDNESS);
+            // Recovery window ends at 3.0s (60 ticks)
+            if (ticks >= ParryAbility.PARRY_TOTAL_TICKS) {
+                data.remove(ParryAbility.PARRY_SEQUENCE_ACTIVE_TAG);
+                data.remove(ParryAbility.PARRY_TICKS_TAG);
+
+                // Failed parry: stay locked for an extra 0.5s (unless already released)
+                PlayerFreezeManager.setRemaining(living.getUUID(), ParryAbility.FAILURE_LOCK_TICKS);
 
                 if (living.level() instanceof ServerLevel serverLevel) {
                     ParryStatePacket.broadcast(serverLevel, living.getUUID(), false, false);
-                }
-                if (living instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.displayClientMessage(
-                            Component.literal("§cParry charge expired."),
-                            true
-                    );
-                }
-                return;
-            } else {
-                data.putInt(ParryAbility.PARRY_READY_TIMEOUT_TAG, readyTimer);
-            }
-
-            int decay = data.getInt(ParryAbility.PARRY_SPAM_DECAY_TAG);
-            if (decay > 0) {
-                decay--;
-                if (decay <= 0) {
-                    data.remove(ParryAbility.PARRY_SPAM_COUNT_TAG);
-                    data.remove(ParryAbility.PARRY_SPAM_DECAY_TAG);
-                    data.remove(ParryAbility.HEARTBEAT_PLAYING_TAG);
-                    living.removeEffect(MobEffects.BLINDNESS);
-                } else {
-                    data.putInt(ParryAbility.PARRY_SPAM_DECAY_TAG, decay);
-                    living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false, false));
                 }
             }
         }
@@ -111,6 +75,14 @@ public class ChangedExtrasEvents {
 
         living.getPersistentData().putInt(JACKPOT_TICKS_TAG, ticksRemaining - 1);
 
+        // Periodically resync the client state so a single missed packet (most commonly the
+        // one sent right before a domain-collapse dimension change) cannot leave the aura and
+        // music stuck off for the whole jackpot. setJackpotState is idempotent client-side.
+        if (living instanceof ServerPlayer serverPlayer && living.level() instanceof ServerLevel serverLevel
+                && ticksRemaining % 20 == 0) {
+            JackpotStatePacket.broadcast(serverLevel, serverPlayer.getUUID(), true);
+        }
+
         living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 30, 9, false, false));
         living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 30, 2, false, false));
         living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 30, 1, false, false));
@@ -124,8 +96,6 @@ public class ChangedExtrasEvents {
     private static void endJackpot(LivingEntity living) {
         living.getPersistentData().putBoolean(NBT_TAG, false);
         living.getPersistentData().remove(JACKPOT_TICKS_TAG);
-        living.getPersistentData().putInt(JACKPOT_SLOWNESS_TICKS_TAG, JACKPOT_SLOWNESS_DURATION_TICKS);
-        living.getPersistentData().putInt(JACKPOT_NAUSEA_TICKS_TAG, JACKPOT_NAUSEA_DURATION_TICKS);
 
         if (living instanceof KattEntity katt) {
             katt.setJackpot(false);
@@ -136,21 +106,14 @@ public class ChangedExtrasEvents {
         }
     }
 
-    private static void tickJackpotAftermath(LivingEntity living) {
-        int slownessTicks = living.getPersistentData().getInt(JACKPOT_SLOWNESS_TICKS_TAG);
-        if (slownessTicks > 0) {
-            living.getPersistentData().putInt(JACKPOT_SLOWNESS_TICKS_TAG, slownessTicks - 1);
-            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0, false, false));
-        } else {
-            living.getPersistentData().remove(JACKPOT_SLOWNESS_TICKS_TAG);
-        }
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        LivingEntity living = event.getEntity();
+        if (living.level().isClientSide()) return;
 
-        int nauseaTicks = living.getPersistentData().getInt(JACKPOT_NAUSEA_TICKS_TAG);
-        if (nauseaTicks > 0) {
-            living.getPersistentData().putInt(JACKPOT_NAUSEA_TICKS_TAG, nauseaTicks - 1);
-            living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 30, 1, false, false));
-        } else {
-            living.getPersistentData().remove(JACKPOT_NAUSEA_TICKS_TAG);
+        // The jackpot (aura, uniforms, looping song) stops the moment its holder dies.
+        if (living.getPersistentData().getBoolean(NBT_TAG)) {
+            endJackpot(living);
         }
     }
 }

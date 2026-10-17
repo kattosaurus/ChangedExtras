@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "changedextras:scp009_crystal"
+    "changedextras:scp009_crystal",
+    "changedextras:domain_barrier"
   ]
 }

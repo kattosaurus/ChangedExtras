@@ -26,6 +26,11 @@ public class InitCrTabs {
                         output.accept(ChangedExtras.FLASK_OF_TEARS.get());
                         output.accept(ChangedExtras.THE_PALETTE.get());
                         output.accept(ChangedExtras.ICECREAM_ITEM.get());
+                        output.accept(ChangedExtras.PINK_ICECREAM_ITEM.get());
+                        output.accept(ChangedExtras.MINT_ICECREAM_ITEM.get());
+                        output.accept(ChangedExtras.CHOCO_ICECREAM_ITEM.get());
+                        output.accept(ChangedExtras.STRAWBERRY_ICECREAM_ITEM.get());
+                        output.accept(ChangedExtras.NEAPOLITAN_ICECREAM_ITEM.get());
                         output.accept(ChangedExtras.ICECREAM_BLOCK_ITEM.get());
                         output.accept(ChangedExtras.SCP009_CRYSTAL_ITEM.get());
                         output.accept(ChangedExtras.SCP009_CRYSTAL_SMALL_ITEM.get());

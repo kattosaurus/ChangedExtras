@@ -4,7 +4,6 @@ import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.init.ChangedExtrasEffects;
 import com.katt.changedextras.init.ChangedExtrasParticles;
 import com.katt.changedextras.model.catte_bucket;
-import com.katt.changedextras.network.JackpotClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -45,9 +44,10 @@ public class ClientEventHandler {
             if (mc.level == null || mc.isPaused()) return;
 
             ArtistBossMusicManager.tick(mc);
+            JackpotSoundManager.tick(mc);
 
             for (Player player : mc.level.players()) {
-                if (JackpotSoundManager.isActive(player.getUUID())) {
+                if (ClientJackpotTracker.isJackpotActive(player.getUUID())) {
                     if (player == mc.player && mc.options.getCameraType().isFirstPerson()) {
                         continue;
                     }
@@ -59,12 +59,19 @@ public class ClientEventHandler {
         @SubscribeEvent
         public static void onClientDisconnect(net.minecraftforge.event.level.LevelEvent.Unload event) {
             if (event.getLevel().isClientSide()) {
-                JackpotSoundManager.clear(Minecraft.getInstance());
-                JackpotClientHandler.stopAllEffects();
+                // NOTE: do NOT clear the jackpot state/music here. LevelEvent.Unload also fires
+                // on every dimension change (e.g. leaving the domain), which would wipe the
+                // just-received jackpot state. That cleanup lives in onLoggingOut instead.
                 ArtistBossMusicManager.clear(Minecraft.getInstance());
                 ArtistTintManager.clearAll();
                 LatexDebugOverlay.clear();
             }
+        }
+
+        @SubscribeEvent
+        public static void onLoggingOut(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
+            JackpotSoundManager.clear(Minecraft.getInstance());
+            ClientJackpotTracker.clear();
         }
 
         private static void spawnJackpotParticles(Player player) {

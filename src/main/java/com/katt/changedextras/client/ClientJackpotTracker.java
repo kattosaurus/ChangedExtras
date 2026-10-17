@@ -20,24 +20,41 @@ import java.util.concurrent.ConcurrentHashMap;
 @Mod.EventBusSubscriber(modid = "changedextras", value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientJackpotTracker {
     private static boolean vignetteActive = false;
+    private static int screenShakeTicks = 0;
+    private static float screenShakeIntensity = 0.0f;
+
     private static final ResourceLocation VIGNETTE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/vignette.png");
     private static final Map<UUID, Long> JACKPOT_START_TIMES = new ConcurrentHashMap<>();
+
+    // Delay before the jackpot aura, particles, vignette and music kick in, so the effects
+    // do not fire the same instant the jackpot is won.
+    private static final long JACKPOT_START_DELAY_MS = 1000L;
 
     public static void setVignetteActive(boolean active) {
         vignetteActive = active;
     }
 
+    public static void triggerScreenShake(int ticks, float intensity) {
+        screenShakeTicks = ticks;
+        screenShakeIntensity = intensity;
+    }
+
     public static void setJackpotState(UUID uuid, boolean active) {
         if (uuid == null) return;
         if (active) {
-            JACKPOT_START_TIMES.put(uuid, System.currentTimeMillis());
+            // putIfAbsent keeps the original start time so repeated resyncs don't restart
+            // the aura timeline (song-aligned scale changes). The start time is offset into
+            // the future so the visual effects begin one second after the jackpot is won.
+            JACKPOT_START_TIMES.putIfAbsent(uuid, System.currentTimeMillis() + JACKPOT_START_DELAY_MS);
         } else {
             JACKPOT_START_TIMES.remove(uuid);
         }
     }
 
     public static boolean isJackpotActive(UUID uuid) {
-        return uuid != null && JACKPOT_START_TIMES.containsKey(uuid);
+        if (uuid == null) return false;
+        Long startTime = JACKPOT_START_TIMES.get(uuid);
+        return startTime != null && System.currentTimeMillis() >= startTime;
     }
 
     public static float getAuraScale(UUID uuid) {
@@ -45,6 +62,7 @@ public class ClientJackpotTracker {
         Long startTime = JACKPOT_START_TIMES.get(uuid);
         if (startTime == null) return 1.0f;
         float elapsedSec = (System.currentTimeMillis() - startTime) / 1000.0f;
+        if (elapsedSec < 0.0f) elapsedSec = 0.0f;
         return getAuraScaleForTime(elapsedSec);
     }
 
@@ -65,27 +83,37 @@ public class ClientJackpotTracker {
     public static void clear() {
         JACKPOT_START_TIMES.clear();
         vignetteActive = false;
+        screenShakeTicks = 0;
+        screenShakeIntensity = 0.0f;
     }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || !vignetteActive) {
+        if (event.phase != TickEvent.Phase.END) {
             return;
         }
 
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null || minecraft.level == null || !minecraft.player.isAlive() || minecraft.player.isDeadOrDying()) {
-            vignetteActive = false;
+        if (screenShakeTicks > 0) {
+            screenShakeTicks--;
         }
+
+        // The jackpot vignette follows the (delayed) jackpot state of the local player.
+        Minecraft minecraft = Minecraft.getInstance();
+        vignetteActive = minecraft.player != null && minecraft.level != null
+                && minecraft.player.isAlive() && !minecraft.player.isDeadOrDying()
+                && isJackpotActive(minecraft.player.getUUID());
     }
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
-        if (!vignetteActive) return;
-
         // Render after the hotbar to ensure it overlays the world correctly
-        if (event.getOverlay().id().getPath().equals("hotbar")) {
-            drawPulse(event.getGuiGraphics(), event.getWindow().getGuiScaledWidth(), event.getWindow().getGuiScaledHeight());
+        if (!event.getOverlay().id().getPath().equals("hotbar")) return;
+
+        int w = event.getWindow().getGuiScaledWidth();
+        int h = event.getWindow().getGuiScaledHeight();
+
+        if (vignetteActive) {
+            drawPulse(event.getGuiGraphics(), w, h);
         }
     }
 
@@ -119,19 +147,33 @@ public class ClientJackpotTracker {
 
     @SubscribeEvent
     public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
-        if (!vignetteActive) return;
+        // Screen shake effect exclusively on the player screen
+        if (screenShakeTicks > 0) {
+            float progress = (float) screenShakeTicks / 35.0f;
+            float intensity = screenShakeIntensity * progress;
+            long currentTime = System.currentTimeMillis();
+            float shakePitch = (float) Math.sin(currentTime * 0.08f) * intensity * 2.2f;
+            float shakeYaw = (float) Math.cos(currentTime * 0.07f) * intensity * 2.2f;
+            float shakeRoll = (float) Math.sin(currentTime * 0.09f) * intensity * 1.4f;
 
-        float msPerBeat = 60000.0f / 124.0f;
-        long currentTime = System.currentTimeMillis();
-        float phase = (currentTime % (long)msPerBeat) / msPerBeat;
-        float shakeEnvelope = (float) Math.pow(Math.sin(phase * Math.PI), 4);
-        float pitchIntensity = 1.5f;
-        float yawIntensity = 1.5f;
+            event.setPitch(event.getPitch() + shakePitch);
+            event.setYaw(event.getYaw() + shakeYaw);
+            event.setRoll(event.getRoll() + shakeRoll);
+        }
 
-        float smoothSway = (float) Math.sin(currentTime * 0.005f) * yawIntensity;
-        float smoothPitch = (float) Math.cos(currentTime * 0.003f) * pitchIntensity;
+        if (vignetteActive) {
+            float msPerBeat = 60000.0f / 124.0f;
+            long currentTime = System.currentTimeMillis();
+            float phase = (currentTime % (long)msPerBeat) / msPerBeat;
+            float shakeEnvelope = (float) Math.pow(Math.sin(phase * Math.PI), 4);
+            float pitchIntensity = 1.5f;
+            float yawIntensity = 1.5f;
 
-        event.setPitch(event.getPitch() + (smoothPitch * shakeEnvelope));
-        event.setYaw(event.getYaw() + (smoothSway * shakeEnvelope));
+            float smoothSway = (float) Math.sin(currentTime * 0.005f) * yawIntensity;
+            float smoothPitch = (float) Math.cos(currentTime * 0.003f) * pitchIntensity;
+
+            event.setPitch(event.getPitch() + (smoothPitch * shakeEnvelope));
+            event.setYaw(event.getYaw() + (smoothSway * shakeEnvelope));
+        }
     }
 }

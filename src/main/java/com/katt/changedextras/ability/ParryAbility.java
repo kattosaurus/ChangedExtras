@@ -1,36 +1,33 @@
 package com.katt.changedextras.ability;
 
-import com.katt.changedextras.init.ChangedExtrasAbilities;
-import com.katt.changedextras.init.ChangedExtrasSounds;
+import com.katt.changedextras.common.PlayerFreezeManager;
+import com.katt.changedextras.domain.DomainExpansionManager;
 import com.katt.changedextras.network.ParryStatePacket;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
 public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInstance> {
-    public static final String PARRY_ACTIVE_TAG = "changedextras.parry_active";
-    public static final String PARRY_COUNT_TAG = "changedextras.parry_count";
-    public static final String PARRY_READY_FOR_SPAM_TAG = "changedextras.parry_ready_for_spam";
-    public static final String PARRY_READY_TIMEOUT_TAG = "changedextras.parry_ready_timeout";
-    public static final String PARRY_SPAM_COUNT_TAG = "changedextras.parry_spam_count";
-    public static final String PARRY_SPAM_DECAY_TAG = "changedextras.parry_spam_decay";
-    public static final String HEARTBEAT_PLAYING_TAG = "changedextras.heartbeat_playing";
+    public static final String PARRY_SEQUENCE_ACTIVE_TAG = "changedextras.parry_seq_active";
+    public static final String PARRY_TICKS_TAG = "changedextras.parry_ticks";
+    public static final String PARRY_COOLDOWN_TAG = "changedextras.parry_cooldown";
+    public static final String VISUAL_ABILITIES_COUNTER_TAG = "visual_abilities_counter";
+    public static final String DOMAIN_READY_TAG = "changedextras.domain_ready";
 
-    public static final int REQUIRED_PARRIES = 15;
-    public static final int REQUIRED_SPAM = 50;
-    public static final int PARRY_READY_TIMEOUT_TICKS = 15 * 20; // 15 seconds (300 ticks)
+    // Strict Timeline Constraints (Total 3.0 seconds = 60 ticks)
+    public static final int PARRY_TOTAL_TICKS = 60;     // 3.0s
+    public static final int STARTUP_TICKS = 10;         // 0.0s - 0.5s
+    public static final int ACTIVE_BLOCK_TICKS = 55;    // 0.5s - 2.75s (active window)
+    public static final int COOLDOWN_TICKS = 100;       // 5.0 seconds strict cooldown
+    public static final int REQUIRED_PARRIES_FOR_DOMAIN = 5;
+    public static final int FAILURE_LOCK_TICKS = 10;    // Extra 0.5s freeze if the parry fails
 
     public ParryAbility() {
         super(ParryAbilityInstance::new);
@@ -38,22 +35,30 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
+        if (isDomainReady(entity != null ? entity.getEntity() : null)) {
+            return Component.literal("§dDomain Expansion: Idle Death Gamble");
+        }
         return Component.translatable("ability.changedextras.parry.name");
     }
 
     @Override
     public List<Component> getAbilityDescription(IAbstractChangedEntity entity) {
+        if (isDomainReady(entity != null ? entity.getEntity() : null)) {
+            return List.of(Component.literal("§dActivate to expand the domain barrier \"Idle Death Gamble\"!"));
+        }
         return List.of(Component.translatable("ability.changedextras.parry.description"));
     }
 
+    // Input Rule: Non-holdable. A single discrete press triggers the sequence.
     @Override
     public UseType getUseType(IAbstractChangedEntity entity) {
-        return UseType.HOLD;
+        return UseType.INSTANT;
     }
 
+    // Cooldown: Strict 5-second cooldown immediately after the ability is used.
     @Override
     public int getCoolDown(IAbstractChangedEntity entity) {
-        return 0;
+        return COOLDOWN_TICKS;
     }
 
     @Override
@@ -61,16 +66,25 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
         if (entity.getPersistentData().getBoolean("JackpotActive")) {
             return false;
         }
-        return entity.getEntity() != null;
+        LivingEntity living = entity.getEntity();
+        if (living == null || !living.isAlive()) return false;
+
+        // Domain Expansion ready check allows immediate casting
+        if (isDomainReady(living)) {
+            return true;
+        }
+
+        // Check if currently on cooldown or already executing parry sequence
+        int cooldown = living.getPersistentData().getInt(PARRY_COOLDOWN_TAG);
+        if (cooldown > 0) {
+            return false;
+        }
+        return !living.getPersistentData().getBoolean(PARRY_SEQUENCE_ACTIVE_TAG);
     }
 
     @Override
     public boolean canKeepUsing(IAbstractChangedEntity entity) {
-        if (entity.getPersistentData().getBoolean("JackpotActive")) {
-            return false;
-        }
-        LivingEntity living = entity.getEntity();
-        return living != null && living.isAlive();
+        return false;
     }
 
     public static class ParryAbilityInstance extends AbstractAbilityInstance {
@@ -83,148 +97,137 @@ public class ParryAbility extends AbstractAbility<ParryAbility.ParryAbilityInsta
             if (this.entity.getPersistentData().getBoolean("JackpotActive")) {
                 return false;
             }
-            return this.entity.getEntity() != null;
+            LivingEntity living = this.entity.getEntity();
+            if (living == null || !living.isAlive()) return false;
+
+            if (isDomainReady(living)) {
+                return true;
+            }
+
+            int cooldown = living.getPersistentData().getInt(PARRY_COOLDOWN_TAG);
+            return cooldown <= 0 && !living.getPersistentData().getBoolean(PARRY_SEQUENCE_ACTIVE_TAG);
         }
 
         @Override
         public boolean canKeepUsing() {
-            if (this.entity.getPersistentData().getBoolean("JackpotActive")) {
-                return false;
-            }
-            LivingEntity living = this.entity.getEntity();
-            return living != null && living.isAlive();
+            return false;
         }
 
         @Override
         public void startUsing() {
-            if (this.entity.getPersistentData().getBoolean("JackpotActive")) {
-                return;
-            }
             LivingEntity living = this.entity.getEntity();
-            if (living == null) return;
+            if (living == null || living.level().isClientSide()) return;
 
             CompoundTag data = living.getPersistentData();
 
-            // When 5 parries have been performed, the ability enters spam mode to unleash Jackpot
-            if (data.getBoolean(PARRY_READY_FOR_SPAM_TAG)) {
-                int currentSpam = data.getInt(PARRY_SPAM_COUNT_TAG) + 1;
-
-                // Refresh 15-second expiration timer on each spam keypress
-                data.putInt(PARRY_READY_TIMEOUT_TAG, PARRY_READY_TIMEOUT_TICKS);
-
-                // Apply blindness while spamming
-                living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 45, 0, false, false, false));
-
-                // Play heartbeat audio on first spam
-                if (currentSpam == 1 || !data.getBoolean(HEARTBEAT_PLAYING_TAG)) {
-                    data.putBoolean(HEARTBEAT_PLAYING_TAG, true);
-                    if (living.level() instanceof ServerLevel serverLevel) {
-                        serverLevel.playSound(null, living.getX(), living.getY(), living.getZ(),
-                                ChangedExtrasSounds.HEARTBEAT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                    }
+            // The second activation of the ability (once ready) triggers the Domain Expansion state
+            if (data.getBoolean(DOMAIN_READY_TAG)) {
+                data.remove(DOMAIN_READY_TAG);
+                if (living instanceof ServerPlayer serverPlayer) {
+                    DomainExpansionManager.getInstance().openDomain(serverPlayer);
                 }
-
-                // Reset spam decay timer (2 seconds of inactivity will reset spam progress)
-                data.putInt(PARRY_SPAM_DECAY_TAG, 40);
-
-                if (currentSpam >= REQUIRED_SPAM) {
-                    // JACKPOT UNLEASHED!
-                    data.remove(PARRY_COUNT_TAG);
-                    data.remove(PARRY_READY_FOR_SPAM_TAG);
-                    data.remove(PARRY_READY_TIMEOUT_TAG);
-                    data.remove(PARRY_SPAM_COUNT_TAG);
-                    data.remove(PARRY_SPAM_DECAY_TAG);
-                    data.remove(HEARTBEAT_PLAYING_TAG);
-                    data.putBoolean(PARRY_ACTIVE_TAG, false);
-                    living.removeEffect(MobEffects.BLINDNESS);
-                    broadcastParry(false, false);
-
-                    if (living.level() instanceof ServerLevel serverLevel) {
-                        // Play Minecraft explosion sound and particles
-                        serverLevel.playSound(null, living.getX(), living.getY(), living.getZ(),
-                                SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.0F);
-                        serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER,
-                                living.getX(), living.getY() + 1.0D, living.getZ(), 1, 0.0D, 0.0D, 0.0D, 0.0D);
-                    }
-
-                    if (living instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.displayClientMessage(
-                                Component.literal("§6§lJACKPOT!"),
-                                true
-                        );
-                    }
-                    ChangedExtrasAbilities.activateJackpot(living);
-                } else {
-                    data.putInt(PARRY_SPAM_COUNT_TAG, currentSpam);
-                    if (living instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.displayClientMessage(
-                                Component.literal("§c§lSpam for Jackpot! §e" + currentSpam + " §7/ §e" + REQUIRED_SPAM),
-                                true
-                        );
-                    }
-                }
+                // Apply cooldown to controller
+                getController().forceCooldown(COOLDOWN_TICKS);
+                data.putInt(PARRY_COOLDOWN_TAG, COOLDOWN_TICKS);
                 return;
             }
 
-            // Normal parrying stance
-            data.putBoolean(PARRY_ACTIVE_TAG, true);
-            broadcastParry(true, false);
+            // Normal Parry activation: Non-holdable single discrete press
+            // Apply strict 5-second cooldown immediately after ability is used
+            data.putInt(PARRY_COOLDOWN_TAG, COOLDOWN_TICKS);
+            getController().forceCooldown(COOLDOWN_TICKS);
+
+            // Initialize timeline tracker (0 ticks)
+            data.putBoolean(PARRY_SEQUENCE_ACTIVE_TAG, true);
+            data.putInt(PARRY_TICKS_TAG, 0);
+
+            // Freeze the caster in place for the whole parry sequence
+            if (living instanceof ServerPlayer serverPlayer) {
+                PlayerFreezeManager.freeze(serverPlayer, PlayerFreezeManager.INDEFINITE);
+            }
+
+            // Spawn 2 Iron Door models and sync parry_start animation concurrently
+            if (living.level() instanceof ServerLevel serverLevel) {
+                ParryStatePacket.broadcast(serverLevel, living.getUUID(), true, false);
+            }
+
+            // Check if inside active Domain Expansion break/intermission phase
+            if (DomainExpansionManager.getInstance().isDomainActive(living.getUUID())) {
+                DomainExpansionManager.getInstance().onVisualAbilityUsed(living);
+            }
         }
 
         @Override
         public void tick() {
-            if (this.entity.getPersistentData().getBoolean("JackpotActive")) {
-                stopUsing();
-                return;
+            LivingEntity living = this.entity.getEntity();
+            if (living == null || living.level().isClientSide()) return;
+
+            CompoundTag data = living.getPersistentData();
+
+            // Advance parry cooldown
+            int cooldown = data.getInt(PARRY_COOLDOWN_TAG);
+            if (cooldown > 0) {
+                data.putInt(PARRY_COOLDOWN_TAG, cooldown - 1);
             }
-            if (!this.entity.getPersistentData().getBoolean(PARRY_READY_FOR_SPAM_TAG)) {
-                if (!this.entity.getPersistentData().getBoolean(PARRY_ACTIVE_TAG)) {
-                    this.entity.getPersistentData().putBoolean(PARRY_ACTIVE_TAG, true);
-                    broadcastParry(true, false);
+
+            // Advance parry timeline
+            if (data.getBoolean(PARRY_SEQUENCE_ACTIVE_TAG)) {
+                int ticks = data.getInt(PARRY_TICKS_TAG) + 1;
+                data.putInt(PARRY_TICKS_TAG, ticks);
+
+                // Total 3.0 seconds (60 ticks): naturally finish recovery window
+                if (ticks >= PARRY_TOTAL_TICKS) {
+                    data.remove(PARRY_SEQUENCE_ACTIVE_TAG);
+                    data.remove(PARRY_TICKS_TAG);
+
+                    // Failed parry: stay locked for an extra 0.5s (unless already released)
+                    PlayerFreezeManager.setRemaining(living.getUUID(), FAILURE_LOCK_TICKS);
+
+                    if (living.level() instanceof ServerLevel serverLevel) {
+                        ParryStatePacket.broadcast(serverLevel, living.getUUID(), false, false);
+                    }
                 }
             }
         }
 
         @Override
-        public void stopUsing() {
-            if (!this.entity.getPersistentData().getBoolean(PARRY_READY_FOR_SPAM_TAG)) {
-                this.entity.getPersistentData().putBoolean(PARRY_ACTIVE_TAG, false);
-                broadcastParry(false, false);
-            }
-        }
-
-        private void broadcastParry(boolean parrying, boolean counterattacking) {
-            LivingEntity living = this.entity.getEntity();
-            if (living != null && living.level() instanceof ServerLevel serverLevel) {
-                ParryStatePacket.broadcast(serverLevel, living.getUUID(), parrying, counterattacking);
-            }
-        }
+        public void stopUsing() {}
 
         @Override
         public void saveData(CompoundTag tag) {
             super.saveData(tag);
-            tag.putBoolean("Parrying", this.entity.getPersistentData().getBoolean(PARRY_ACTIVE_TAG));
-            tag.putInt("ParryCount", this.entity.getPersistentData().getInt(PARRY_COUNT_TAG));
-            tag.putBoolean("ParryReadyForSpam", this.entity.getPersistentData().getBoolean(PARRY_READY_FOR_SPAM_TAG));
-            tag.putInt("ParryReadyTimeout", this.entity.getPersistentData().getInt(PARRY_READY_TIMEOUT_TAG));
-            tag.putInt("ParrySpamCount", this.entity.getPersistentData().getInt(PARRY_SPAM_COUNT_TAG));
+            tag.putBoolean("ParrySeqActive", this.entity.getPersistentData().getBoolean(PARRY_SEQUENCE_ACTIVE_TAG));
+            tag.putInt("ParryTicks", this.entity.getPersistentData().getInt(PARRY_TICKS_TAG));
+            tag.putInt("ParryCooldown", this.entity.getPersistentData().getInt(PARRY_COOLDOWN_TAG));
+            tag.putInt("VisualAbilities", this.entity.getPersistentData().getInt(VISUAL_ABILITIES_COUNTER_TAG));
+            tag.putBoolean("DomainReady", this.entity.getPersistentData().getBoolean(DOMAIN_READY_TAG));
         }
 
         @Override
         public void readData(CompoundTag tag) {
             super.readData(tag);
-            this.entity.getPersistentData().putBoolean(PARRY_ACTIVE_TAG, tag.getBoolean("Parrying"));
-            this.entity.getPersistentData().putInt(PARRY_COUNT_TAG, tag.getInt("ParryCount"));
-            this.entity.getPersistentData().putBoolean(PARRY_READY_FOR_SPAM_TAG, tag.getBoolean("ParryReadyForSpam"));
-            this.entity.getPersistentData().putInt(PARRY_READY_TIMEOUT_TAG, tag.getInt("ParryReadyTimeout"));
-            this.entity.getPersistentData().putInt(PARRY_SPAM_COUNT_TAG, tag.getInt("ParrySpamCount"));
+            this.entity.getPersistentData().putBoolean(PARRY_SEQUENCE_ACTIVE_TAG, tag.getBoolean("ParrySeqActive"));
+            this.entity.getPersistentData().putInt(PARRY_TICKS_TAG, tag.getInt("ParryTicks"));
+            this.entity.getPersistentData().putInt(PARRY_COOLDOWN_TAG, tag.getInt("ParryCooldown"));
+            this.entity.getPersistentData().putInt(VISUAL_ABILITIES_COUNTER_TAG, tag.getInt("VisualAbilities"));
+            this.entity.getPersistentData().putBoolean(DOMAIN_READY_TAG, tag.getBoolean("DomainReady"));
         }
     }
 
-    public static boolean isParrying(LivingEntity entity) {
+    /**
+     * Checks if the entity is currently within the strict Active Block Window (0.5s - 2.75s / ticks 10 - 55).
+     * During 0.0s - 0.5s (startup) or 2.75s - 3.0s (recovery), parry is NOT active and player takes full damage.
+     */
+    public static boolean isParryActive(LivingEntity entity) {
         if (entity == null) return false;
-        if (entity.getPersistentData().getBoolean("JackpotActive")) return false;
-        if (entity.getPersistentData().getBoolean(PARRY_READY_FOR_SPAM_TAG)) return false;
-        return entity.getPersistentData().getBoolean(PARRY_ACTIVE_TAG);
+        CompoundTag data = entity.getPersistentData();
+        if (!data.getBoolean(PARRY_SEQUENCE_ACTIVE_TAG)) return false;
+
+        int ticks = data.getInt(PARRY_TICKS_TAG);
+        return ticks >= STARTUP_TICKS && ticks <= ACTIVE_BLOCK_TICKS;
+    }
+
+    public static boolean isDomainReady(LivingEntity entity) {
+        return entity != null && entity.getPersistentData().getBoolean(DOMAIN_READY_TAG);
     }
 }

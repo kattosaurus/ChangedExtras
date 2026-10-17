@@ -12,6 +12,36 @@ public final class ChangedExtrasSounds {
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ChangedExtras.MODID);
 
     /**
+     * Voice line / sting played the moment a Domain Expansion opens.
+     * Audio file at:
+     *   src/main/resources/assets/changedextras/sounds/domain_expansion.ogg
+     */
+    public static final RegistryObject<SoundEvent> DOMAIN_EXPANSION =
+            REGISTRY.register("domain_expansion", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "domain_expansion")));
+
+    /**
+     * Sting played when the domain swaps to a new scenario.
+     * Audio file at:
+     *   src/main/resources/assets/changedextras/sounds/scenario_swap.ogg
+     */
+    public static final RegistryObject<SoundEvent> SCENARIO_SWAP =
+            REGISTRY.register("scenario_swap", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "scenario_swap")));
+
+    /**
+     * Sting played when a Domain Expansion shatters.
+     * Audio file at:
+     *   src/main/resources/assets/changedextras/sounds/domain_break.ogg
+     */
+    public static final RegistryObject<SoundEvent> DOMAIN_BREAK =
+            REGISTRY.register("domain_break", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "domain_break")));
+
+    /**
      * The looping song that plays when Jackpot is active.
      * Provide your audio file at:
      *   src/main/resources/assets/changedextras/sounds/jackpot_song.ogg
@@ -20,6 +50,16 @@ public final class ChangedExtrasSounds {
             REGISTRY.register("jackpot_song", () ->
                     SoundEvent.createVariableRangeEvent(
                             ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "jackpot_song")));
+
+    /**
+     * The looping song that plays while Jackpot is active.
+     * Provide your audio file at:
+     *   src/main/resources/assets/changedextras/sounds/jackpot_loop.ogg
+     */
+    public static final RegistryObject<SoundEvent> JACKPOT_LOOP =
+            REGISTRY.register("jackpot_loop", () ->
+                    SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "jackpot_loop")));
 
     /**
      * Short "disc stop" sound when Jackpot ends.

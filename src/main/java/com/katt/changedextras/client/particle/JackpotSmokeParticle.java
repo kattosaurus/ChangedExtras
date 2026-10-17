@@ -112,7 +112,11 @@ public class JackpotSmokeParticle extends TextureSheetParticle {
         float auraScale = ClientJackpotTracker.getAuraScale(target.getUUID());
         this.quadSize = (BASE_SIZE * auraScale) + (0.15f * auraScale * (float)Math.sin(this.age * 0.5f));
 
-        if (this.age++ >= this.lifetime) { this.age = 0; }
+        // Let the particle expire normally so the aura cycles instead of accumulating forever.
+        if (this.age++ >= this.lifetime) {
+            this.remove();
+            return;
+        }
         this.setSpriteFromAge(this.sprites);
     }
 
