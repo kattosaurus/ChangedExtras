@@ -1,9 +1,45 @@
 {
+  "domain_expansion": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:domain_expansion",
+        "stream": false
+      }
+    ]
+  },
+  "domain_break": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:domain_break",
+        "stream": false
+      }
+    ]
+  },
+  "scenario_swap": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:scenario_swap",
+        "stream": false
+      }
+    ]
+  },
   "jackpot_song": {
     "category": "record",
     "sounds": [
       {
         "name": "changedextras:jackpot_song",
+        "stream": true
+      }
+    ]
+  },
+  "jackpot_loop": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "changedextras:jackpot_loop",
         "stream": true
       }
     ]

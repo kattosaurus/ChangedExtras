@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "changedextras:block/failed_route"
+    }
+  }
+}

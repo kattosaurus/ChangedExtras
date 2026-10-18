@@ -74,6 +74,12 @@ public final class LatexAggroHandler {
             return;
         }
 
+        // With smart latex AI disabled, Changed Extras must not alter combat outcomes: the
+        // entity attacks are handled entirely by the base Changed behaviour.
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(victim.level().getGameRules())) {
+            return;
+        }
+
 if (event.getSource().getEntity() instanceof ChangedEntity latexMob) {
             // The Artist is a straight damage boss: her killing blows remain normal deaths and
             // are never converted into a transfur into her own latex form.

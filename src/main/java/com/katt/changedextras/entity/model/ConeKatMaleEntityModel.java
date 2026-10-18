@@ -104,8 +104,8 @@ public class ConeKatMaleEntityModel extends AdvancedHumanoidModel<ConeKatMaleEnt
                 .texOffs(24, 8).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.3F)), PartPose.offset(0.0F, 0.0F, 0.0F));
         Hair.addOrReplaceChild("CheekLeft_r1", CubeListBuilder.create().texOffs(58, 65).mirror().addBox(-1.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 25.0F, 0.0F, 0.0F, -0.9599F, 0.0F));
         Hair.addOrReplaceChild("CheekBigLeft_r1", CubeListBuilder.create().texOffs(19, 71).mirror().addBox(-1.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 25.0F, 1.0F, 0.0F, -0.9599F, 0.0F));
-        Hair.addOrReplaceChild("CheekBigRight_r1", CubeListBuilder.create().texOffs(19, 71).addBox(-4.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 1.0F, 0.0F, 0.9599F, 0.0F));
-        Hair.addOrReplaceChild("CheekRight_r1", CubeListBuilder.create().texOffs(58, 65).addBox(-3.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 0.0F, 0.0F, 0.9599F, 0.0F));
+        Hair.addOrReplaceChild("CheekBigRight_r1", CubeListBuilder.create().texOffs(0, 90).addBox(-4.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 1.0F, 0.0F, 0.9599F, 0.0F));
+        Hair.addOrReplaceChild("CheekRight_r1", CubeListBuilder.create().texOffs(60, 91).addBox(-3.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 0.0F, 0.0F, 0.9599F, 0.0F));
 
         // ---- Torso + tail ----
         PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(28, 28).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
@@ -122,8 +122,8 @@ public class ConeKatMaleEntityModel extends AdvancedHumanoidModel<ConeKatMaleEnt
         // ---- Arms (with 0.1 overlay layer) ----
         partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(0, 44).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
                 .texOffs(29, 66).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(5.0F, 1.5F, 0.0F));
-        partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 44).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(29, 66).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offset(-5.0F, 1.5F, 0.0F));
+        partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(80, 16).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(80, 0).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offset(-5.0F, 1.5F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 96, 96);
     }

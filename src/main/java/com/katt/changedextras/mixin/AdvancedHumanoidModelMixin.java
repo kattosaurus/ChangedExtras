@@ -1,6 +1,7 @@
 package com.katt.changedextras.mixin;
 
 import com.katt.changedextras.client.ClientParryTracker;
+import com.katt.changedextras.client.renderer.ParryAnimationHelper;
 import com.katt.changedextras.common.LatexCuddleHelper;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.TorsoedModel;
@@ -72,6 +73,15 @@ public abstract class AdvancedHumanoidModelMixin<T extends ChangedEntity> {
             return;
         }
 
+        // The caster plays the domain-open animation during the intro, before anything else.
+        try {
+            AdvancedHumanoidModel<T> animationModel = (AdvancedHumanoidModel<T>)(Object)this;
+            if (ParryAnimationHelper.applyDomainAnimation(animationModel, uuid)) {
+                return;
+            }
+        } catch (Throwable ignored) {
+        }
+
         boolean counterattacking = ClientParryTracker.isCounterattacking(uuid);
         boolean parrying = ClientParryTracker.isParrying(uuid);
 
@@ -81,6 +91,12 @@ public abstract class AdvancedHumanoidModelMixin<T extends ChangedEntity> {
 
         try {
             AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+
+            // Try keyframe animation first
+            if (ParryAnimationHelper.applyAnimation(model, uuid)) {
+                return;
+            }
+
             ModelPart rightArm = model.getArm(HumanoidArm.RIGHT);
             ModelPart leftArm = model.getArm(HumanoidArm.LEFT);
             if (rightArm == null || leftArm == null) {

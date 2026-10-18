@@ -35,6 +35,78 @@ public class ModTransfurVariants {
     public static final GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> CONEKATS =
             ChangedTransfurVariants.Gendered.registerPair(CONEKAT_MALE, CONEKAT_FEMALE);
 
+    public static final RegistryObject<TransfurVariant<ConeKatMaleEntity>> MINT_CONEKAT_MALE =
+            REGISTRY.register("mint_conekat/male", () -> TransfurVariant.Builder.of(ModEntities.MINT_CONEKAT_MALE)
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAbilities.SWITCH_GENDER)
+                    .build());
+
+    public static final RegistryObject<TransfurVariant<ConeKatFemaleEntity>> MINT_CONEKAT_FEMALE =
+            REGISTRY.register("mint_conekat/female",
+                    () -> TransfurVariant.Builder.of(ModEntities.MINT_CONEKAT_FEMALE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_GENDER)
+                            .build());
+
+    public static final GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> MINT_CONEKATS =
+            ChangedTransfurVariants.Gendered.registerPair(MINT_CONEKAT_MALE, MINT_CONEKAT_FEMALE);
+
+    public static final RegistryObject<TransfurVariant<ConeKatMaleEntity>> CHOCO_CONEKAT_MALE =
+            REGISTRY.register("choco_conekat/male", () -> TransfurVariant.Builder.of(ModEntities.CHOCO_CONEKAT_MALE)
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAbilities.SWITCH_GENDER)
+                    .build());
+
+    public static final RegistryObject<TransfurVariant<ConeKatFemaleEntity>> CHOCO_CONEKAT_FEMALE =
+            REGISTRY.register("choco_conekat/female",
+                    () -> TransfurVariant.Builder.of(ModEntities.CHOCO_CONEKAT_FEMALE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_GENDER)
+                            .build());
+
+    public static final GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> CHOCO_CONEKATS =
+            ChangedTransfurVariants.Gendered.registerPair(CHOCO_CONEKAT_MALE, CHOCO_CONEKAT_FEMALE);
+
+    public static final RegistryObject<TransfurVariant<ConeKatMaleEntity>> STRAWBERRY_CONEKAT_MALE =
+            REGISTRY.register("strawberry_conekat/male", () -> TransfurVariant.Builder.of(ModEntities.STRAWBERRY_CONEKAT_MALE)
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAbilities.SWITCH_GENDER)
+                    .build());
+
+    public static final RegistryObject<TransfurVariant<ConeKatFemaleEntity>> STRAWBERRY_CONEKAT_FEMALE =
+            REGISTRY.register("strawberry_conekat/female",
+                    () -> TransfurVariant.Builder.of(ModEntities.STRAWBERRY_CONEKAT_FEMALE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_GENDER)
+                            .build());
+
+    public static final GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> STRAWBERRY_CONEKATS =
+            ChangedTransfurVariants.Gendered.registerPair(STRAWBERRY_CONEKAT_MALE, STRAWBERRY_CONEKAT_FEMALE);
+
+    public static final RegistryObject<TransfurVariant<ConeKatMaleEntity>> NEAPOLITAN_CONEKAT_MALE =
+            REGISTRY.register("neapolitan_conekat/male", () -> TransfurVariant.Builder.of(ModEntities.NEAPOLITAN_CONEKAT_MALE)
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAbilities.SWITCH_GENDER)
+                    .build());
+
+    public static final RegistryObject<TransfurVariant<ConeKatFemaleEntity>> NEAPOLITAN_CONEKAT_FEMALE =
+            REGISTRY.register("neapolitan_conekat/female",
+                    () -> TransfurVariant.Builder.of(ModEntities.NEAPOLITAN_CONEKAT_FEMALE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_GENDER)
+                            .build());
+
+    public static final GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> NEAPOLITAN_CONEKATS =
+            ChangedTransfurVariants.Gendered.registerPair(NEAPOLITAN_CONEKAT_MALE, NEAPOLITAN_CONEKAT_FEMALE);
+
     public static final RegistryObject<TransfurVariant<WhiteCatEntity>> WHITE_CAT =
             REGISTRY.register("latex_white_cat",
                     () -> TransfurVariant.Builder.of(ModEntities.WHITE_CAT)
@@ -81,37 +153,6 @@ public class ModTransfurVariants {
                             .reducedFall(true)
                             .extraJumps(3)
                             .build());
-
-    public static final RegistryObject<TransfurVariant<FurredLatexTigerSharkEntity>> FURRED_LATEX_TIGER_SHARK =
-            REGISTRY.register("furred_latex_tiger_shark",
-                    () -> TransfurVariant.Builder.of(ModEntities.FURRED_LATEX_TIGER_SHARK)
-                            .nightVision()
-                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
-                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                            .build());
-
-    public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardMaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE =
-            REGISTRY.register("fluffed_up_latex_snow_leopard/male",
-                    () -> TransfurVariant.Builder.of(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE)
-                            .nightVision()
-                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
-                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                            .addAbility(ChangedAbilities.SWITCH_GENDER)
-                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
-                            .replicating()
-                            .build());
-
-    public static final RegistryObject<TransfurVariant<FluffedUpLatexSnowLeopardFemaleEntity>> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE =
-            REGISTRY.register("fluffed_up_latex_snow_leopard/female",
-                    () -> TransfurVariant.Builder.of(ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE)
-                            .nightVision()
-                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
-                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                            .addAbility(ChangedAbilities.SWITCH_GENDER)
-                            .build());
-
-    public static final GenderedPair<FluffedUpLatexSnowLeopardMaleEntity, FluffedUpLatexSnowLeopardFemaleEntity> FLUFFED_UP_LATEX_SNOW_LEOPARDS =
-            ChangedTransfurVariants.Gendered.registerPair(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE);
 
     public static final RegistryObject<TransfurVariant<ArtistEntity>> ARTIST =
             REGISTRY.register("latex_artist",

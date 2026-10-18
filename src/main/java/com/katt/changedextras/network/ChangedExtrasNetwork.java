@@ -47,5 +47,17 @@ public class ChangedExtrasNetwork {
                 FeralCatStatePacket::encode,
                 FeralCatStatePacket::decode,
                 FeralCatStatePacket::handle);
+        INSTANCE.registerMessage(id++, ParryProgressPacket.class,
+                ParryProgressPacket::encode,
+                ParryProgressPacket::decode,
+                ParryProgressPacket::handle);
+        INSTANCE.registerMessage(id++, DomainStatePacket.class,
+                DomainStatePacket::encode,
+                DomainStatePacket::decode,
+                DomainStatePacket::handle);
+        INSTANCE.registerMessage(id++, DomainFlashPacket.class,
+                DomainFlashPacket::encode,
+                DomainFlashPacket::decode,
+                DomainFlashPacket::handle);
     }
 }

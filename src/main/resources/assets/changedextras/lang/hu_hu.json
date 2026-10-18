@@ -90,6 +90,7 @@
   "item.changedextras.latex_hazzy_spawn_egg": "Latex Hazzyt idéző tojás",
   "item.changedextras.sketch": "Mestermű vázlat",
   "item.changedextras.icecream": "Fagylalt",
+  "item.changedextras.pink_icecream": "Rózsaszín vaníliás fagylalt",
   "item.changedextras.long_sleeve_shirt": "Hosszú ujjú ing",
   "item.changedextras.jammer_headphones": "Zavaró fejhallgatója",
   "item.changedextras.sterile_swab": "Steril mintavevő pálca",
@@ -107,6 +108,10 @@
 
   "6 | Type": "Blokkok",
   "block.changedextras.icecream_block": "Fagylaltblokk",
+  "block.changedextras.route": "Route",
+  "block.changedextras.failed_route": "Failed Route",
+  "entity.changedextras.snep": "Snep",
+  "item.changedextras.snep_spawn_egg": "Snep Spawn Egg",
   "block.changedextras.scp009_crystal_small": "Kis SCP-009 kristály",
   "block.changedextras.scp009_crystal": "SCP-009 kristály",
   "block.changedextras.catte_bucket": "Narancssárga vödör",
@@ -159,6 +164,8 @@
   "message.changedextras.artist_brush.selected_self": "Művész ecset célpontja magadra állítva",
   "message.changedextras.artist_brush.custom_latex_only": "A művész ecset kinézete csak az egyedi latex formára alkalmazható",
   "message.changedextras.artist_brush.browse_unavailable": "A fájlböngésző itt nem érhető el. Másold be a PNG elérési útját a textúra elérési út mezőbe.",
+  "message.changedextras.route.start_set": "Útvonal kezdete beállítva: a Snep innen indul",
+  "message.changedextras.route.start_cleared": "Útvonal kezdete törölve",
   "message.changedextras.transfur_overlay.1": "\"Ááá- Mi- mi történik?\" mondod, miközben az anyag lassan beborítja a tested.",
   "message.changedextras.transfur_overlay.2": "Sikerült megfertőződnöd, nagyszerű.",
   "message.changedextras.transfur_overlay.3": "A látásod lassan elhomályosul, a bőröd ég a fertőzéstől.",
@@ -218,7 +225,8 @@
   "gamerule.changedextras:give_guidebook.description": "Adjál latex kézikönyvet az első alkalommal csatlakozó játékosoknak.",
 
   "12 | Type": "Feliratok",
-  "subtitles.changedextras.jackpot_song": "\"Magán tiszta szerelem vonat\" bevezetője szól",
+  "subtitles.changedextras.jackpot_song": "\"Magánjellegű, tiszta szerelemről szóló zene\" szól",
+  "subtitles.changedextras.jackpot_loop": "A jackpot téma szól",
   "subtitles.changedextras.jackpot_stop": "A zene hirtelen elhallgat",
   "subtitles.changedextras.parry": "Támadás elhárítva",
   "subtitles.changedextras.heartbeat": "Szív hevesen ver, talán kifulladtak?"

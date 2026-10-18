@@ -55,11 +55,13 @@ public final class LatexMobAIHandler {
             }
             return;
         }
-        if (ChangedExtrasGameRules.isSmartLatexAiEnabled(event.getLevel().getGameRules())) {
-            ensureSmartAiInstalled(mob);
-        } else {
-            ensurePlayerAggroGoal(mob);
+        if (!ChangedExtrasGameRules.isSmartLatexAiEnabled(event.getLevel().getGameRules())) {
+            // Smart latex AI is disabled: inject nothing and let the entity use its native
+            // Changed behaviour.
+            return;
         }
+        ensureSmartAiInstalled(mob);
+        ensurePlayerAggroGoal(mob);
     }
 
     @SubscribeEvent
@@ -70,21 +72,32 @@ public final class LatexMobAIHandler {
 
         boolean smartEnabled = ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules());
         if (!smartEnabled) {
-            if (INSTALLED_MOBS.contains(mob)) {
-                INSTALLED_MOBS.remove(mob);
-                LatexMindStore.forget(mob);
+            // AI is off: drop all of our state and strip any of our goals that may have been
+            // installed before the gamerule was switched off, restoring the entity's native AI.
+            INSTALLED_MOBS.remove(mob);
+            LatexMindStore.forget(mob);
+            if (hasChangedExtrasAiGoals(mob)) {
                 restoreNativeGoals(mob);
             }
-            ensurePlayerAggroGoal(mob);
             return;
         }
 
         if (!INSTALLED_MOBS.contains(mob)) {
             ensureSmartAiInstalled(mob);
         }
+        ensurePlayerAggroGoal(mob);
 
         LatexMind mind = LatexMindStore.get(mob);
         mind.tick(mob);
+    }
+
+    private static boolean hasChangedExtrasAiGoals(ChangedEntity mob) {
+        boolean goalSelectorHasModGoal = mob.goalSelector.getAvailableGoals().stream()
+                .anyMatch(wrapped -> wrapped.getGoal() instanceof ShareTargetGoal);
+        boolean targetSelectorHasModGoal = mob.targetSelector.getAvailableGoals().stream()
+                .anyMatch(wrapped -> wrapped.getGoal() instanceof ShareTargetGoal
+                        || wrapped.getGoal() instanceof PlayerAggroTargetGoal);
+        return goalSelectorHasModGoal || targetSelectorHasModGoal;
     }
 
     @SubscribeEvent

@@ -26,6 +26,46 @@ public class ModEntityRenderers {
                 context -> new ModEntityRenderer<>(context,
                         new ConeKatFemaleEntityModel(context.bakeLayer(ConeKatFemaleEntityModel.LAYER_LOCATION)),
                         ArmorLatexFemaleCatModel.MODEL_SET));
+        registerHumanoid(event, ModEntities.MINT_CONEKAT_MALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatMaleEntityModel(context.bakeLayer(ConeKatMaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexMaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/mint_conekat.png")));
+        registerHumanoid(event, ModEntities.MINT_CONEKAT_FEMALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatFemaleEntityModel(context.bakeLayer(ConeKatFemaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexFemaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/mint_conekat.png")));
+        registerHumanoid(event, ModEntities.CHOCO_CONEKAT_MALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatMaleEntityModel(context.bakeLayer(ConeKatMaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexMaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/choco_conekat.png")));
+        registerHumanoid(event, ModEntities.CHOCO_CONEKAT_FEMALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatFemaleEntityModel(context.bakeLayer(ConeKatFemaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexFemaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/choco_conekat.png")));
+        registerHumanoid(event, ModEntities.STRAWBERRY_CONEKAT_MALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatMaleEntityModel(context.bakeLayer(ConeKatMaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexMaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/strawberry_conekat.png")));
+        registerHumanoid(event, ModEntities.STRAWBERRY_CONEKAT_FEMALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatFemaleEntityModel(context.bakeLayer(ConeKatFemaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexFemaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/strawberry_conekat.png")));
+        registerHumanoid(event, ModEntities.NEAPOLITAN_CONEKAT_MALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatMaleEntityModel(context.bakeLayer(ConeKatMaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexMaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/neapolitan_conekat.png")));
+        registerHumanoid(event, ModEntities.NEAPOLITAN_CONEKAT_FEMALE.get(),
+                context -> new ModEntityRenderer<>(context,
+                        new ConeKatFemaleEntityModel(context.bakeLayer(ConeKatFemaleEntityModel.LAYER_LOCATION)),
+                        ArmorLatexFemaleCatModel.MODEL_SET,
+                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/neapolitan_conekat.png")));
         registerHumanoid(event, ModEntities.WHITE_CAT.get(),
                 context -> new WhiteCatRenderer<>(context, new WhiteCatEntityModel<>(context.bakeLayer(WhiteCatEntityModel.LAYER_LOCATION))));
         registerHumanoid(event, ModEntities.ARTIST.get(),
@@ -40,20 +80,6 @@ public class ModEntityRenderers {
                 context -> new LatexCatteRenderer<>(context, new LatexCatteEntityModel<>(context.bakeLayer(LatexCatteEntityModel.LAYER_LOCATION))));
         registerHumanoid(event, ModEntities.LATEX_HAKU.get(),
                 LatexHakuRenderer::new);
-        registerHumanoid(event, ModEntities.FURRED_LATEX_TIGER_SHARK.get(),
-                context -> new ModEntityRenderer<>(context,
-                        new FurredLatexTigerSharkEntityModel(context.bakeLayer(FurredLatexTigerSharkEntityModel.LAYER_LOCATION)),
-                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/furred_latex_tiger_shark/furred_latex_tiger_shark.png")));
-        registerHumanoid(event, ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE.get(),
-                context -> new ModEntityRenderer<>(context,
-                        new FluffedUpLatexSnowLeopardMaleEntityModel(context.bakeLayer(FluffedUpLatexSnowLeopardMaleEntityModel.LAYER_LOCATION)),
-                        ArmorLatexMaleCatModel.MODEL_SET,
-                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/fluffed_up_latex_snow_leopard_male/fluffed_up_latex_snow_leopard_male.png")));
-        registerHumanoid(event, ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE.get(),
-                context -> new ModEntityRenderer<>(context,
-                        new FluffedUpLatexSnowLeopardFemaleEntityModel(context.bakeLayer(FluffedUpLatexSnowLeopardFemaleEntityModel.LAYER_LOCATION)),
-                        ArmorLatexFemaleCatModel.MODEL_SET,
-                        ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/fluffed_up_latex_snow_leopard_female/fluffed_up_latex_snow_leopard_female.png")));
         registerHumanoid(event, ModEntities.SCP_009.get(),
                 context -> new ModEntityRenderer<>(context,
                         new Scp009EntityModel(context.bakeLayer(Scp009EntityModel.LAYER_LOCATION)),
@@ -61,5 +87,6 @@ public class ModEntityRenderers {
         registerHumanoid(event, ModEntities.LATEX_HAZZY.get(),
                 LatexHazzyRenderer::new);
         registerHumanoid(event, ModEntities.LATEX_THORNIII.get(), LatexThorniiiRenderer::new);
+        event.registerEntityRenderer(ModEntities.SNEP.get(), SnepRenderer::new);
     }
 }

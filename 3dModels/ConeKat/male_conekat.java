@@ -1,4 +1,4 @@
-// Made with Blockbench 5.2.1
+// Made with Blockbench 5.2.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
@@ -109,9 +109,9 @@ public class MaleConeKat<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition CheekBigLeft_r1 = Hair.addOrReplaceChild("CheekBigLeft_r1", CubeListBuilder.create().texOffs(19, 71).mirror().addBox(-1.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-0.5F, 25.0F, 1.0F, 0.0F, -0.9599F, 0.0F));
 
-		PartDefinition CheekBigRight_r1 = Hair.addOrReplaceChild("CheekBigRight_r1", CubeListBuilder.create().texOffs(19, 71).addBox(-4.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 1.0F, 0.0F, 0.9599F, 0.0F));
+		PartDefinition CheekBigRight_r1 = Hair.addOrReplaceChild("CheekBigRight_r1", CubeListBuilder.create().texOffs(0, 90).addBox(-4.0F, -31.0F, -5.0F, 5.0F, 6.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 1.0F, 0.0F, 0.9599F, 0.0F));
 
-		PartDefinition CheekRight_r1 = Hair.addOrReplaceChild("CheekRight_r1", CubeListBuilder.create().texOffs(58, 65).addBox(-3.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 0.0F, 0.0F, 0.9599F, 0.0F));
+		PartDefinition CheekRight_r1 = Hair.addOrReplaceChild("CheekRight_r1", CubeListBuilder.create().texOffs(60, 91).addBox(-3.0F, -30.0F, -5.0F, 4.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 25.0F, 0.0F, 0.0F, 0.9599F, 0.0F));
 
 		PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(28, 28).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(46, 66).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, -0.5F, 0.0F));
@@ -133,8 +133,8 @@ public class MaleConeKat<T extends Entity> extends EntityModel<T> {
 		PartDefinition LeftArm = partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(0, 44).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(29, 66).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(5.0F, 1.5F, 0.0F));
 
-		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 44).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
-		.texOffs(29, 66).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offset(-5.0F, 1.5F, 0.0F));
+		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(80, 16).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
+		.texOffs(80, 0).mirror().addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offset(-5.0F, 1.5F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 96, 96);
 	}

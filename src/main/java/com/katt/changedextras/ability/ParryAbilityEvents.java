@@ -1,7 +1,11 @@
 package com.katt.changedextras.ability;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.common.PlayerFreezeManager;
+import com.katt.changedextras.domain.DomainExpansionManager;
 import com.katt.changedextras.init.ChangedExtrasSounds;
+import com.katt.changedextras.network.ChangedExtrasNetwork;
+import com.katt.changedextras.network.ParryProgressPacket;
 import com.katt.changedextras.network.ParryStatePacket;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +24,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID)
 public final class ParryAbilityEvents {
@@ -33,7 +38,9 @@ public final class ParryAbilityEvents {
             return;
         }
 
-        if (!ParryAbility.isParrying(victim)) {
+        // Timeline check: Only Active Block Window (0.5s - 2.75s) intercepts and negates damage.
+        // During startup (0.0s - 0.5s) or recovery (2.75s - 3.0s), isParryActive returns false.
+        if (!ParryAbility.isParryActive(victim)) {
             return;
         }
 
@@ -45,7 +52,6 @@ public final class ParryAbilityEvents {
             return;
         }
 
-        // Only melee attacks: direct attacker must match entity (no arrows/bullets/projectiles)
         if (directEntity != attackerEntity) {
             return;
         }
@@ -63,24 +69,24 @@ public final class ParryAbilityEvents {
             return;
         }
 
-        // Block incoming attack
+        // 1. Cancel/Negate the damage event completely
         event.setCanceled(true);
 
-        float incomingDamage = event.getAmount();
-        float counterDamage = Math.max(1.0F, incomingDamage * 0.9F);
+        CompoundTag data = victim.getPersistentData();
 
-        // Counterattack attacker with left fist returning ~0.9x damage
-        DamageSource returnSource = (victim instanceof Player p)
-                ? victim.damageSources().playerAttack(p)
-                : victim.damageSources().mobAttack(victim);
-        attacker.hurt(returnSource, counterDamage);
+        // 2. Immediately interrupt and stop the parry_start animation & parry stance
+        data.remove(ParryAbility.PARRY_SEQUENCE_ACTIVE_TAG);
+        data.remove(ParryAbility.PARRY_TICKS_TAG);
 
-        Vec3 punchDir = attacker.position().subtract(victim.position()).normalize().scale(0.35D);
-        attacker.push(punchDir.x, 0.1D, punchDir.z);
-        attacker.hurtMarked = true;
+        // Successful parry: release the movement freeze immediately
+        PlayerFreezeManager.unfreeze(victim.getUUID());
 
         if (victim.level() instanceof ServerLevel serverLevel) {
-            // Play custom parry sound
+            // 3. Despawn/fade out the 2 Iron Doors instantly (handled on clients via parrying=false)
+            // 4. Play the parry_successful animation (counterattacking=true)
+            ParryStatePacket.broadcast(serverLevel, victim.getUUID(), false, true);
+
+            // Counterattack visual and sound effects
             serverLevel.playSound(null, victim.getX(), victim.getY(), victim.getZ(),
                     ChangedExtrasSounds.PARRY.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
             serverLevel.playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(),
@@ -89,36 +95,53 @@ public final class ParryAbilityEvents {
             Vec3 mid = victim.getEyePosition().add(attacker.getEyePosition()).scale(0.5D);
             serverLevel.sendParticles(ParticleTypes.CRIT, mid.x, mid.y, mid.z, 10, 0.2D, 0.2D, 0.2D, 0.05D);
             serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, mid.x, mid.y, mid.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-
-            // Trigger counterattack animation
-            ParryStatePacket.broadcast(serverLevel, victim.getUUID(), false, true);
         }
 
-        // Increment parry count towards 5
-        CompoundTag data = victim.getPersistentData();
-        int currentCount = data.getInt(ParryAbility.PARRY_COUNT_TAG) + 1;
+        // Counterattack knockback and damage
+        float incomingDamage = event.getAmount();
+        float counterDamage = Math.max(1.0F, incomingDamage * 0.9F);
+        DamageSource returnSource = (victim instanceof Player p)
+                ? victim.damageSources().playerAttack(p)
+                : victim.damageSources().mobAttack(victim);
+        attacker.hurt(returnSource, counterDamage);
+        Vec3 punchDir = attacker.position().subtract(victim.position()).normalize().scale(0.35D);
+        attacker.push(punchDir.x, 0.1D, punchDir.z);
+        attacker.hurtMarked = true;
 
-        if (currentCount >= ParryAbility.REQUIRED_PARRIES) {
-            data.putInt(ParryAbility.PARRY_COUNT_TAG, ParryAbility.REQUIRED_PARRIES);
-            data.putBoolean(ParryAbility.PARRY_READY_FOR_SPAM_TAG, true);
-            data.putInt(ParryAbility.PARRY_READY_TIMEOUT_TAG, ParryAbility.PARRY_READY_TIMEOUT_TICKS);
-            data.putBoolean(ParryAbility.PARRY_ACTIVE_TAG, false);
-            if (victim.level() instanceof ServerLevel serverLevel) {
-                ParryStatePacket.broadcast(serverLevel, victim.getUUID(), false, false);
-                serverLevel.playSound(null, victim.getX(), victim.getY(), victim.getZ(),
-                        SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 1.2F);
-            }
-            if (victim instanceof ServerPlayer serverPlayer) {
+        // 5. Increment the session variable visual_abilities_counter by 1
+        int visualCounter = data.getInt(ParryAbility.VISUAL_ABILITIES_COUNTER_TAG) + 1;
+        data.putInt(ParryAbility.VISUAL_ABILITIES_COUNTER_TAG, visualCounter);
+
+        // Check if inside active Domain Expansion break phase
+        if (DomainExpansionManager.getInstance().isDomainActive(victim.getUUID())) {
+            DomainExpansionManager.getInstance().onParrySuccess(victim);
+            return;
+        }
+
+        // 6. Before the domain is opened, keep building the parry counter toward readiness.
+        boolean becameReady = (visualCounter >= ParryAbility.REQUIRED_PARRIES_FOR_DOMAIN)
+                && !data.getBoolean(ParryAbility.DOMAIN_READY_TAG);
+
+        if (becameReady) {
+            data.putBoolean(ParryAbility.DOMAIN_READY_TAG, true);
+        }
+
+        if (victim instanceof ServerPlayer serverPlayer) {
+            // Ready Notification (Screen Shake): The exact moment the player completes the required parries
+            // trigger a screen shake effect exclusively on the casting player's screen.
+            ChangedExtrasNetwork.INSTANCE.send(
+                    PacketDistributor.PLAYER.with(() -> serverPlayer),
+                    new ParryProgressPacket(visualCounter, becameReady)
+            );
+
+            if (becameReady) {
                 serverPlayer.displayClientMessage(
-                        Component.literal("§e§l5/5 Parries! §c§lSPAM PARRY TO UNLEASH JACKPOT!"),
+                        Component.literal("§d§l★ DOMAIN EXPANSION READY! §ePress ability to open \"Idle Death Gamble\"! ★"),
                         true
                 );
-            }
-        } else {
-            data.putInt(ParryAbility.PARRY_COUNT_TAG, currentCount);
-            if (victim instanceof ServerPlayer serverPlayer) {
+            } else {
                 serverPlayer.displayClientMessage(
-                        Component.literal("§6Parry: §e" + currentCount + " §7/ §e" + ParryAbility.REQUIRED_PARRIES),
+                        Component.literal("§aParry: §e" + visualCounter + " §7/ §e" + ParryAbility.REQUIRED_PARRIES_FOR_DOMAIN + " §a(Visual Ability)"),
                         true
                 );
             }

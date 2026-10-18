@@ -1,6 +1,8 @@
 package com.katt.changedextras;
 
+import com.katt.changedextras.block.DomainBarrierBlock;
 import com.katt.changedextras.block.CatteBucketBlock;
+import com.katt.changedextras.block.RouteBlock;
 import com.katt.changedextras.block.Scp009CrystalBlock;
 import com.katt.changedextras.block.Scp009CrystalSmallBlock;
 import com.katt.changedextras.client.FeralCatClientRenderer;
@@ -15,6 +17,8 @@ import com.katt.changedextras.common.ChangedExtrasSpawnController;
 import com.katt.changedextras.entity.ModEntities;
 import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
+import com.katt.changedextras.entity.beasts.ConeKatFemaleEntity;
+import com.katt.changedextras.entity.beasts.ConeKatMaleEntity;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.fluid.ModFluids;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
@@ -39,6 +43,7 @@ import com.katt.changedextras.item.SterileSwabItem;
 import com.katt.changedextras.item.UsedVialItem;
 import com.katt.changedextras.network.ChangedExtrasNetwork;
 import com.mojang.logging.LogUtils;
+import net.ltxprogrammer.changed.entity.variant.GenderedPair;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
 import net.ltxprogrammer.changed.init.ChangedTabs;
@@ -107,6 +112,9 @@ public class ChangedExtras {
     public static final Map<RegistryObject<? extends EntityType<? extends Mob>>, RegistryObject<ForgeSpawnEggItem>> SPAWN_EGGS = new LinkedHashMap<>();
 
     private static final String ICECREAM_STREAK_TAG = "changedextras.icecream_streak";
+    private static final String ICECREAM_FLAVOR_TAG = "changedextras.icecream_flavor";
+    // How many of the same flavor in a row it takes to transfur. Set to 1 to transfur on the first ice cream.
+    private static final int ICECREAM_STREAK_NEEDED = 3;
     public static final String RECEIVED_STARTER_KIT_TAG = "changedextras.received_starter_kit";
     public static final String SPECIAL_CHOICE_MADE_TAG = "changedextras.special_choice_made";
 
@@ -143,10 +151,6 @@ public class ChangedExtras {
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final int PROTO_BEE_PRIMARY = 0xF5CB42;
     private static final int PROTO_BEE_SECONDARY = 0x4D3029;
-    private static final int SNOW_LEOPARD_PRIMARY = 0xA3A3A3;
-    private static final int SNOW_LEOPARD_SECONDARY = 0x2E2E2E;
-    private static final int TIGER_SHARK_PRIMARY = 0x9AA8AD;
-    private static final int TIGER_SHARK_SECONDARY = 0x151C1F;
     private static final int SCP_009_PRIMARY = 0xB51E2B;
     private static final int SCP_009_SECONDARY = 0x4A000E;
     private static final int LATEX_HAZZY_PRIMARY = 0xCD5452;
@@ -157,15 +161,42 @@ public class ChangedExtras {
     private static final int LATEX_HAKU_SECONDARY = 0x8B0000;
     private static final int LATEX_THORNIII_PRIMARY = 0x0f0f0f;
     private static final int LATEX_THORNIII_SECONDARY = 0x8dc7ee;
+    private static final int MINT_CONEKAT_PRIMARY = 0xA7E6C1;
+    private static final int MINT_CONEKAT_SECONDARY = 0x2E8B57;
+    private static final int CHOCO_CONEKAT_PRIMARY = 0x8B5A2B;
+    private static final int CHOCO_CONEKAT_SECONDARY = 0x3B2415;
+    private static final int STRAWBERRY_CONEKAT_PRIMARY = 0xF7A8B8;
+    private static final int STRAWBERRY_CONEKAT_SECONDARY = 0xC2185B;
+    private static final int NEAPOLITAN_CONEKAT_PRIMARY = 0xF6C6A8;
+    private static final int NEAPOLITAN_CONEKAT_SECONDARY = 0x8B5A2B;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+    public static final RegistryObject<Block> DOMAIN_BARRIER = BLOCKS.register("domain_barrier", () -> new DomainBarrierBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).instrument(NoteBlockInstrument.HAT).strength(1800.0F, 3600000.0F).requiresCorrectToolForDrops().lightLevel(state -> 15).sound(SoundType.GLASS).noOcclusion().emissiveRendering((state, level, pos) -> true)));
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final RegistryObject<Item> DOMAIN_BARRIER_ITEM = ITEMS.register("domain_barrier", () -> new BlockItem(DOMAIN_BARRIER.get(), new Item.Properties()));
+
+    // Pure green (#00FF00) path marker used to lay out scenario routes for the Snep to follow.
+    // Right-clicking a route marker toggles it as the start of the route.
+    public static final RegistryObject<Block> ROUTE = BLOCKS.register("route", () -> new RouteBlock(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_GREEN)
+            .strength(0.25F)
+            .sound(SoundType.STONE)
+    ));
+    public static final RegistryObject<Item> ROUTE_ITEM = ITEMS.register("route", () -> new BlockItem(ROUTE.get(), new Item.Properties()));
+
+    // Pure red (#FF0000) marker: the Snep walks to and stops on this block when the jackpot fails.
+    public static final RegistryObject<Block> FAILED_ROUTE = BLOCKS.register("failed_route", () -> new Block(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_RED)
+            .strength(0.25F)
+            .sound(SoundType.STONE)
+    ));
+    public static final RegistryObject<Item> FAILED_ROUTE_ITEM = ITEMS.register("failed_route", () -> new BlockItem(FAILED_ROUTE.get(), new Item.Properties()));
 
     public static final RegistryObject<Block> ICECREAM_BLOCK =
             BLOCKS.register("icecream_block", () -> new Block(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .sound(SoundType.SLIME_BLOCK)
-            )
-    );
+                            .mapColor(MapColor.STONE)
+                            .sound(SoundType.SLIME_BLOCK)
+                    )
+            );
 
     public static final RegistryObject<Block> CATTE_BUCKET_BLOCK = BLOCKS.register("catte_bucket",
             () -> new CatteBucketBlock(BlockBehaviour.Properties.of()
@@ -208,6 +239,21 @@ public class ChangedExtras {
     public static final RegistryObject<Item> ICECREAM_ITEM =
             ITEMS.register("icecream", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
                     .alwaysEat().nutrition(5).saturationMod(0.6f).build())));
+    public static final RegistryObject<Item> PINK_ICECREAM_ITEM =
+            ITEMS.register("pink_icecream", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat().nutrition(5).saturationMod(0.6f).build())));
+    public static final RegistryObject<Item> MINT_ICECREAM_ITEM =
+            ITEMS.register("mint_icecream", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat().nutrition(5).saturationMod(0.6f).build())));
+    public static final RegistryObject<Item> CHOCO_ICECREAM_ITEM =
+            ITEMS.register("choco_icecream", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat().nutrition(5).saturationMod(0.6f).build())));
+    public static final RegistryObject<Item> STRAWBERRY_ICECREAM_ITEM =
+            ITEMS.register("strawberry_icecream", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat().nutrition(5).saturationMod(0.6f).build())));
+    public static final RegistryObject<Item> NEAPOLITAN_ICECREAM_ITEM =
+            ITEMS.register("neapolitan_icecream", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .alwaysEat().nutrition(5).saturationMod(0.6f).build())));
 
     public static final RegistryObject<LatexSyringe> CONEKAT_MALE_SYRINGE =
             ITEMS.register("conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
@@ -219,12 +265,6 @@ public class ChangedExtras {
             ITEMS.register("artist_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<LatexSyringe> PROTO_BEE_SYRINGE =
             ITEMS.register("proto_bee_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<LatexSyringe> FURRED_LATEX_TIGER_SHARK_SYRINGE =
-            ITEMS.register("furred_latex_tiger_shark_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<LatexSyringe> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE =
-            ITEMS.register("fluffed_up_latex_snow_leopard_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<LatexSyringe> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE =
-            ITEMS.register("fluffed_up_latex_snow_leopard_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> SCP_009_SYRINGE =
             ITEMS.register("scp_009_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_HAZZY_SYRINGE =
@@ -235,6 +275,22 @@ public class ChangedExtras {
             ITEMS.register("latex_haku_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_THORNIII_SYRINGE =
             ITEMS.register("latex_thorniii_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> MINT_CONEKAT_MALE_SYRINGE =
+            ITEMS.register("mint_conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> MINT_CONEKAT_FEMALE_SYRINGE =
+            ITEMS.register("mint_conekat_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> CHOCO_CONEKAT_MALE_SYRINGE =
+            ITEMS.register("choco_conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> CHOCO_CONEKAT_FEMALE_SYRINGE =
+            ITEMS.register("choco_conekat_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> STRAWBERRY_CONEKAT_MALE_SYRINGE =
+            ITEMS.register("strawberry_conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> STRAWBERRY_CONEKAT_FEMALE_SYRINGE =
+            ITEMS.register("strawberry_conekat_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> NEAPOLITAN_CONEKAT_MALE_SYRINGE =
+            ITEMS.register("neapolitan_conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> NEAPOLITAN_CONEKAT_FEMALE_SYRINGE =
+            ITEMS.register("neapolitan_conekat_female_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> THE_PALETTE =
             ITEMS.register("the_palette", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ARTIST_BRUSH =
@@ -320,6 +376,22 @@ public class ChangedExtras {
             registerSpawnEgg("conekat_male_spawn_egg", ModEntities.CONEKAT_MALE, 0xE3D2BF, 0x5A3A2E);
     public static final RegistryObject<ForgeSpawnEggItem> CONEKAT_FEMALE_SPAWN_EGG =
             registerSpawnEgg("conekat_female_spawn_egg", ModEntities.CONEKAT_FEMALE, 0xE3D2BF, 0xC86A7B);
+    public static final RegistryObject<ForgeSpawnEggItem> MINT_CONEKAT_MALE_SPAWN_EGG =
+            registerSpawnEgg("mint_conekat_male_spawn_egg", ModEntities.MINT_CONEKAT_MALE, MINT_CONEKAT_PRIMARY, MINT_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> MINT_CONEKAT_FEMALE_SPAWN_EGG =
+            registerSpawnEgg("mint_conekat_female_spawn_egg", ModEntities.MINT_CONEKAT_FEMALE, MINT_CONEKAT_PRIMARY, MINT_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> CHOCO_CONEKAT_MALE_SPAWN_EGG =
+            registerSpawnEgg("choco_conekat_male_spawn_egg", ModEntities.CHOCO_CONEKAT_MALE, CHOCO_CONEKAT_PRIMARY, CHOCO_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> CHOCO_CONEKAT_FEMALE_SPAWN_EGG =
+            registerSpawnEgg("choco_conekat_female_spawn_egg", ModEntities.CHOCO_CONEKAT_FEMALE, CHOCO_CONEKAT_PRIMARY, CHOCO_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> STRAWBERRY_CONEKAT_MALE_SPAWN_EGG =
+            registerSpawnEgg("strawberry_conekat_male_spawn_egg", ModEntities.STRAWBERRY_CONEKAT_MALE, STRAWBERRY_CONEKAT_PRIMARY, STRAWBERRY_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> STRAWBERRY_CONEKAT_FEMALE_SPAWN_EGG =
+            registerSpawnEgg("strawberry_conekat_female_spawn_egg", ModEntities.STRAWBERRY_CONEKAT_FEMALE, STRAWBERRY_CONEKAT_PRIMARY, STRAWBERRY_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> NEAPOLITAN_CONEKAT_MALE_SPAWN_EGG =
+            registerSpawnEgg("neapolitan_conekat_male_spawn_egg", ModEntities.NEAPOLITAN_CONEKAT_MALE, NEAPOLITAN_CONEKAT_PRIMARY, NEAPOLITAN_CONEKAT_SECONDARY);
+    public static final RegistryObject<ForgeSpawnEggItem> NEAPOLITAN_CONEKAT_FEMALE_SPAWN_EGG =
+            registerSpawnEgg("neapolitan_conekat_female_spawn_egg", ModEntities.NEAPOLITAN_CONEKAT_FEMALE, NEAPOLITAN_CONEKAT_PRIMARY, NEAPOLITAN_CONEKAT_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> WHITE_CAT_SPAWN_EGG =
             registerSpawnEgg("white_cat_spawn_egg", ModEntities.WHITE_CAT, 0xF6F3F3, 0xF1CF6E);
     public static final RegistryObject<ForgeSpawnEggItem> LATEX_THORNIII_SPAWN_EGG =
@@ -338,12 +410,6 @@ public class ChangedExtras {
             registerSpawnEgg("jammer_spawn_egg", ModEntities.JAMMER, 0x36323e, 0x797881);
     public static final RegistryObject<ForgeSpawnEggItem> PROTO_BEE_SPAWN_EGG =
             registerSpawnEgg("proto_bee_spawn_egg", ModEntities.PROTO_BEE, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY);
-    public static final RegistryObject<ForgeSpawnEggItem> FURRED_LATEX_TIGER_SHARK_SPAWN_EGG =
-            registerSpawnEgg("furred_latex_tiger_shark_spawn_egg", ModEntities.FURRED_LATEX_TIGER_SHARK, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY);
-    public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SPAWN_EGG =
-            registerSpawnEgg("fluffed_up_latex_snow_leopard_male_spawn_egg", ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
-    public static final RegistryObject<ForgeSpawnEggItem> FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SPAWN_EGG =
-            registerSpawnEgg("fluffed_up_latex_snow_leopard_female_spawn_egg", ModEntities.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
     public static final RegistryObject<ForgeSpawnEggItem> ARTIST_MOB_SPAWN_EGG =
             registerSpawnEgg("artist_spawn_egg", ModEntities.ARTIST, 0x5C6BC0, 0xF5F5F5);
     public static final RegistryObject<ForgeSpawnEggItem> SCP_009_SPAWN_EGG =
@@ -407,9 +473,6 @@ public class ChangedExtras {
 
     private static void registerTransfurColors() {
         registerEntityColor("proto_bee", PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY);
-        registerEntityColor("furred_latex_tiger_shark", TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY);
-        registerEntityColor("fluffed_up_latex_snow_leopard_male", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
-        registerEntityColor("fluffed_up_latex_snow_leopard_female", SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY);
         registerEntityColor("scp_009", SCP_009_PRIMARY, SCP_009_SECONDARY);
         registerEntityColor("latex_hazzy", LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY);
         registerEntityColor("latex_catte", LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY);
@@ -431,8 +494,15 @@ public class ChangedExtras {
             event.accept(ICECREAM_BLOCK_ITEM.get());
             event.accept(SCP009_CRYSTAL_ITEM.get());
             event.accept(JAMMER_HEADPHONES.get());
+            event.accept(ROUTE_ITEM.get());
+            event.accept(FAILED_ROUTE_ITEM.get());
         } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(ICECREAM_ITEM.get());
+            event.accept(PINK_ICECREAM_ITEM.get());
+            event.accept(MINT_ICECREAM_ITEM.get());
+            event.accept(CHOCO_ICECREAM_ITEM.get());
+            event.accept(STRAWBERRY_ICECREAM_ITEM.get());
+            event.accept(NEAPOLITAN_ICECREAM_ITEM.get());
             event.accept(HYDROXYUREA.get());
             event.accept(CRIZANLIZUMAB.get());
             event.accept(VOXELOTOR.get());
@@ -553,7 +623,7 @@ public class ChangedExtras {
     @SubscribeEvent
     public void onItemUseStart(LivingEntityUseItemEvent.Start event) {
         ItemStack stack = event.getItem();
-        
+
         if (stack.is(KATT_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_katto"));
         }
@@ -565,12 +635,6 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_artist"));
         } else if (stack.is(PROTO_BEE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "proto_bee"));
-        } else if (stack.is(FURRED_LATEX_TIGER_SHARK_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "furred_latex_tiger_shark"));
-        } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard/male"));
-        } else if (stack.is(FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get())) {
-            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "fluffed_up_latex_snow_leopard/female"));
         } else if (stack.is(SCP_009_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "scp_009"));
         } else if (stack.is(LATEX_HAZZY_SYRINGE.get())) {
@@ -583,7 +647,36 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat/male"));
         } else if (stack.is(CONEKAT_FEMALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "conekat/female"));
+        } else if (stack.is(MINT_CONEKAT_MALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "mint_conekat/male"));
+        } else if (stack.is(MINT_CONEKAT_FEMALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "mint_conekat/female"));
+        } else if (stack.is(CHOCO_CONEKAT_MALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "choco_conekat/male"));
+        } else if (stack.is(CHOCO_CONEKAT_FEMALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "choco_conekat/female"));
+        } else if (stack.is(STRAWBERRY_CONEKAT_MALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "strawberry_conekat/male"));
+        } else if (stack.is(STRAWBERRY_CONEKAT_FEMALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "strawberry_conekat/female"));
+        } else if (stack.is(NEAPOLITAN_CONEKAT_MALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "neapolitan_conekat/male"));
+        } else if (stack.is(NEAPOLITAN_CONEKAT_FEMALE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "neapolitan_conekat/female"));
         }
+    }
+
+    /**
+     * Returns the conekat pair that matches the given ice cream, or null if the item
+     * is not a transfurring ice cream (pink ice cream is intentionally not listed: it is safe).
+     */
+    private static GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> getConekatPairFor(ItemStack stack) {
+        if (stack.is(ICECREAM_ITEM.get())) return ModTransfurVariants.CONEKATS;
+        if (stack.is(MINT_ICECREAM_ITEM.get())) return ModTransfurVariants.MINT_CONEKATS;
+        if (stack.is(CHOCO_ICECREAM_ITEM.get())) return ModTransfurVariants.CHOCO_CONEKATS;
+        if (stack.is(STRAWBERRY_ICECREAM_ITEM.get())) return ModTransfurVariants.STRAWBERRY_CONEKATS;
+        if (stack.is(NEAPOLITAN_ICECREAM_ITEM.get())) return ModTransfurVariants.NEAPOLITAN_CONEKATS;
+        return null;
     }
 
     @SubscribeEvent
@@ -598,20 +691,41 @@ public class ChangedExtras {
             return;
         }
 
-        if (stack.is(ICECREAM_ITEM.get())) {
-            int streak = player.getPersistentData().getInt(ICECREAM_STREAK_TAG) + 1;
-            if (streak >= 3) {
-                player.getPersistentData().putInt(ICECREAM_STREAK_TAG, 0);
-                ProcessTransfur.setPlayerTransfurVariant(
-                        player,
-                        ModTransfurVariants.CONEKATS.getRandomVariant(player.getRandom())
-                );
-            } else {
-                player.getPersistentData().putInt(ICECREAM_STREAK_TAG, streak);
-            }
+        // Pink ice cream is safe: it never transfurs and doesn't touch the streak
+        if (stack.is(PINK_ICECREAM_ITEM.get())) {
             return;
         }
-        player.getPersistentData().putInt(ICECREAM_STREAK_TAG, 0);
+
+        CompoundTag data = player.getPersistentData();
+        GenderedPair<ConeKatMaleEntity, ConeKatFemaleEntity> pair = getConekatPairFor(stack);
+
+        // Not a transfurring ice cream: reset the streak
+        if (pair == null) {
+            data.putInt(ICECREAM_STREAK_TAG, 0);
+            data.remove(ICECREAM_FLAVOR_TAG);
+            return;
+        }
+
+        // Already transfurred: no progress
+        if (ProcessTransfur.isPlayerTransfurred(player)) {
+            data.putInt(ICECREAM_STREAK_TAG, 0);
+            data.remove(ICECREAM_FLAVOR_TAG);
+            return;
+        }
+
+        String flavor = ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
+        int streak = flavor.equals(data.getString(ICECREAM_FLAVOR_TAG))
+                ? data.getInt(ICECREAM_STREAK_TAG) + 1
+                : 1; // different flavor: start a new streak
+
+        if (streak >= ICECREAM_STREAK_NEEDED) {
+            data.putInt(ICECREAM_STREAK_TAG, 0);
+            data.remove(ICECREAM_FLAVOR_TAG);
+            ProcessTransfur.setPlayerTransfurVariant(player, pair.getRandomVariant(player.getRandom()));
+        } else {
+            data.putInt(ICECREAM_STREAK_TAG, streak);
+            data.putString(ICECREAM_FLAVOR_TAG, flavor);
+        }
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -653,11 +767,6 @@ public class ChangedExtras {
             );
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY),
                     ChangedExtras.PROTO_BEE_SYRINGE.get());
-            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, TIGER_SHARK_PRIMARY, TIGER_SHARK_SECONDARY),
-                    ChangedExtras.FURRED_LATEX_TIGER_SHARK_SYRINGE.get());
-            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, SNOW_LEOPARD_PRIMARY, SNOW_LEOPARD_SECONDARY),
-                    ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_MALE_SYRINGE.get(),
-                    ChangedExtras.FLUFFED_UP_LATEX_SNOW_LEOPARD_FEMALE_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, SCP_009_PRIMARY, SCP_009_SECONDARY),
                     ChangedExtras.SCP_009_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY),
@@ -666,6 +775,18 @@ public class ChangedExtras {
                     ChangedExtras.LATEX_CATTE_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY),
                     ChangedExtras.LATEX_HAKU_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, MINT_CONEKAT_PRIMARY, MINT_CONEKAT_SECONDARY),
+                    ChangedExtras.MINT_CONEKAT_MALE_SYRINGE.get(),
+                    ChangedExtras.MINT_CONEKAT_FEMALE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, CHOCO_CONEKAT_PRIMARY, CHOCO_CONEKAT_SECONDARY),
+                    ChangedExtras.CHOCO_CONEKAT_MALE_SYRINGE.get(),
+                    ChangedExtras.CHOCO_CONEKAT_FEMALE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, STRAWBERRY_CONEKAT_PRIMARY, STRAWBERRY_CONEKAT_SECONDARY),
+                    ChangedExtras.STRAWBERRY_CONEKAT_MALE_SYRINGE.get(),
+                    ChangedExtras.STRAWBERRY_CONEKAT_FEMALE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, NEAPOLITAN_CONEKAT_PRIMARY, NEAPOLITAN_CONEKAT_SECONDARY),
+                    ChangedExtras.NEAPOLITAN_CONEKAT_MALE_SYRINGE.get(),
+                    ChangedExtras.NEAPOLITAN_CONEKAT_FEMALE_SYRINGE.get());
         }
 
         private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {
