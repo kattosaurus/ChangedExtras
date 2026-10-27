@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "changed:latex_base"
+    },
+    "I": {
+      "item": "minecraft:totem_of_undying"
+    },
+    "N": {
+      "item": "changed_addon:biomass"
+    },
+    "O": {
+      "item": "changedextras:the_palette"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "Q": {
+      "item": "changed:orange"
+    },
+    "R": {
+      "item": "changedextras:flask_of_tears"
+    }
+  },
+  "pattern": [
+    "NEQ",
+    "IOR",
+    "PPP"
+  ],
+  "result": {
+    "item": "changedextras:sketch"
+  },
+  "show_notification": true
+}

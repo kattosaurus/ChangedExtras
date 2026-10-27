@@ -1,0 +1,15 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 48484848,
+    "separation": 12,
+    "spacing": 36,
+    "spread_type": "linear"
+  },
+  "structures": [
+    {
+      "structure": "changedextras:biological_studies_facility",
+      "weight": 1
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 package com.katt.changedextras.client.renderer;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.client.ClientParryTracker;
+import com.katt.changedextras.client.tracker.ClientParryTracker;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;

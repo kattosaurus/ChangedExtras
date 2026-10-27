@@ -51,6 +51,10 @@ public final class ModEntityAttributes {
         event.put(ModEntities.LATEX_THORNIII.get(), LatexThorniiiEntity.createAttributes()
                 .add(Attributes.MAX_HEALTH, 40.0)
                 .build());
+        event.put(ModEntities.LATEX_CARNELINE.get(), LatexCarnelineEntity.createAttributes()
+                .build());
+        event.put(ModEntities.LATEX_PANTHER.get(), LatexPantherEntity.createAttributes()
+                .build());
 
         event.put(ModEntities.KATT.get(), KattEntity.createAttributes()
                 .add(Attributes.MAX_HEALTH, 40.0)

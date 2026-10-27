@@ -2,6 +2,7 @@ package com.katt.changedextras.init;
 
 import com.katt.changedextras.ability.PaintBallAbility;
 import com.katt.changedextras.ability.ParryAbility;
+import com.katt.changedextras.ability.PrepareAbility;
 import com.katt.changedextras.ability.PunctureAbility;
 import com.katt.changedextras.ability.SwingAbility;
 import com.katt.changedextras.ability.TurnFeralAbility;
@@ -35,6 +36,9 @@ public final class ChangedExtrasAbilities {
 
     public static final RegistryObject<ParryAbility> PARRY =
             REGISTRY.register("parry", ParryAbility::new);
+
+    public static final RegistryObject<PrepareAbility> PREPARE =
+            REGISTRY.register("prepare", PrepareAbility::new);
 
     public static final RegistryObject<TurnFeralAbility> TURN_FERAL =
             REGISTRY.register("turn_feral", TurnFeralAbility::new);

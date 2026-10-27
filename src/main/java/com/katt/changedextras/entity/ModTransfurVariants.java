@@ -217,4 +217,28 @@ public class ModTransfurVariants {
                             .gills()
                             .build());
 
+    public static final RegistryObject<TransfurVariant<LatexCarnelineEntity>> LATEX_CARNELINE =
+            REGISTRY.register("latex_carneline",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_CARNELINE)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .addAbility(ChangedAbilities.HYPNOSIS)
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<LatexPantherEntity>> LATEX_PANTHER =
+            REGISTRY.register("latex_panther",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_PANTHER)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedExtrasAbilities.PREPARE)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
+                            .build());
+
 }

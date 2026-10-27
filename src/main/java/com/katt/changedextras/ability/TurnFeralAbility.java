@@ -1,6 +1,6 @@
 package com.katt.changedextras.ability;
 
-import com.katt.changedextras.common.FeralCatManager;
+import com.katt.changedextras.common.feral.FeralCatManager;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;

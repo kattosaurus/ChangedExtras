@@ -1,6 +1,6 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.client.ClientParryTracker;
+import com.katt.changedextras.client.tracker.ClientParryTracker;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

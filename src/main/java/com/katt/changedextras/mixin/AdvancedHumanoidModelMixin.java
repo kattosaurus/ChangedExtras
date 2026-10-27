@@ -1,8 +1,8 @@
 package com.katt.changedextras.mixin;
 
-import com.katt.changedextras.client.ClientParryTracker;
+import com.katt.changedextras.client.tracker.ClientParryTracker;
 import com.katt.changedextras.client.renderer.ParryAnimationHelper;
-import com.katt.changedextras.common.LatexCuddleHelper;
+import com.katt.changedextras.common.latex.LatexCuddleHelper;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.TorsoedModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

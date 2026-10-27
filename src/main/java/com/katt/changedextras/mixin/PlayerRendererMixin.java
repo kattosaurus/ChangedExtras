@@ -1,6 +1,6 @@
 package com.katt.changedextras.mixin;
 
-import com.katt.changedextras.client.ArtistTintManager;
+import com.katt.changedextras.client.renderer.ArtistTintManager;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.resources.ResourceLocation;

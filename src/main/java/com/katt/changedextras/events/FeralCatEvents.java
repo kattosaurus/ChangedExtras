@@ -1,6 +1,6 @@
 package com.katt.changedextras.events;
 
-import com.katt.changedextras.common.FeralCatManager;
+import com.katt.changedextras.common.feral.FeralCatManager;
 import com.katt.changedextras.network.FeralCatStatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

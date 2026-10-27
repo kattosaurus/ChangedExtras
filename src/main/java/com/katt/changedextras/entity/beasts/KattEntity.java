@@ -11,6 +11,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.Level;
 
@@ -33,6 +34,12 @@ public class KattEntity extends AbstractWhiteCatEntity {
     }
     public KattEntity(EntityType<? extends KattEntity> type, Level level) {
         super(type, level);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.targetSelector.removeAllGoals(goal -> goal instanceof NearestAttackableTargetGoal<?>);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

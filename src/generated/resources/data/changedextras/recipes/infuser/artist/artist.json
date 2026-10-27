@@ -1,0 +1,37 @@
+{
+  "type": "changed:infuser",
+  "form": "changedextras:latex_artist",
+  "ingredients": [
+    {
+      "item": "changedextras:artist_brush"
+    },
+    {
+      "item": "minecraft:totem_of_undying"
+    },
+    {
+      "item": "changedextras:the_palette"
+    },
+    {
+      "item": "changed:white_latex_goo"
+    },
+    {
+      "item": "changed_addon:transfur_totem"
+    },
+    {
+      "item": "changed:white_latex_goo"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "changed_addon:laethin",
+      "nbt": "{type:\"white_latex\"}"
+    },
+    {
+      "item": "changed:black_tshirt"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "changed_addon:laethin",
+      "nbt": "{type:\"white_latex\"}"
+    }
+  ]
+}

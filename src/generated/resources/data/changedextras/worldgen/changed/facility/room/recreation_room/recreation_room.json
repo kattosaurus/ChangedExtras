@@ -1,0 +1,13 @@
+{
+  "maximum": 2,
+  "minimum": 0,
+  "neighboring_zones": [
+    "changed:entrance"
+  ],
+  "piece": {
+    "type": "changed:room",
+    "loot_table": "changedextras:chests/recreationstorage",
+    "template": "changedextras:facility/room/recreation_room/recreation_room"
+  },
+  "spawn_weight": 200
+}

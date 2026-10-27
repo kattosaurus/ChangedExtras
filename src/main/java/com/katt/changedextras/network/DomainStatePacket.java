@@ -1,6 +1,6 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.client.ClientDomainTracker;
+import com.katt.changedextras.client.tracker.ClientDomainTracker;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;

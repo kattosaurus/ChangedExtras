@@ -1,6 +1,6 @@
 package com.katt.changedextras.entity.beasts;
 
-import com.katt.changedextras.common.JammerVipManager;
+import com.katt.changedextras.common.jammer.JammerVipManager;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;

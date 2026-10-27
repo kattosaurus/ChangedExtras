@@ -220,7 +220,7 @@ It should be. It works with Changed Synergy, and as far as I know, with every ot
 - FoxxoTrystan: Conekat characters
 - Thorniii: Latex Thorniii is based on them
 
-Music was trimmed and converted to .ogg. Full credits: [MOD CREDITS](MOD%20CREDITS)
+Music was trimmed and converted to .ogg. Full credits: [MOD_CREDITS.md](MOD_CREDITS.md)
 
 ## Final words
 

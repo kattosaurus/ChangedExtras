@@ -4,7 +4,6 @@
   "addon.changedextras.cone_kat.name.male": "Cone Kat (Male)",
   "addon.changedextras.cone_kat.name.female": "Cone Kat (Female)",
   "addon.changedextras.cone_kat.description": "A life form made to feed humans and end world hunger. Originates from Resurgenced, where it is known as a Goopie or Foodie.",
-
   "2 | Type": "Abilities",
   "ability.changedextras.paint_ball.name": "Paint Ball",
   "ability.changedextras.paint_ball.description": "Throw a paint ball in the direction you're looking. Targets take 4 damage and Slowness III for 3 seconds.",
@@ -17,8 +16,8 @@
   "ability.changedextras.turn_feral.description": "Turn into a literal white cat, or return to your humanoid form.",
   "ability.changedextras.turn_feral.feral": "Turn Feral",
   "ability.changedextras.turn_feral.humanoid": "Turn Humanoid",
-  "ability.changedextras.turn_feral.can": "You \u00a7acan\u00a7r Turn Feral",
-  "ability.changedextras.turn_feral.can_humanoid": "You \u00a7acan\u00a7r Turn Humanoid",
+  "ability.changedextras.turn_feral.can": "You §acan§r Turn Feral",
+  "ability.changedextras.turn_feral.can_humanoid": "You §acan§r Turn Humanoid",
   "ability.changedextras.turn_feral.turned_feral": "You turned into a white cat!",
   "ability.changedextras.turn_feral.turned_humanoid": "You turned back to humanoid form!",
   "ability.changedextras.jackpot_aura": "Cursed Technique: Instant Jackpot",
@@ -26,7 +25,8 @@
   "ability.changedextras.jackpot_aura.description": "In other words, in the 4 minutes and 11 seconds following a jackpot, Hakari is effectively immortal.",
   "ability.changedextras.parry.name": "Parry",
   "ability.changedextras.parry.description": "Your cursed technique requires you to parry 15 times before reaching its full potential. Infinite cursed energy for 4 minutes and 11 seconds.",
-
+  "ability.changedextras.prepare.name": "Prepare",
+  "ability.changedextras.prepare.description": "Reveal every entity within your render distance with a yellow outline for 10 seconds. The outline fades out afterwards.",
   "3 | Type": "Entity names",
   "entity.changedextras.conekat.male": "Cone Kat Male",
   "entity.changedextras.conekat.female": "Cone Kat Female",
@@ -49,10 +49,10 @@
   "entity.changedextras.latex_haku": "Latex Haku",
   "entity.changedextras.latex_thorniii": "Latex Thorniii",
   "entity.changedextras.snep": "Snep",
-
+  "entity.changedextras.latex_carneline": "Latex Carneline",
+  "entity.changedextras.latex_panther": "Latex Panther",
   "4 | Type": "Special syringes",
   "item.changedextras.katt_syringe": "Katto's Syringe of Pain and Suffering",
-
   "5 | Type": "Items",
   "item.changedextras.the_palette": "The Palette",
   "item.changedextras.artist_brush": "Artist's Brush",
@@ -80,6 +80,8 @@
   "item.changedextras.latex_catte_syringe": "Latex Catte Syringe",
   "item.changedextras.latex_haku_syringe": "Latex Haku Syringe",
   "item.changedextras.latex_thorniii_syringe": "Latex Thorniii Syringe",
+  "item.changedextras.latex_carneline_syringe": "Latex Carneline Syringe",
+  "item.changedextras.latex_panther_syringe": "Latex Panther Syringe",
   "item.changedextras.conekat_male_spawn_egg": "Cone Kat Male Spawn Egg",
   "item.changedextras.conekat_female_spawn_egg": "Cone Kat Female Spawn Egg",
   "item.changedextras.mint_conekat_male_spawn_egg": "Mint Cone Kat Male Spawn Egg",
@@ -101,9 +103,14 @@
   "item.changedextras.latex_haku_spawn_egg": "Latex Haku Spawn Egg",
   "item.changedextras.latex_thorniii_spawn_egg": "Latex Thorniii Spawn Egg",
   "item.changedextras.snep_spawn_egg": "Snep Spawn Egg",
+  "item.changedextras.latex_carneline_spawn_egg": "Latex Carneline Spawn Egg",
+  "item.changedextras.latex_panther_spawn_egg": "Latex Panther Spawn Egg",
   "item.changedextras.sketch": "Masterpiece Sketch",
   "item.changedextras.scp009_crystal": "SCP-009 Crystal",
   "item.changedextras.scp009_crystal_small": "Small SCP-009 Crystal",
+  "item.changedextras.blue_stone": "Blue Stone",
+  "item.changedextras.blue_stone_crystal": "Strange Crystal",
+  "item.changedextras.strange_crystal_shard": "Strange Crystal Shard",
   "item.changedextras.scp009_water_bucket": "SCP-009 Water Bucket",
   "item.changedextras.catte_bucket": "Orange bucket",
   "item.changedextras.icecream": "Vanilla Ice Cream",
@@ -126,7 +133,6 @@
   "item.changedextras.pill_bottle": "Pill Bottle",
   "item.changedextras.flask_of_tears": "Flask of tears",
   "item.changedextras.changed_extras_guide": "A guide to latex creatures",
-
   "6 | Type": "Blocks",
   "block.changedextras.domain_barrier": "Domain Barrier",
   "block.changedextras.icecream_block": "Ice Cream Block",
@@ -135,10 +141,12 @@
   "block.changedextras.scp009_crystal": "SCP-009 Crystal",
   "block.changedextras.scp009_crystal_small": "Small SCP-009 Crystal",
   "block.changedextras.catte_bucket": "Orange bucket",
+  "block.changedextras.blue_stone": "Blue Stone",
+  "block.changedextras.blue_stone_crystal": "Strange Crystal",
+  "biome.changedextras.blue_cave": "Blue Cave",
   "block.changedextras.jammer_headphones": "Jammer Headphones",
   "painting.changedextras.the_eye.title": "Glowing eyes",
   "painting.changedextras.the_eye.author": "Katto",
-
   "7 | Type": "Creative tabs",
   "itemGroup.changedextras.changedextras_syringes": "Changed Extras Syringes",
   "itemGroup.changedextras.changedextras_mobs": "Changed Extras Mobs",
@@ -146,7 +154,6 @@
   "itemGroup.changedextras.changedextras_items": "Changed Extras Items",
   "itemGroup.changedextras.changedextras": "Changed Extras",
   "itemGroup.changedextras.changedextras_blocks": "Changed Extras Blocks",
-
   "8 | Type": "Effects",
   "effect.changedextras.medicated": "Medicated",
   "effect.changedextras.medicated.description": "Slows progress of the Pale Virus.",
@@ -158,7 +165,6 @@
   "effect.changedextras.hypoxia.description": "Causes weakness, slowness, and tissue degradation.",
   "effect.changedextras.artist_fear": "Fear",
   "effect.changedextras.artist_fear.description": "You feel uneasy.",
-
   "9 | Type": "GUI and Container",
   "container.changedextras.pill_bottle": "Pill Bottle",
   "tooltip.changedextras.pill_bottle.capacity": "Holds up to 6 pill stacks",
@@ -178,7 +184,6 @@
   "screen.changedextras.artist_brush.preview_target_hint": "Shift + left-click a player or Changed entity with the brush to target it",
   "screen.changedextras.artist_brush.preview_size": "Preview Size: %sx%s",
   "screen.changedextras.artist_brush.browse": "Browse",
-
   "10 | Type": "Messages",
   "message.changedextras.artist_brush.selected": "Artist Brush target set to %s",
   "message.changedextras.artist_brush.selected_self": "Artist Brush target set to yourself",
@@ -229,7 +234,6 @@
   "advancements.changedextras.artist_desc": "Defeat Experiment 012",
   "advancements.changedextras.katto_title": "Cat killer",
   "advancements.changedextras.katto_desc": "Kill Katto. \"Oh well, doesn't matter.\"",
-
   "11 | Type": "Game rules",
   "gamerule.changedextras:latex_equipment_enabled": "Latex Creature Equipment",
   "gamerule.changedextras:latex_equipment_enabled.description": "Whether Changed Extras latex creatures can spawn with random tools and armor.",
@@ -243,11 +247,11 @@
   "gamerule.changedextras:latex_armor_chance.description": "The percent chance for Changed Extras latex creatures to spawn with a random armor set.",
   "gamerule.changedextras:give_guidebook": "Hand new players the Guide book",
   "gamerule.changedextras:give_guidebook.description": "Hand players joining for the first time the latex guide",
-
   "12 | Type": "Subtitles",
   "subtitles.changedextras.jackpot_song": "The intro to \"Private pure love train\" plays",
   "subtitles.changedextras.jackpot_loop": "The jackpot theme plays",
   "subtitles.changedextras.jackpot_stop": "Suddenly the music stops",
   "subtitles.changedextras.parry": "Attack Parried",
-  "subtitles.changedextras.heartbeat": "Heart beats rapidly, they're out of breath maybe?"
+  "subtitles.changedextras.heartbeat": "Heart beats rapidly, they're out of breath maybe?",
+  "changedextras.death_screen.respawn_as_transfur": "Respawn as %s"
 }

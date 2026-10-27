@@ -132,6 +132,18 @@ public class ModEntities {
                     .sized(0.7F, 1.93F)
                     .build("latex_thorniii"));
 
+    public static final RegistryObject<EntityType<LatexCarnelineEntity>> LATEX_CARNELINE = REGISTRY.register("latex_carneline",
+            () -> EntityType.Builder.of(LatexCarnelineEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("latex_carneline"));
+
+    public static final RegistryObject<EntityType<LatexPantherEntity>> LATEX_PANTHER = REGISTRY.register("latex_panther",
+            () -> EntityType.Builder.of(LatexPantherEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("latex_panther"));
+
     public static final RegistryObject<EntityType<SnepEntity>> SNEP = REGISTRY.register("snep",
             () -> EntityType.Builder.of(SnepEntity::new, MobCategory.MISC)
                     .clientTrackingRange(10)

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "start=false": {
+      "model": "changedextras:block/route"
+    },
+    "start=true": {
+      "model": "changedextras:block/route_start"
+    }
+  }
+}

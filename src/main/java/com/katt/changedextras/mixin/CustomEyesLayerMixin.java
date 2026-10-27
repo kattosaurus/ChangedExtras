@@ -1,6 +1,6 @@
 package com.katt.changedextras.mixin;
 
-import com.katt.changedextras.client.ArtistTintManager;
+import com.katt.changedextras.client.renderer.ArtistTintManager;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

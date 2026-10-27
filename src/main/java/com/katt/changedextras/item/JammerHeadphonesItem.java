@@ -1,7 +1,7 @@
 package com.katt.changedextras.item;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.common.JammerVipManager;
+import com.katt.changedextras.common.jammer.JammerVipManager;
 import com.katt.changedextras.entity.ModTransfurVariants;
 import com.katt.changedextras.entity.beasts.JammerEntity;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;

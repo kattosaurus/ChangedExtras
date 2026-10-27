@@ -1,6 +1,6 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.common.JammerVipManager;
+import com.katt.changedextras.common.jammer.JammerVipManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;

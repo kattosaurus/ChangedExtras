@@ -1,6 +1,6 @@
 package com.katt.changedextras.effect;
 
-import com.katt.changedextras.client.ClientEffectHandler;
+import com.katt.changedextras.client.event.ClientEffectHandler;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;

@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class InitCrTabs {
     public static final DeferredRegister<CreativeModeTab> CT_TAB_REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ChangedExtras.MODID);
     public static final RegistryObject<CreativeModeTab> CHANGEDEXTRAS = register(
-            "changedextras",
+            ChangedExtras.MODID,
             (builder) -> builder.icon(() -> new ItemStack(ChangedExtras.CHANGED_EXTRAS_GUIDE.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(ChangedExtras.CHANGED_EXTRAS_GUIDE.get());
@@ -34,6 +34,8 @@ public class InitCrTabs {
                         output.accept(ChangedExtras.ICECREAM_BLOCK_ITEM.get());
                         output.accept(ChangedExtras.SCP009_CRYSTAL_ITEM.get());
                         output.accept(ChangedExtras.SCP009_CRYSTAL_SMALL_ITEM.get());
+                        output.accept(ChangedExtras.BLUE_STONE_CRYSTAL_ITEM.get());
+                        output.accept(ChangedExtras.STRANGE_CRYSTAL_SHARD.get());
                         output.accept(ChangedExtras.JAMMER_HEADPHONES.get());
                         output.accept(ChangedExtras.CATTE_BUCKET.get());
                         output.accept(ChangedExtras.ARTIST_SPAWN_EGG.get());
@@ -48,6 +50,7 @@ public class InitCrTabs {
                         output.accept(ChangedExtras.CRIZANLIZUMAB.get());
                         output.accept(ChangedExtras.VOXELOTOR.get());
                         output.accept(ChangedExtras.ARTIST_BRUSH.get());
+                        output.accept(ChangedExtras.BLUE_STONE_ITEM.get());
                         ChangedExtras.SPAWN_EGGS.values().stream()
                                 .map(RegistryObject::get)
                                 .forEach(output::accept);

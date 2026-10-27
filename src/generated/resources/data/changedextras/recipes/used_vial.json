@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "changedextras:used_swab"
+    },
+    {
+      "item": "changedextras:vial"
+    }
+  ],
+  "result": {
+    "item": "changedextras:used_vial"
+  }
+}

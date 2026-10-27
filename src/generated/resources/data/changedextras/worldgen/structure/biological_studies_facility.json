@@ -1,0 +1,6 @@
+{
+  "type": "changedextras:biological_studies_facility",
+  "biomes": "#changedextras:has_structure/biological_studies_facility",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

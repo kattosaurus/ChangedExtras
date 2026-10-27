@@ -1,19 +1,21 @@
 package com.katt.changedextras;
+import com.katt.changedextras.worldgen.feature.BlueStoneCrystalPatchFeature;
+import com.katt.changedextras.worldgen.feature.BlueStonePillarFeature;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.katt.changedextras.client.model.catte_bucket;
 
-import com.katt.changedextras.block.DomainBarrierBlock;
-import com.katt.changedextras.block.CatteBucketBlock;
-import com.katt.changedextras.block.RouteBlock;
-import com.katt.changedextras.block.Scp009CrystalBlock;
-import com.katt.changedextras.block.Scp009CrystalSmallBlock;
-import com.katt.changedextras.client.FeralCatClientRenderer;
-import com.katt.changedextras.client.PillBottleScreen;
+import com.katt.changedextras.block.*;
+import com.katt.changedextras.client.renderer.FeralCatClientRenderer;
+import com.katt.changedextras.client.gui.PillBottleScreen;
 import com.katt.changedextras.client.renderer.accessory.DyeableClothingRenderer;
 import com.katt.changedextras.client.renderer.accessory.JammerHeadphonesRenderer;
-import com.katt.changedextras.block.JammerHeadphonesBlock;
-import com.katt.changedextras.client.ClientEventHandler;
+import com.katt.changedextras.client.event.ClientEventHandler;
 import com.katt.changedextras.client.particle.JackpotSmokeParticleProvider;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
-import com.katt.changedextras.common.ChangedExtrasSpawnController;
+import com.katt.changedextras.common.spawn.ChangedExtrasSpawnController;
 import com.katt.changedextras.entity.ModEntities;
 import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
@@ -70,6 +72,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
@@ -114,7 +117,7 @@ public class ChangedExtras {
     private static final String ICECREAM_STREAK_TAG = "changedextras.icecream_streak";
     private static final String ICECREAM_FLAVOR_TAG = "changedextras.icecream_flavor";
     // How many of the same flavor in a row it takes to transfur. Set to 1 to transfur on the first ice cream.
-    private static final int ICECREAM_STREAK_NEEDED = 3;
+    private static final int ICECREAM_STREAK_NEEDED = 5;
     public static final String RECEIVED_STARTER_KIT_TAG = "changedextras.received_starter_kit";
     public static final String SPECIAL_CHOICE_MADE_TAG = "changedextras.special_choice_made";
 
@@ -161,6 +164,10 @@ public class ChangedExtras {
     private static final int LATEX_HAKU_SECONDARY = 0x8B0000;
     private static final int LATEX_THORNIII_PRIMARY = 0x0f0f0f;
     private static final int LATEX_THORNIII_SECONDARY = 0x8dc7ee;
+    private static final int LATEX_CARNELINE_PRIMARY = 0x5C458C;
+    private static final int LATEX_CARNELINE_SECONDARY = 0xFF075B;
+    private static final int LATEX_PANTHER_PRIMARY = 0x14141C;
+    private static final int LATEX_PANTHER_SECONDARY = 0xF2C400;
     private static final int MINT_CONEKAT_PRIMARY = 0xA7E6C1;
     private static final int MINT_CONEKAT_SECONDARY = 0x2E8B57;
     private static final int CHOCO_CONEKAT_PRIMARY = 0x8B5A2B;
@@ -170,8 +177,11 @@ public class ChangedExtras {
     private static final int NEAPOLITAN_CONEKAT_PRIMARY = 0xF6C6A8;
     private static final int NEAPOLITAN_CONEKAT_SECONDARY = 0x8B5A2B;
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
     public static final RegistryObject<Block> DOMAIN_BARRIER = BLOCKS.register("domain_barrier", () -> new DomainBarrierBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).instrument(NoteBlockInstrument.HAT).strength(1800.0F, 3600000.0F).requiresCorrectToolForDrops().lightLevel(state -> 15).sound(SoundType.GLASS).noOcclusion().emissiveRendering((state, level, pos) -> true)));
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
     public static final RegistryObject<Item> DOMAIN_BARRIER_ITEM = ITEMS.register("domain_barrier", () -> new BlockItem(DOMAIN_BARRIER.get(), new Item.Properties()));
 
     // Pure green (#00FF00) path marker used to lay out scenario routes for the Snep to follow.
@@ -212,6 +222,19 @@ public class ChangedExtras {
                     .requiresCorrectToolForDrops()
             )
     );
+    public static final RegistryObject<BlockEntityType<Scp009CrystalBlockEntity>> SCP009_CRYSTAL_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("scp009_crystal", () -> BlockEntityType.Builder
+                    .of(Scp009CrystalBlockEntity::new, SCP009_CRYSTAL.get())
+                    .build(null));
+
+    public static final RegistryObject<Block> BLUE_STONE_BLOCK = BLOCKS.register("blue_stone",
+            () -> new BlueStoneBlock(BlockBehaviour.Properties.of()
+                    .instrument(NoteBlockInstrument.BASS)
+                    .strength(1.5F)
+                    .sound(SoundType.TUFF)
+                    .requiresCorrectToolForDrops()
+            )
+    );
 
     public static final RegistryObject<Block> SCP009_CRYSTAL_SMALL = BLOCKS.register("scp009_crystal_small",
             () -> new Scp009CrystalSmallBlock(BlockBehaviour.Properties.of()
@@ -228,6 +251,30 @@ public class ChangedExtras {
             ITEMS.register("scp009_crystal_small", () -> new BlockItem(SCP009_CRYSTAL_SMALL.get(), new Item.Properties()));
     public static final RegistryObject<Item> SCP009_CRYSTAL_ITEM =
             ITEMS.register("scp009_crystal", () -> new BlockItem(SCP009_CRYSTAL.get(), new Item.Properties()));
+
+    public static final RegistryObject<Block> BLUE_STONE_CRYSTAL = BLOCKS.register("blue_stone_crystal",
+            () -> new BlueStoneCrystalBlock(BlockBehaviour.Properties.of()
+                    .instrument(NoteBlockInstrument.CHIME)
+                    .strength(0.4F)
+                    .sound(SoundType.AMETHYST)
+                    .noOcclusion()
+                    .lightLevel(state -> 15)
+                    .emissiveRendering((state, level, pos) -> true)
+                    .hasPostProcess((state, level, pos) -> true)
+                    .randomTicks()
+            )
+    );
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> BLUE_STONE_CRYSTAL_PATCH =
+            FEATURES.register("blue_stone_crystal_patch", () -> new BlueStoneCrystalPatchFeature(NoneFeatureConfiguration.CODEC));
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> BLUE_STONE_PILLAR =
+            FEATURES.register("blue_stone_pillar", () -> new BlueStonePillarFeature(NoneFeatureConfiguration.CODEC));
+
+    public static final RegistryObject<Item> BLUE_STONE_ITEM =
+            ITEMS.register("blue_stone", () -> new BlockItem(BLUE_STONE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BLUE_STONE_CRYSTAL_ITEM =
+            ITEMS.register("blue_stone_crystal", () -> new BlockItem(BLUE_STONE_CRYSTAL.get(), new Item.Properties()));
+    public static final RegistryObject<Item> STRANGE_CRYSTAL_SHARD =
+            ITEMS.register("strange_crystal_shard", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> ICECREAM_BLOCK_ITEM =
             ITEMS.register("icecream_block", () -> new BlockItem(ICECREAM_BLOCK.get(), new Item.Properties()));
@@ -275,6 +322,10 @@ public class ChangedExtras {
             ITEMS.register("latex_haku_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_THORNIII_SYRINGE =
             ITEMS.register("latex_thorniii_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_CARNELINE_SYRINGE =
+            ITEMS.register("latex_carneline_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_PANTHER_SYRINGE =
+            ITEMS.register("latex_panther_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> MINT_CONEKAT_MALE_SYRINGE =
             ITEMS.register("mint_conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> MINT_CONEKAT_FEMALE_SYRINGE =
@@ -422,6 +473,11 @@ public class ChangedExtras {
     public static final RegistryObject<ForgeSpawnEggItem> LATEX_HAKU_SPAWN_EGG =
             registerSpawnEgg("latex_haku_spawn_egg", ModEntities.LATEX_HAKU, LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY);
 
+        public static final RegistryObject<ForgeSpawnEggItem> LATEX_CARNELINE_SPAWN_EGG =
+                registerSpawnEgg("latex_carneline_spawn_egg", ModEntities.LATEX_CARNELINE, LATEX_CARNELINE_PRIMARY, LATEX_CARNELINE_SECONDARY);
+        public static final RegistryObject<ForgeSpawnEggItem> LATEX_PANTHER_SPAWN_EGG =
+                registerSpawnEgg("latex_panther_spawn_egg", ModEntities.LATEX_PANTHER, LATEX_PANTHER_PRIMARY, LATEX_PANTHER_SECONDARY);
+
     private static RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(
             String name,
             RegistryObject<? extends EntityType<? extends Mob>> entityType,
@@ -440,7 +496,9 @@ public class ChangedExtras {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModEntityAttributes::registerEntityAttributes);
         BLOCKS.register(modEventBus);
+        BLOCK_ENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
+        FEATURES.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
         ChangedExtrasEffects.REGISTRY.register(modEventBus);
@@ -449,7 +507,8 @@ public class ChangedExtras {
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
-        context.registerConfig(ModConfig.Type.SERVER, Config.SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
+        context.registerConfig(ModConfig.Type.SERVER, Config.SERVER_SPEC);
 
         ModEntities.REGISTRY.register(modEventBus);
         ModTransfurVariants.REGISTRY.register(modEventBus);
@@ -477,6 +536,8 @@ public class ChangedExtras {
         registerEntityColor("latex_hazzy", LATEX_HAZZY_PRIMARY, LATEX_HAZZY_SECONDARY);
         registerEntityColor("latex_catte", LATEX_CATTE_PRIMARY, LATEX_CATTE_SECONDARY);
         registerEntityColor("latex_haku", LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY);
+            registerEntityColor("latex_carneline", LATEX_CARNELINE_PRIMARY, LATEX_CARNELINE_SECONDARY);
+            registerEntityColor("latex_panther", LATEX_PANTHER_PRIMARY, LATEX_PANTHER_SECONDARY);
     }
 
     private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
@@ -493,6 +554,7 @@ public class ChangedExtras {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(ICECREAM_BLOCK_ITEM.get());
             event.accept(SCP009_CRYSTAL_ITEM.get());
+            event.accept(BLUE_STONE_CRYSTAL_ITEM.get());
             event.accept(JAMMER_HEADPHONES.get());
             event.accept(ROUTE_ITEM.get());
             event.accept(FAILED_ROUTE_ITEM.get());
@@ -663,6 +725,10 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "neapolitan_conekat/male"));
         } else if (stack.is(NEAPOLITAN_CONEKAT_FEMALE_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "neapolitan_conekat/female"));
+        } else if (stack.is(LATEX_CARNELINE_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_carneline"));
+        } else if (stack.is(LATEX_PANTHER_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_panther"));
         }
     }
 
@@ -755,6 +821,10 @@ public class ChangedExtras {
                     ChangedExtrasMenus.PILL_BOTTLE_MENU.get(),
                     PillBottleScreen::new
             ));
+            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(
+                    ChangedExtras.BLUE_STONE_CRYSTAL.get(),
+                    RenderType.translucent()
+            ));
 
             MinecraftForge.EVENT_BUS.register(ClientEventHandler.class);
         }
@@ -775,6 +845,10 @@ public class ChangedExtras {
                     ChangedExtras.LATEX_CATTE_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY),
                     ChangedExtras.LATEX_HAKU_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_CARNELINE_PRIMARY, LATEX_CARNELINE_SECONDARY),
+                    ChangedExtras.LATEX_CARNELINE_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_PANTHER_PRIMARY, LATEX_PANTHER_SECONDARY),
+                    ChangedExtras.LATEX_PANTHER_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, MINT_CONEKAT_PRIMARY, MINT_CONEKAT_SECONDARY),
                     ChangedExtras.MINT_CONEKAT_MALE_SYRINGE.get(),
                     ChangedExtras.MINT_CONEKAT_FEMALE_SYRINGE.get());

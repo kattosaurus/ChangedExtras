@@ -1,19 +1,10 @@
 package com.katt.changedextras.block;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.entity.ModTransfurVariants;
-import net.ltxprogrammer.changed.entity.TransfurCause;
-import net.ltxprogrammer.changed.entity.TransfurContext;
-import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.ltxprogrammer.changed.util.LevelUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -44,22 +35,6 @@ public class Scp009CrystalSmallBlock extends DirectionalBlock {
     public Scp009CrystalSmallBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.UP));
-    }
-
-    protected LatexAssimilationDecision<?> makeAssimilationDecision(LivingEntity target) {
-        return LatexAssimilationDecision.fromBlockOrItem(
-                ModTransfurVariants.SCP_009.get(),
-                TransfurContext.hazard(TransfurCause.LATEX_PUDDLE),
-                6.0f
-        );
-    }
-
-    @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (!level.isClientSide && entity instanceof LivingEntity livingEntity
-                && LevelUtil.isTouchingBlockCollision(level, blockPos, blockState, livingEntity)) {
-            ProcessTransfur.progressTransfur(livingEntity, this.makeAssimilationDecision(livingEntity));
-        }
     }
 
     @Override

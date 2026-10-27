@@ -3,7 +3,7 @@ package com.katt.changedextras.client.renderer;
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.client.renderer.layers.ProtoBeeDisplayLayer;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
-import com.katt.changedextras.entity.model.ProtoBeeEntityModel;
+import com.katt.changedextras.client.model.ProtoBeeEntityModel;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;

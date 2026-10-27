@@ -1,7 +1,9 @@
 package com.katt.changedextras.init;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.worldgen.biome.ModBiomes;
 import com.katt.changedextras.worldgen.dimension.ModDimensions;
+import com.katt.changedextras.worldgen.feature.ModFeatures;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -13,6 +15,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class ModDataPackProvider extends DatapackBuiltinEntriesProvider {
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+            .add(Registries.CONFIGURED_FEATURE, ModFeatures::bootstrapConfigured)
+            .add(Registries.PLACED_FEATURE, ModFeatures::bootstrapPlaced)
+            .add(Registries.BIOME, ModBiomes::bootstrap)
             .add(Registries.DIMENSION_TYPE, ModDimensions::bootstrapType)
             .add(Registries.LEVEL_STEM, ModDimensions::bootstrapStem);
 

@@ -2,7 +2,7 @@ package com.katt.changedextras.client.renderer.layers;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.entity.beasts.ProtoBeeEntity;
-import com.katt.changedextras.entity.model.ProtoBeeEntityModel;
+import com.katt.changedextras.client.model.ProtoBeeEntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;

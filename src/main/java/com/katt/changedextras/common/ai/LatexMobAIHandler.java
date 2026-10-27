@@ -3,7 +3,9 @@ package com.katt.changedextras.common.ai;
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.Config;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
+import com.katt.changedextras.entity.beasts.AbstractScp009Entity;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
+import com.katt.changedextras.entity.beasts.KattEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedEntities;
@@ -49,9 +51,16 @@ public final class LatexMobAIHandler {
     public static void onEntityJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) return;
         if (!(event.getEntity() instanceof ChangedEntity mob)) return;
+        if (mob instanceof AbstractScp009Entity) return;
         if (mob instanceof ArtistEntity artist) {
             if (artist.isNoAi()) {
                 artist.setNoAi(false);
+            }
+            return;
+        }
+        if (mob instanceof KattEntity katt) {
+            if (katt.isNoAi()) {
+                katt.setNoAi(false);
             }
             return;
         }
@@ -68,7 +77,9 @@ public final class LatexMobAIHandler {
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         if (event.getEntity().level().isClientSide()) return;
         if (!(event.getEntity() instanceof ChangedEntity mob)) return;
+        if (mob instanceof AbstractScp009Entity) return;
         if (mob instanceof ArtistEntity) return;
+        if (mob instanceof KattEntity) return;
 
         boolean smartEnabled = ChangedExtrasGameRules.isSmartLatexAiEnabled(mob.level().getGameRules());
         if (!smartEnabled) {

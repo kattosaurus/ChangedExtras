@@ -2,7 +2,7 @@ package com.katt.changedextras.events;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.ability.ParryAbility;
-import com.katt.changedextras.common.PlayerFreezeManager;
+import com.katt.changedextras.common.freeze.PlayerFreezeManager;
 import com.katt.changedextras.entity.beasts.KattEntity;
 import com.katt.changedextras.network.JackpotStatePacket;
 import com.katt.changedextras.network.ParryStatePacket;

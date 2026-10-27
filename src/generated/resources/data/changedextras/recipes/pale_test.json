@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:glass_pane"
+    },
+    "/": {
+      "tag": "changedextras:used_syringes"
+    },
+    "=": {
+      "item": "minecraft:iron_ingot"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    },
+    "_": {
+      "item": "minecraft:paper"
+    },
+    "u": {
+      "item": "changedextras:processed_vial"
+    }
+  },
+  "pattern": [
+    "###",
+    "/_u",
+    "=N="
+  ],
+  "result": {
+    "item": "changedextras:pale_test"
+  },
+  "show_notification": true
+}

@@ -1,6 +1,6 @@
 package com.katt.changedextras.mixin;
 
-import com.katt.changedextras.client.ArtistTintManager;
+import com.katt.changedextras.client.renderer.ArtistTintManager;
 import net.ltxprogrammer.changed.client.renderer.CustomLatexRenderer;
 import net.ltxprogrammer.changed.entity.beast.CustomLatexEntity;
 import net.minecraft.resources.ResourceLocation;

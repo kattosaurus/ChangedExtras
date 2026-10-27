@@ -1,6 +1,6 @@
 package com.katt.changedextras.item;
 
-import com.katt.changedextras.client.ArtistBrushClientAccess;
+import com.katt.changedextras.client.access.ArtistBrushClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

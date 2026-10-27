@@ -1,6 +1,6 @@
 package com.katt.changedextras.common.ai;
 
-import com.katt.changedextras.common.LatexCuddleHelper;
+import com.katt.changedextras.common.latex.LatexCuddleHelper;
 import com.katt.changedextras.common.inventory.LatexInventory;
 import com.katt.changedextras.common.inventory.LatexInventoryProvider;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -101,6 +101,8 @@ public class LatexBrain {
     private static final int PATH_CACHE_TICKS = 8;
     private static final int TERRAIN_CACHE_TICKS = 6;
     private static final double BREAK_PREFERENCE_PENALTY = 18.0D;
+    private static final int MINING_SCAN_COOLDOWN_TICKS = 12;
+    private static final double MINING_DETOUR_MAX_DIRECT_DIST = 10.0D;
 
     // Perf: how many ticks must pass between fresh "acquire a new target" scans
     // (findVisibleTarget). Remembered/grudge target lookups are unaffected.
@@ -260,6 +262,7 @@ public class LatexBrain {
         if (mind.healCooldown > 0) mind.healCooldown--;
         if (mind.rangedAttackCooldown > 0) mind.rangedAttackCooldown--;
         if (mind.targetScanCooldown > 0) mind.targetScanCooldown--;
+        if (mind.miningScanCooldown > 0) mind.miningScanCooldown--;
 
         if (mind.combatStrafeTimer > 0) {
             mind.combatStrafeTimer--;
@@ -305,6 +308,23 @@ public class LatexBrain {
             }
 
             if (hasReachablePath) {
+                // Even if a path exists, if the player is close but behind a
+                // breakable wall, mining through is faster than walking around.
+                if (!hasDirectHitPath
+                        && mind.breakCooldown <= 0
+                        && mind.miningScanCooldown <= 0
+                        && !mind.isParkouring) {
+                    mind.miningScanCooldown = MINING_SCAN_COOLDOWN_TICKS;
+                    double directDist = mob.distanceTo(target);
+                    if (directDist <= MINING_DETOUR_MAX_DIRECT_DIST) {
+                        BlockPos obstacle = findBreakObstacleRay(mob, target);
+                        if (obstacle != null) {
+                            mind.plannedBreakPos = obstacle.immutable();
+                            mind.plannedBuildPos = null;
+                            return State.BREAK;
+                        }
+                    }
+                }
                 mind.plannedBuildPos = null;
                 mind.plannedBreakPos = null;
                 return State.CHASE;
@@ -319,6 +339,7 @@ public class LatexBrain {
                     mind.parkourTicks = 0;
                     return State.PARKOUR;
                 }
+                mind.parkourCooldown = 30;
             }
 
             if (shouldTowerUp(mob, target) && shouldBuild(mob, mind, target)) {
@@ -1303,12 +1324,6 @@ public class LatexBrain {
     private void breakObstacle(ChangedEntity mob, LatexMind mind, @Nullable LivingEntity target) {
         mob.setXxa(0.0F);
         if (target == null) return;
-        if (hasReachablePath(mob, mind, target)) {
-            resetBlockBreaking(mob, mind);
-            mind.plannedBreakPos = null;
-            chase(mob, mind, target);
-            return;
-        }
 
         BlockPos pos = mind.activeBreakPos;
         if (pos == null) {

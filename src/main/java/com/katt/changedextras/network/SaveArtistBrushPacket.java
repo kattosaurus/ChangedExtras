@@ -1,7 +1,7 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.common.ArtistAppearanceStorage;
-import com.katt.changedextras.common.ArtistBrushTargetValidator;
+import com.katt.changedextras.common.artist.ArtistAppearanceStorage;
+import com.katt.changedextras.common.artist.ArtistBrushTargetValidator;
 import com.katt.changedextras.item.ArtistBrushItem;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;

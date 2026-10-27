@@ -1,0 +1,12 @@
+{
+  "type": "changedextras:idle_death_gamble",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "changedextras:white_void",
+      "features": false,
+      "lakes": false,
+      "layers": []
+    }
+  }
+}

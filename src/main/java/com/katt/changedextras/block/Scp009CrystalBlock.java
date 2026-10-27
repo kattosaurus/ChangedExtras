@@ -1,57 +1,36 @@
 package com.katt.changedextras.block;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.entity.ModTransfurVariants;
 import com.katt.changedextras.fluid.ModFluids;
-import net.ltxprogrammer.changed.entity.TransfurCause;
-import net.ltxprogrammer.changed.entity.TransfurContext;
-import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.ltxprogrammer.changed.util.LevelUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 
+import javax.annotation.Nullable;
+
 @SuppressWarnings("deprecation")
-public class Scp009CrystalBlock extends Block {
+public class Scp009CrystalBlock extends Block implements EntityBlock {
     private static final int CONVERSION_RADIUS = 4;
     private static final int CONVERSION_INTERVAL_TICKS = 20;
-    private static final int GROWTH_CHANCE_DENOMINATOR = 20; // ~1-in-20 random ticks attempts a grow
-    private static final String LAST_PROCESSED_TICK_TAG = "changedextras_scp009_last_tick";
+    private static final int GROWTH_CHANCE_DENOMINATOR = 20;
 
     public Scp009CrystalBlock(Properties properties) {
         super(properties);
     }
 
-    protected LatexAssimilationDecision<?> makeAssimilationDecision(LivingEntity target) {
-        return LatexAssimilationDecision.fromBlockOrItem(
-                ModTransfurVariants.SCP_009.get(),
-                TransfurContext.hazard(TransfurCause.LATEX_PUDDLE),
-                6.0f
-        );
-    }
-
+    @Nullable
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (!level.isClientSide && entity instanceof LivingEntity livingEntity
-                && LevelUtil.isTouchingBlockCollision(level, blockPos, blockState, livingEntity)) {
-            CompoundTag data = livingEntity.getPersistentData();
-            long currentTick = level.getGameTime();
-            if (data.getLong(LAST_PROCESSED_TICK_TAG) == currentTick) {
-                return;
-            }
-            data.putLong(LAST_PROCESSED_TICK_TAG, currentTick);
-            ProcessTransfur.progressTransfur(livingEntity, this.makeAssimilationDecision(livingEntity));
-        }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new Scp009CrystalBlockEntity(pos, state);
     }
 
     @Override
@@ -63,12 +42,24 @@ public class Scp009CrystalBlock extends Block {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        Scp009CrystalBlockEntity blockEntity = level.getBlockEntity(pos) instanceof Scp009CrystalBlockEntity crystal
+                ? crystal
+                : null;
+        long gameTime = level.getGameTime();
+        boolean canInfectIce = blockEntity == null || blockEntity.canInfectIce(gameTime);
+
         for (BlockPos target : BlockPos.betweenClosed(
                 pos.offset(-CONVERSION_RADIUS, -CONVERSION_RADIUS, -CONVERSION_RADIUS),
                 pos.offset(CONVERSION_RADIUS, CONVERSION_RADIUS, CONVERSION_RADIUS))) {
             BlockState targetState = level.getBlockState(target);
             if (targetState.getFluidState().is(Fluids.WATER) && targetState.getFluidState().isSource()) {
                 level.setBlock(target.immutable(), ModFluids.SCP009_WATER_BLOCK.get().defaultBlockState(), 3);
+            } else if (canInfectIce && targetState.is(BlockTags.ICE)) {
+                if (blockEntity != null) {
+                    blockEntity.markIceInfection(gameTime);
+                }
+                canInfectIce = false;
+                level.setBlock(target.immutable(), this.defaultBlockState(), 3);
             }
         }
         level.scheduleTick(pos, this, CONVERSION_INTERVAL_TICKS);

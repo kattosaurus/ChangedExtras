@@ -1,6 +1,6 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.client.ClientJackpotTracker;
+import com.katt.changedextras.client.tracker.ClientJackpotTracker;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;

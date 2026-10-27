@@ -1,6 +1,6 @@
 package com.katt.changedextras.ability;
 
-import com.katt.changedextras.common.PlayerFreezeManager;
+import com.katt.changedextras.common.freeze.PlayerFreezeManager;
 import com.katt.changedextras.domain.DomainExpansionManager;
 import com.katt.changedextras.network.ParryStatePacket;
 import net.ltxprogrammer.changed.ability.AbstractAbility;

@@ -1,0 +1,13 @@
+{
+  "maximum": 2,
+  "minimum": 0,
+  "neighboring_zones": [
+    "changed:general"
+  ],
+  "piece": {
+    "type": "changed:room",
+    "loot_table": "changedextras:chests/lab_cafeteria",
+    "template": "changedextras:facility/room/lab_cafeteria/lab_cafeteria"
+  },
+  "spawn_weight": 100
+}

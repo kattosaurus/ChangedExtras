@@ -1,8 +1,8 @@
 package com.katt.changedextras.client.renderer;
 
-import com.katt.changedextras.client.ClientDomainTracker;
-import com.katt.changedextras.client.ClientParryTracker;
-import com.katt.changedextras.entity.model.KattAnimation;
+import com.katt.changedextras.client.tracker.ClientDomainTracker;
+import com.katt.changedextras.client.tracker.ClientParryTracker;
+import com.katt.changedextras.client.model.KattAnimation;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.TorsoedModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

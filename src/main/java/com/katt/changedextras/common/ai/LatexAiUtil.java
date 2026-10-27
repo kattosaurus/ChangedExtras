@@ -1,8 +1,10 @@
 package com.katt.changedextras.common.ai;
 
 import com.katt.changedextras.Config;
-import com.katt.changedextras.common.LatexCuddleHelper;
+import com.katt.changedextras.common.latex.LatexCuddleHelper;
+import com.katt.changedextras.entity.beasts.AbstractScp009Entity;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
+import com.katt.changedextras.entity.beasts.KattEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -76,7 +78,7 @@ public final class LatexAiUtil {
     }
 
     public static boolean isSmartAiExcluded(ChangedEntity mob) {
-        if (mob instanceof ArtistEntity) {
+        if (mob instanceof AbstractScp009Entity || mob instanceof ArtistEntity || mob instanceof KattEntity) {
             return true;
         }
 

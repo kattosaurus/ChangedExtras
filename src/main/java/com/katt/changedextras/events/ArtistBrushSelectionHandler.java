@@ -1,7 +1,7 @@
 package com.katt.changedextras.events;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.common.ArtistBrushTargetValidator;
+import com.katt.changedextras.common.artist.ArtistBrushTargetValidator;
 import com.katt.changedextras.item.ArtistBrushItem;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.network.chat.Component;

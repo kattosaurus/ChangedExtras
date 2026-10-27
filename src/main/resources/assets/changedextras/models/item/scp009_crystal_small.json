@@ -1,7 +1,0 @@
-{
-  "render_type": "minecraft:translucent",
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "changedextras:block/scp009_crystal_small"
-  }
-}

@@ -1,6 +1,6 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.client.ArtistTintManager;
+import com.katt.changedextras.client.renderer.ArtistTintManager;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;

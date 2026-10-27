@@ -1,0 +1,92 @@
+{
+  "artist_theme": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "changedextras:artist_theme",
+        "stream": true
+      }
+    ]
+  },
+  "domain_break": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:domain_break",
+        "stream": false
+      }
+    ]
+  },
+  "domain_expansion": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:domain_expansion",
+        "stream": false
+      }
+    ]
+  },
+  "heartbeat": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:heartbeat",
+        "stream": false
+      }
+    ]
+  },
+  "jackpot_loop": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "changedextras:jackpot_loop",
+        "stream": true
+      }
+    ]
+  },
+  "jackpot_song": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "changedextras:jackpot_song",
+        "stream": true
+      }
+    ]
+  },
+  "jackpot_stop": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "changedextras:jackpot_stop",
+        "stream": false
+      }
+    ]
+  },
+  "parry": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:parry",
+        "stream": false
+      }
+    ]
+  },
+  "scenario_swap": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:scenario_swap",
+        "stream": false
+      }
+    ]
+  },
+  "scream": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "changedextras:scream",
+        "stream": false
+      }
+    ]
+  }
+}

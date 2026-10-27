@@ -102,6 +102,10 @@ public final class LatexMind {
     // pathfinder (createNearbyReachPath) while a mob is legitimately stuck.
     public int consecutiveUnreachablePaths = 0;
 
+    // Perf: throttles how often we scan for a breakable obstacle on the
+    // direct line to the target when a detour path also exists.
+    public int miningScanCooldown = 0;
+
     public boolean hasLOS = false;
     public boolean pathFailed = false;
     public boolean cachedReachablePath = false;
@@ -190,6 +194,7 @@ public final class LatexMind {
         chaseTime = 0;
         noPathTicks = 0;
         recentBreakTicks = 0;
+        miningScanCooldown = 0;
         hasLOS = false;
         pathFailed = false;
         plannedBuildPos = null;

@@ -1,9 +1,11 @@
 package com.katt.changedextras.mixin;
 
-import com.katt.changedextras.client.ArtistTintManager;
+import com.katt.changedextras.client.hud.PrepareHighlightRenderer;
+import com.katt.changedextras.client.renderer.ArtistTintManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
@@ -12,6 +14,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,6 +22,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class LivingEntityRendererMixin<T extends LivingEntity> {
+    @Shadow
+    public abstract EntityModel<T> getModel();
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V", shift = At.Shift.BEFORE))
+    private void changedextras$renderPrepareHighlight(T entity, float entityYaw, float partialTicks, PoseStack poseStack, net.minecraft.client.renderer.MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
+        PrepareHighlightRenderer.render(entity, this.getModel(), poseStack, buffer, packedLight);
+    }
+
     @Inject(method = "render", at = @At("HEAD"))
     private void changedextras$applyArtistTint(T entity, float entityYaw, float partialTicks, PoseStack poseStack, net.minecraft.client.renderer.MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (entity instanceof ChangedEntity && ArtistTintManager.getTexture(entity) != null) {

@@ -1,7 +1,7 @@
 package com.katt.changedextras.mixin;
 
-import com.katt.changedextras.client.ArtistTintManager;
-import com.katt.changedextras.common.LatexCuddleHelper;
+import com.katt.changedextras.client.renderer.ArtistTintManager;
+import com.katt.changedextras.common.latex.LatexCuddleHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

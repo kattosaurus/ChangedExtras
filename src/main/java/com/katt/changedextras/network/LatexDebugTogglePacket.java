@@ -1,6 +1,6 @@
 package com.katt.changedextras.network;
 
-import com.katt.changedextras.client.LatexDebugOverlay;
+import com.katt.changedextras.client.hud.LatexDebugOverlay;
 import com.katt.changedextras.common.debug.LatexDebugManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

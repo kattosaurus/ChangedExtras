@@ -1,7 +1,7 @@
 package com.katt.changedextras.ability;
 
 import com.katt.changedextras.ChangedExtras;
-import com.katt.changedextras.common.PlayerFreezeManager;
+import com.katt.changedextras.common.freeze.PlayerFreezeManager;
 import com.katt.changedextras.domain.DomainExpansionManager;
 import com.katt.changedextras.init.ChangedExtrasSounds;
 import com.katt.changedextras.network.ChangedExtrasNetwork;

@@ -1,6 +1,6 @@
 package com.katt.changedextras.item;
 
-import com.katt.changedextras.client.ChangedExtrasGuideClientAccess;
+import com.katt.changedextras.client.access.ChangedExtrasGuideClientAccess;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;

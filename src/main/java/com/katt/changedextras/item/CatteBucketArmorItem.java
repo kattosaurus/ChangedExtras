@@ -2,7 +2,7 @@ package com.katt.changedextras.item;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.entity.ModTransfurVariants;
-import com.katt.changedextras.model.catte_bucket;
+import com.katt.changedextras.client.model.catte_bucket;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;

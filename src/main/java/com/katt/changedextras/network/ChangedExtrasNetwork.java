@@ -59,5 +59,17 @@ public class ChangedExtrasNetwork {
                 DomainFlashPacket::encode,
                 DomainFlashPacket::decode,
                 DomainFlashPacket::handle);
+        INSTANCE.registerMessage(id++, PrepareStatePacket.class,
+                PrepareStatePacket::encode,
+                PrepareStatePacket::decode,
+                PrepareStatePacket::handle);
+        INSTANCE.registerMessage(id++, SyncDeathRespawnPacket.class,
+                SyncDeathRespawnPacket::encode,
+                SyncDeathRespawnPacket::decode,
+                SyncDeathRespawnPacket::handle);
+        INSTANCE.registerMessage(id++, RespawnChoicePacket.class,
+                RespawnChoicePacket::encode,
+                RespawnChoicePacket::decode,
+                RespawnChoicePacket::handle);
     }
 }

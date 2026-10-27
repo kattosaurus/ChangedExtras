@@ -1,6 +1,6 @@
 package com.katt.changedextras.client.particle;
 
-import com.katt.changedextras.client.ClientJackpotTracker;
+import com.katt.changedextras.client.tracker.ClientJackpotTracker;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
