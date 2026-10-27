@@ -1,9 +1,9 @@
 {
   "1 | Type": "Tölcsér macska leírások",
-  "hu_hu.addon.changedextras.cone_kat.name": "Tölcsér macska",
-  "hu_hu.addon.changedextras.cone_kat.name.male": "Tölcsér macska (Hím)",
-  "hu_hu.addon.changedextras.cone_kat.name.female": "Tölcsér macska (Nőstény)",
-  "hu_hu.addon.changedextras.cone_kat.description": "Egy életforma, amelyet az emberek táplálására és a világ éhezésének megszüntetésére hoztak létre. A Resurgenced-ből származik, ott Goopie vagy Foodie néven ismert.",
+  "addon.changedextras.cone_kat.name": "Tölcsér macska",
+  "addon.changedextras.cone_kat.name.male": "Tölcsér macska (Hím)",
+  "addon.changedextras.cone_kat.name.female": "Tölcsér macska (Nőstény)",
+  "addon.changedextras.cone_kat.description": "Egy életforma, amelyet az emberek táplálására és a világ éhezésének megszüntetésére hoztak létre. A Resurgenced-ből származik, ott Goopie vagy Foodie néven ismert.",
   "2 | Type": "Képességek",
   "ability.changedextras.paint_ball.name": "Festékgolyó",
   "ability.changedextras.paint_ball.description": "Dobj egy festékgolyót a nézésed irányába. A célpontok 4 sebzést és 3 másodpercig Lassúság III-at kapnak.",
