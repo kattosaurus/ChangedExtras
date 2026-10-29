@@ -1,3 +1,8 @@
+<p align="center">
+    <a href="https://sparked.host/gootraxian"><img src="https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/banner.gif" alt="Banner"></a>
+</p>
+
+
 # **Changed Extras**
 
 ![The icon of Changed Extras](https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/src/main/resources/pack.png)
