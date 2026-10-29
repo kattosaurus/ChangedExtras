@@ -1,7 +1,6 @@
 <p align="center">
-    <a href="https://sparked.host/gootraxian"><img src="https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/banner.gif" alt="Banner"></a>
+    <a href="https://sparked.host/gootraxian"><img src="https://raw.githubusercontent.com/kattosaurus/ChangedExtras/refs/heads/main/gallery/banner.gif" alt="Banner" width="43%"></a>
 </p>
-
 
 # **Changed Extras**
 
