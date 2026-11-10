@@ -1,0 +1,31 @@
+{
+  "parent": { "tree": "changedextras:latex_thorniii" },
+  "titleId": "",
+  "price": 0,
+  "acquiredEffects": [
+    {
+      "type": "changed:enable_feature",
+      "feature": "changed:breathe/accept_water"
+    },
+    {
+      "type": "changed:enable_feature",
+      "feature": "changed:aquatic/prevent_sinking"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:switch_transfur_mode"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:grab_entity"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:create_inkball"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:switch_hands"
+    }
+  ]
+}

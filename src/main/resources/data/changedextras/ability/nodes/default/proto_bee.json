@@ -1,0 +1,23 @@
+{
+  "parent": { "tree": "changedextras:proto_bee" },
+  "titleId": "",
+  "price": 0,
+  "acquiredEffects": [
+    {
+      "type": "changed:enable_feature",
+      "feature": "changed:grab/absorption"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:grab_entity"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:toggle_night_vision"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed_addon:pollen_carry"
+    }
+  ]
+}

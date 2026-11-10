@@ -68,7 +68,7 @@ description='''${mod_description}'''
 [[dependencies.changedextras]]
     modId="changed"
     mandatory=true
-    versionRange="[0.15.0,)" # Replace with the version you plan to mod
+    versionRange="[0.16.0,)" # Ability trees and other APIs require Changed 0.16.0+
     ordering="NONE"
     side="BOTH"
 [[dependencies.changedextras]]

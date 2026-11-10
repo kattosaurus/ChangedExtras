@@ -1,0 +1,15 @@
+{
+  "parent": { "tree": "changedextras:neapolitan_conekat/female" },
+  "titleId": "",
+  "price": 0,
+  "acquiredEffects": [
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:toggle_night_vision"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:switch_gender"
+    }
+  ]
+}
