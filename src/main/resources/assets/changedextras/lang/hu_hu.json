@@ -26,6 +26,8 @@
   "ability.changedextras.jackpot_aura.description": "Más szóval, a jackpotot követő 4 perc és 11 másodpercben Hakari gyakorlatilag halhatatlan.",
   "ability.changedextras.parry.name": "Hárítás",
   "ability.changedextras.parry.description": "Hárítsd el a bejövő támadásokat és vágj vissza 90% sebzéssel. Háríts 15 támadást, majd spammeld a képességet a Jackpot feloldásához!",
+  "ability.changedextras.jam.name": "Jam",
+  "ability.changedextras.jam.description": "Jam out with your headphones on: you're frozen in place (but can still look around and open menus) and regenerate 1 heart every 2 seconds. Removing the headphones or taking damage stops the jam, and damage leaves you slowed.",
 
   "3 | Type": "Entitás nevek",
   "entity.changedextras.conekat_male": "Hím tölcsér macska",
@@ -150,6 +152,8 @@
   "message.changedextras.artist_brush.browse_unavailable": "A fájlböngésző itt nem érhető el. Másold be a PNG elérési útját a textúra elérési út mezőbe.",
   "message.changedextras.route.start_set": "Útvonal kezdete beállítva: a Snep innen indul",
   "message.changedextras.route.start_cleared": "Útvonal kezdete törölve",
+  "message.changedextras.jam.music_gone": "The music is gone. Sad",
+  "message.changedextras.jam.sounds_great": "This sounds great!",
   "message.changedextras.transfur_overlay.1": "\"Ááá- Mi- mi történik?\" mondod, miközben az anyag lassan beborítja a tested.",
   "message.changedextras.transfur_overlay.2": "Sikerült megfertőződnöd, nagyszerű.",
   "message.changedextras.transfur_overlay.3": "A látásod lassan elhomályosul, a bőröd ég a fertőzéstől.",

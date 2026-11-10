@@ -1,5 +1,7 @@
 package com.katt.changedextras.init;
 
+import com.katt.changedextras.ability.GenerateStrangeCrystalAbility;
+import com.katt.changedextras.ability.JamAbility;
 import com.katt.changedextras.ability.PaintBallAbility;
 import com.katt.changedextras.ability.ParryAbility;
 import com.katt.changedextras.ability.PrepareAbility;
@@ -42,6 +44,12 @@ public final class ChangedExtrasAbilities {
 
     public static final RegistryObject<TurnFeralAbility> TURN_FERAL =
             REGISTRY.register("turn_feral", TurnFeralAbility::new);
+
+    public static final RegistryObject<GenerateStrangeCrystalAbility> GENERATE_STRANGE_CRYSTAL =
+            REGISTRY.register("generate_strange_crystal", GenerateStrangeCrystalAbility::new);
+
+    public static final RegistryObject<JamAbility> JAM =
+            REGISTRY.register("jam", JamAbility::new);
 
     public static final RegistryObject<AbstractAbility<JackpotAbilityInstance>> JACKPOT_AURA = REGISTRY.register("jackpot_aura",
             () -> new AbstractAbility<JackpotAbilityInstance>(JackpotAbilityInstance::new) {

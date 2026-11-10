@@ -1,6 +1,7 @@
 package com.katt.changedextras;
 import com.katt.changedextras.worldgen.feature.BlueStoneCrystalPatchFeature;
 import com.katt.changedextras.worldgen.feature.BlueStonePillarFeature;
+import com.katt.changedextras.worldgen.feature.BlueCaveCouchFeature;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -25,6 +26,7 @@ import com.katt.changedextras.entity.beasts.JammerEntity;
 import com.katt.changedextras.fluid.ModFluids;
 import com.katt.changedextras.init.ChangedExtrasAbilities;
 import com.katt.changedextras.init.ChangedExtrasEffects;
+import com.katt.changedextras.init.ChangedExtrasFacilityPieces;
 import com.katt.changedextras.init.ChangedExtrasMenus;
 import com.katt.changedextras.init.ChangedExtrasPaintings;
 import com.katt.changedextras.init.ChangedExtrasParticles;
@@ -168,6 +170,8 @@ public class ChangedExtras {
     private static final int LATEX_CARNELINE_SECONDARY = 0xFF075B;
     private static final int LATEX_PANTHER_PRIMARY = 0x14141C;
     private static final int LATEX_PANTHER_SECONDARY = 0xF2C400;
+    private static final int LATEX_KAIJU_PRIMARY = 0x30376D;
+    private static final int LATEX_KAIJU_SECONDARY = 0x80BEFF;
     private static final int MINT_CONEKAT_PRIMARY = 0xA7E6C1;
     private static final int MINT_CONEKAT_SECONDARY = 0x2E8B57;
     private static final int CHOCO_CONEKAT_PRIMARY = 0x8B5A2B;
@@ -268,6 +272,8 @@ public class ChangedExtras {
             FEATURES.register("blue_stone_crystal_patch", () -> new BlueStoneCrystalPatchFeature(NoneFeatureConfiguration.CODEC));
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> BLUE_STONE_PILLAR =
             FEATURES.register("blue_stone_pillar", () -> new BlueStonePillarFeature(NoneFeatureConfiguration.CODEC));
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> BLUE_CAVE_COUCH =
+            FEATURES.register("blue_cave_couch", () -> new BlueCaveCouchFeature(NoneFeatureConfiguration.CODEC));
 
     public static final RegistryObject<Item> BLUE_STONE_ITEM =
             ITEMS.register("blue_stone", () -> new BlockItem(BLUE_STONE_BLOCK.get(), new Item.Properties()));
@@ -326,6 +332,8 @@ public class ChangedExtras {
             ITEMS.register("latex_carneline_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> LATEX_PANTHER_SYRINGE =
             ITEMS.register("latex_panther_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<LatexSyringe> LATEX_KAIJU_SYRINGE =
+            ITEMS.register("latex_kaiju_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> MINT_CONEKAT_MALE_SYRINGE =
             ITEMS.register("mint_conekat_male_syringe", () -> new LatexSyringe(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<LatexSyringe> MINT_CONEKAT_FEMALE_SYRINGE =
@@ -477,6 +485,8 @@ public class ChangedExtras {
                 registerSpawnEgg("latex_carneline_spawn_egg", ModEntities.LATEX_CARNELINE, LATEX_CARNELINE_PRIMARY, LATEX_CARNELINE_SECONDARY);
         public static final RegistryObject<ForgeSpawnEggItem> LATEX_PANTHER_SPAWN_EGG =
                 registerSpawnEgg("latex_panther_spawn_egg", ModEntities.LATEX_PANTHER, LATEX_PANTHER_PRIMARY, LATEX_PANTHER_SECONDARY);
+        public static final RegistryObject<ForgeSpawnEggItem> LATEX_KAIJU_SPAWN_EGG =
+                registerSpawnEgg("latex_kaiju_spawn_egg", ModEntities.LATEX_KAIJU, LATEX_KAIJU_PRIMARY, LATEX_KAIJU_SECONDARY);
 
     private static RegistryObject<ForgeSpawnEggItem> registerSpawnEgg(
             String name,
@@ -494,6 +504,7 @@ public class ChangedExtras {
         IEventBus modEventBus = context.getModEventBus();
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(ChangedExtrasFacilityPieces::gatherFacilityPieces);
         modEventBus.addListener(ModEntityAttributes::registerEntityAttributes);
         BLOCKS.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
@@ -538,6 +549,7 @@ public class ChangedExtras {
         registerEntityColor("latex_haku", LATEX_HAKU_PRIMARY, LATEX_HAKU_SECONDARY);
             registerEntityColor("latex_carneline", LATEX_CARNELINE_PRIMARY, LATEX_CARNELINE_SECONDARY);
             registerEntityColor("latex_panther", LATEX_PANTHER_PRIMARY, LATEX_PANTHER_SECONDARY);
+            registerEntityColor("latex_kaiju", LATEX_KAIJU_PRIMARY, LATEX_KAIJU_SECONDARY);
     }
 
     private static void registerEntityColor(String entityId, int primaryColor, int secondaryColor) {
@@ -729,6 +741,8 @@ public class ChangedExtras {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_carneline"));
         } else if (stack.is(LATEX_PANTHER_SYRINGE.get())) {
             Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_panther"));
+        } else if (stack.is(LATEX_KAIJU_SYRINGE.get())) {
+            Syringe.setPureVariant(stack, ResourceLocation.fromNamespaceAndPath(MODID, "latex_kaiju"));
         }
     }
 
@@ -849,6 +863,8 @@ public class ChangedExtras {
                     ChangedExtras.LATEX_CARNELINE_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_PANTHER_PRIMARY, LATEX_PANTHER_SECONDARY),
                     ChangedExtras.LATEX_PANTHER_SYRINGE.get());
+            event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, LATEX_KAIJU_PRIMARY, LATEX_KAIJU_SECONDARY),
+                    ChangedExtras.LATEX_KAIJU_SYRINGE.get());
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, MINT_CONEKAT_PRIMARY, MINT_CONEKAT_SECONDARY),
                     ChangedExtras.MINT_CONEKAT_MALE_SYRINGE.get(),
                     ChangedExtras.MINT_CONEKAT_FEMALE_SYRINGE.get());

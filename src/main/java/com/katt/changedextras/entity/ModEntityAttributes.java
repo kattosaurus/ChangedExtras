@@ -55,6 +55,8 @@ public final class ModEntityAttributes {
                 .build());
         event.put(ModEntities.LATEX_PANTHER.get(), LatexPantherEntity.createAttributes()
                 .build());
+        event.put(ModEntities.LATEX_KAIJU.get(), LatexKaijuEntity.createAttributes()
+                .build());
 
         event.put(ModEntities.KATT.get(), KattEntity.createAttributes()
                 .add(Attributes.MAX_HEALTH, 40.0)

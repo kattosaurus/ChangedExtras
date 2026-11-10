@@ -81,11 +81,15 @@ public final class LatexAggroHandler {
             return;
         }
 
-if (event.getSource().getEntity() instanceof ChangedEntity latexMob
+        if (event.getSource().getEntity() instanceof ChangedEntity latexMob
                 && !(latexMob instanceof AbstractScp009Entity)) {
             // The Artist is a straight damage boss: her killing blows remain normal deaths and
             // are never converted into a transfur into her own latex form.
-            if (!(latexMob instanceof ArtistEntity) && LatexAiUtil.isTransfurrable(victim)) {
+            // Organic latexes aren't goo either (conekats, proto bees, white wolves...), so
+            // they can't transfur anyone: their killing blows also stay normal deaths.
+            if (!(latexMob instanceof ArtistEntity)
+                    && !LatexAiUtil.isOrganicLatex(latexMob)
+                    && LatexAiUtil.isTransfurrable(victim)) {
                 TransfurVariant<?> variant = latexMob.getSelfVariant();
                 if (variant == null) {
                     variant = TransfurVariant.findEntityTransfurVariant(latexMob);

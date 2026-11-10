@@ -1,0 +1,12 @@
+{
+  "maximum": 2,
+  "minimum": 0,
+  "neighboring_zones": [
+    "changed:entrance"
+  ],
+  "piece": {
+    "type": "changed:room",
+    "template": "changedextras:facility/room/blue_cave_room/blue_cave_room"
+  },
+  "spawn_weight": 20
+}
