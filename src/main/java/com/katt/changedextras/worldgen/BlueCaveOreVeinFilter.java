@@ -6,24 +6,20 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 public final class BlueCaveOreVeinFilter {
-    private static final Map<NoiseChunk, ChunkAccess> CHUNKS = Collections.synchronizedMap(new WeakHashMap<>());
-
     private BlueCaveOreVeinFilter() {
     }
 
     public static void track(NoiseChunk noiseChunk, ChunkAccess chunk) {
-        CHUNKS.put(noiseChunk, chunk);
+        if (noiseChunk instanceof BlueCaveNoiseChunkAccess access) {
+            access.changedextras$setChunk(chunk);
+        }
     }
 
     public static NoiseChunk.BlockStateFiller wrap(NoiseChunk.BlockStateFiller original) {
         return context -> {
-            if (context instanceof NoiseChunk noiseChunk) {
-                ChunkAccess chunk = CHUNKS.get(noiseChunk);
+            if (context instanceof BlueCaveNoiseChunkAccess noiseChunkAccess) {
+                ChunkAccess chunk = noiseChunkAccess.changedextras$getChunk();
                 if (chunk != null && isBlueCave(chunk, context)) {
                     return null;
                 }

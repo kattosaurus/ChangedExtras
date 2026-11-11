@@ -1,5 +1,7 @@
 package com.katt.changedextras.entity.beasts;
 
+import com.katt.changedextras.entity.ai.AvoidSunlitPlayerGoal;
+import com.katt.changedextras.entity.ai.SeekShadowGoal;
 import com.katt.changedextras.inventory.LatexCreatureInventory;
 import net.ltxprogrammer.changed.entity.AttributePresets;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -49,10 +51,22 @@ public class LatexPantherEntity extends ChangedEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+
+        // ── Movement / survival goals ─────────────────────────────────────────
         this.goalSelector.addGoal(1, new FloatGoal(this));
+
+        // Priority 2: flee to shade whenever standing in sunlight.
+        // Overrides wandering but yields to anything with priority 1 (floating).
+        this.goalSelector.addGoal(2, new SeekShadowGoal(this));
+
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+
+        // ── Target selector goals ─────────────────────────────────────────────
+        // The panther cannot see or target players who are standing in sunlight.
+        // Detection range matches the LookAtPlayerGoal range (8 blocks).
+        this.targetSelector.addGoal(1, new AvoidSunlitPlayerGoal(this, 8.0));
     }
 
     public LatexCreatureInventory getCreatureInventory() {

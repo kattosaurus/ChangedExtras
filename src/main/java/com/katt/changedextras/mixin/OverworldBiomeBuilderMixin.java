@@ -39,13 +39,13 @@ public abstract class OverworldBiomeBuilderMixin {
             return;
         }
         consumer.accept(Pair.of(Climate.parameters(
-                Climate.Parameter.span(-1.0F, 1.0F),
-                Climate.Parameter.span(-1.0F, 1.0F),
-                Climate.Parameter.span(-1.0F, 1.0F),
-                Climate.Parameter.span(-0.8F, -0.375F),
-                Climate.Parameter.span(0.2F, 1.1F),
-                Climate.Parameter.span(0.0F, 0.5F),
-                0.0F
+                Climate.Parameter.span(-0.20F, 0.25F),   // temperature
+                Climate.Parameter.span(-0.30F, 0.10F),   // humidity
+                Climate.Parameter.span(0.05F, 0.45F),    // continentalness (inland)
+                Climate.Parameter.span(-0.8F, -0.375F),  // erosion (unchanged)
+                Climate.Parameter.span(0.2F, 1.1F),      // depth (unchanged for now)
+                Climate.Parameter.span(0.0F, 0.5F),      // weirdness (unchanged)
+                0.15F                                    // offset
         ), ModBiomes.BLUE_CAVE));
     }
 }

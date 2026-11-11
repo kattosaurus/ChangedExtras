@@ -34,7 +34,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                 "proto_bee_spawn_egg", "artist_spawn_egg",
                 "scp_009_spawn_egg", "latex_hazzy_spawn_egg",
                 "latex_catte_spawn_egg", "latex_haku_spawn_egg",
-                "latex_carneline_spawn_egg", "latex_panther_spawn_egg"
+                "latex_carneline_spawn_egg", "latex_panther_spawn_egg",
+                "latex_kaiju_spawn_egg"
         };
         for (String name : spawnEggs) {
             withExistingParent(name, mcLoc("item/template_spawn_egg"));
@@ -53,6 +54,7 @@ public class ModItemModelProvider extends ItemModelProvider {
                 "latex_hazzy_syringe", "latex_catte_syringe",
                 "latex_haku_syringe", "latex_thorniii_syringe",
                 "latex_carneline_syringe", "latex_panther_syringe",
+                "latex_kaiju_syringe",
                 "katt_syringe"
         };
         for (String name : syringes) {
@@ -114,13 +116,16 @@ public class ModItemModelProvider extends ItemModelProvider {
     private void registerAbilityModels() {
         String[] abilities = {
                 "turn_feral", "swing", "puncture",
-                "parry", "paint_ball", "jackpot_aura", "prepare"
+                "parry", "paint_ball", "jackpot_aura", "prepare", "jam"
         };
         for (String name : abilities) {
             getBuilder("ability/" + name)
                     .parent(getExistingFile(mcLoc("item/generated")))
                     .texture("layer0", modLoc("abilities/" + name));
         }
+        getBuilder("ability/generate_strange_crystal")
+                .parent(getExistingFile(mcLoc("item/generated")))
+                .texture("layer0", modLoc("item/strange_crystal_shard"));
     }
 
     private void generated(String name, String texture) {

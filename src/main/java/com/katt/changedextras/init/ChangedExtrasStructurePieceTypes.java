@@ -3,6 +3,7 @@ package com.katt.changedextras.init;
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.worldgen.structure.BiologicalStudiesFacilityPiece;
 import com.katt.changedextras.worldgen.structure.BunkerStructurePiece;
+import com.katt.changedextras.worldgen.structure.facility.ForbiddenLibraryPiece;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,6 +18,9 @@ public final class ChangedExtrasStructurePieceTypes {
 
     public static final RegistryObject<StructurePieceType> BIOLOGICAL_STUDIES_FACILITY =
             REGISTRY.register("biological_studies_facility", () -> (StructurePieceType.StructureTemplateType) BiologicalStudiesFacilityPiece::new);
+
+    public static final RegistryObject<StructurePieceType> FORBIDDEN_LIBRARY =
+            REGISTRY.register("forbidden_library", () -> (StructurePieceType.StructureTemplateType) (manager, tag) -> new ForbiddenLibraryPiece.Instance(manager, tag));
 
     private ChangedExtrasStructurePieceTypes() {
     }

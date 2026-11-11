@@ -139,6 +139,7 @@ public class ModTransfurVariants {
                             .nightVision()
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedExtrasAbilities.JAM)
                             .build());
 
     public static final RegistryObject<TransfurVariant<ProtoBeeEntity>> PROTO_BEE =
@@ -237,6 +238,19 @@ public class ModTransfurVariants {
                             .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
                             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
                             .addAbility(ChangedExtrasAbilities.PREPARE)
+                            .transfurMode(TransfurMode.REPLICATION)
+                            .replicating()
+                            .build());
+
+    public static final RegistryObject<TransfurVariant<LatexKaijuEntity>> LATEX_KAIJU =
+            REGISTRY.register("latex_kaiju",
+                    () -> TransfurVariant.Builder.of(ModEntities.LATEX_KAIJU)
+                            .nightVision()
+                            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                            .addAbility(ChangedAddonAbilities.CLAWS)
+                            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                            .addAbility(ChangedAbilities.SWITCH_TRANSFUR_MODE)
+                            .addAbility(ChangedExtrasAbilities.GENERATE_STRANGE_CRYSTAL)
                             .transfurMode(TransfurMode.REPLICATION)
                             .replicating()
                             .build());

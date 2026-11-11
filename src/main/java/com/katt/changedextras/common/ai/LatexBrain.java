@@ -72,17 +72,19 @@ public class LatexBrain {
     private static final double LOOT_RANGE = 10.0D;
     private static final double PICKUP_RANGE = 2.2D;
 
-    // Movement speed constants calibrated to Minecraft player speeds:
-    // Walking: ~4.317 blocks/s | Sprinting: ~5.612 blocks/s | Sprint-Jumping: ~7.127 blocks/s
-    private static final double PLAYER_WALK_SPEED = 1.00D;
-    private static final double PLAYER_SPRINT_SPEED = 1.30D;
+    // Movement speed multipliers, relative to each mob's native movement speed.
+    // Originally calibrated 1:1 to player speeds (walk 1.00 / sprint 1.30), since
+    // nerfed across the board so smart latex stays a step behind a sprinting player.
+    // Reference: player walking ~4.317 blocks/s | sprinting ~5.612 blocks/s
+    private static final double PLAYER_WALK_SPEED = 0.85D;
+    private static final double PLAYER_SPRINT_SPEED = 1.10D;
     private static final double PLAYER_SNEAK_SPEED = 0.55D;
-    private static final double PLAYER_WATCH_SPEED = 1.00D;
-    private static final double PLAYER_BREAK_SPEED = 1.00D;
-    private static final double PLAYER_BUILD_SPEED = 1.00D;
-    private static final double PLAYER_SEARCH_SPEED = 1.00D;
-    private static final double PLAYER_LOOT_SPEED = 1.00D;
-    private static final double PLAYER_RETREAT_SPEED = 1.30D;
+    private static final double PLAYER_WATCH_SPEED = 0.85D;
+    private static final double PLAYER_BREAK_SPEED = 0.85D;
+    private static final double PLAYER_BUILD_SPEED = 0.85D;
+    private static final double PLAYER_SEARCH_SPEED = 0.85D;
+    private static final double PLAYER_LOOT_SPEED = 0.85D;
+    private static final double PLAYER_RETREAT_SPEED = 1.10D;
     private static final double TOWER_ALIGN_SPEED = 0.65D;
 
     private static final double MAX_VISIBLE_TARGET_RANGE = 14.0D;
@@ -167,11 +169,11 @@ public class LatexBrain {
         tickCooldowns(mind);
         equipBestArmor(mob, mind);
 
-        // Cap runaway velocities to strict player sprint-jump limit (~0.36 blocks/tick = ~7.13 blocks/s)
+        // Cap runaway velocities to the player sprint-jump limit (~0.36 blocks/tick = ~7.13 blocks/s)
         if (!mind.isParkouring && mob.hurtTime <= 0) {
             Vec3 vel = mob.getDeltaMovement();
             double hSpeedSqr = vel.x * vel.x + vel.z * vel.z;
-            double maxAllowedSpeed = 0.40D;
+            double maxAllowedSpeed = 0.36D;
             if (hSpeedSqr > maxAllowedSpeed * maxAllowedSpeed) {
                 double scale = maxAllowedSpeed / Math.sqrt(hSpeedSqr);
                 mob.setDeltaMovement(vel.x * scale, vel.y, vel.z * scale);
@@ -904,8 +906,8 @@ public class LatexBrain {
 
             mob.getJumpControl().jump();
 
-            // Set forward horizontal velocity directly towards the target at calibrated speed
-            double hSpeed = 0.28D;
+            // Set forward horizontal velocity directly towards the target, below player sprint speed
+            double hSpeed = 0.24D;
             mob.setDeltaMovement(jumpDir.x * hSpeed, mob.getDeltaMovement().y, jumpDir.z * hSpeed);
             mob.hasImpulse = true;
             mind.jumpCooldown = 9;
@@ -934,7 +936,7 @@ public class LatexBrain {
                     if (airToTarget.lengthSqr() > 0.001D) {
                         Vec3 airDir = airToTarget.normalize();
                         double curH = Math.sqrt(curVel.x * curVel.x + curVel.z * curVel.z);
-                        double targetH = Math.min(Math.max(curH, 0.30D), 0.35D);
+                        double targetH = Math.min(Math.max(curH, 0.24D), 0.30D);
                         mob.setDeltaMovement(airDir.x * targetH, curVel.y, airDir.z * targetH);
                         mob.hasImpulse = true;
 

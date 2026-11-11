@@ -92,6 +92,8 @@ public class ModEntityRenderers {
                 context -> new LatexCarnelineRenderer(context, new LatexCarnelineEntityModel<>(context.bakeLayer(LatexCarnelineEntityModel.LAYER_LOCATION))));
         registerHumanoid(event, ModEntities.LATEX_PANTHER.get(),
                 context -> new LatexPantherRenderer(context, new LatexPantherEntityModel<>(context.bakeLayer(LatexPantherEntityModel.LAYER_LOCATION))));
+        registerHumanoid(event, ModEntities.LATEX_KAIJU.get(),
+                context -> new LatexKaijuRenderer(context, new LatexKaijuEntityModel<>(context.bakeLayer(LatexKaijuEntityModel.LAYER_LOCATION))));
         event.registerEntityRenderer(ModEntities.SNEP.get(), SnepRenderer::new);
     }
 }

@@ -12,6 +12,7 @@ public class ModLootTableProvider extends ModJsonProvider {
 
     @Override
     protected void generate() {
+        block("blue_stone", "changedextras:blue_stone", true);
         block("blue_stone_crystal", "changedextras:strange_crystal_shard", true);
         block("catte_bucket", "changedextras:catte_bucket", true);
         block("failed_route", "changedextras:failed_route", false);
@@ -98,15 +99,10 @@ public class ModLootTableProvider extends ModJsonProvider {
     private JsonObject hiddenChest() {
         JsonObject root = chest();
         JsonArray pools = new JsonArray();
-        pools.add(singlePlain(withFunction(item("minecraft:netherite_scrap"), setCountRange(1, 2))));
-        pools.add(singlePlain(withFunction(item("minecraft:diamond"), setCountRange(1, 5))));
-        pools.add(singlePlain(withFunction(item("minecraft:iron_ingot"), setCountRange(7, 15))));
+        pools.add(singlePlain(withFunction(item("changed_addon:orange_juice"), setCountRange(1, 5))));
+        pools.add(singlePlain(withFunction(item("changed_addon:pot_with_camonia"), setCountRange(0, 1))));
+        pools.add(singlePlain(withFunction(item("minecraft:iron_ingot"), setCountRange(1, 5))));
         pools.add(singlePlain(withFunction(item("minecraft:gold_ingot"), setCountRange(1, 3))));
-        pools.add(singlePlain(withFunction(item("changed_addon:orange_juice"), setCountRange(1, 16))));
-        pools.add(singlePlain(withFunction(item("changed_addon:ammonia_particle"), setCountRange(5, 10))));
-        pools.add(singlePlain(withFunction(item("changed_addon:laethin"), setCountRange(1, 5))));
-        pools.add(singlePlain(withFunction(item("changed_addon:pot_with_camonia"), setCountRange(2, 3))));
-        pools.add(singlePlain(withFunction(item("changed_addon:syringe_with_litix_cammonia"), setCountRange(1, 2))));
         root.add("pools", pools);
         return root;
     }

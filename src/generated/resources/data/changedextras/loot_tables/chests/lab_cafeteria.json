@@ -50,6 +50,20 @@
           "functions": [
             {
               "count": {
+                "max": 8,
+                "min": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:raw_salmon",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
                 "max": 20,
                 "min": 3
               },

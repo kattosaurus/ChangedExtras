@@ -1,5 +1,6 @@
 package com.katt.changedextras.mixin;
 
+import com.katt.changedextras.worldgen.BlueCaveNoiseChunkAccess;
 import com.katt.changedextras.worldgen.BlueCaveOreVeinFilter;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Aquifer;
@@ -11,13 +12,27 @@ import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(NoiseChunk.class)
-public abstract class NoiseChunkMixin {
+public abstract class NoiseChunkMixin implements BlueCaveNoiseChunkAccess {
+    @Unique
+    private ChunkAccess changedextras$chunk;
+
+    @Override
+    public ChunkAccess changedextras$getChunk() {
+        return this.changedextras$chunk;
+    }
+
+    @Override
+    public void changedextras$setChunk(ChunkAccess chunk) {
+        this.changedextras$chunk = chunk;
+    }
+
     @Inject(method = "forChunk", at = @At("RETURN"), require = 1)
     private static void changedextras$trackChunk(
             ChunkAccess chunk,
@@ -28,7 +43,9 @@ public abstract class NoiseChunkMixin {
             Blender blender,
             CallbackInfoReturnable<NoiseChunk> cir
     ) {
-        BlueCaveOreVeinFilter.track(cir.getReturnValue(), chunk);
+        if (cir.getReturnValue() instanceof BlueCaveNoiseChunkAccess access) {
+            access.changedextras$setChunk(chunk);
+        }
     }
 
     @Redirect(

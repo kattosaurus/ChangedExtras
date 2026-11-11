@@ -50,6 +50,10 @@ public class BlueStoneCrystalPatchFeature extends Feature<NoneFeatureConfigurati
                 continue;
             }
 
+            if (!BlueStoneCrystalBlock.hasMinimumDistance(level, targetPos)) {
+                continue;
+            }
+
             Collections.shuffle(directions);
             Direction validFacing = null;
             for (Direction dir : directions) {

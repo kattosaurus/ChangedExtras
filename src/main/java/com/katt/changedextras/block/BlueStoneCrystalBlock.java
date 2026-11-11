@@ -2,6 +2,7 @@ package com.katt.changedextras.block;
 
 import com.katt.changedextras.ChangedExtras;
 import com.katt.changedextras.common.latex.CarnelineTransfurHandler;
+import com.katt.changedextras.common.latex.KaijuTransfurHandler;
 import com.katt.changedextras.common.latex.PantherTransfurHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,10 +20,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -31,12 +37,14 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 
 @SuppressWarnings("deprecation")
-public class BlueStoneCrystalBlock extends DirectionalBlock implements BonemealableBlock {
+public class BlueStoneCrystalBlock extends DirectionalBlock implements BonemealableBlock, SimpleWaterloggedBlock {
     public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 2);
     public static final EnumProperty<CrystalColor> COLOR = EnumProperty.create("color", CrystalColor.class);
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     private static final int MAX_AGE = 2;
     private static final int GROWTH_CHANCE_DENOMINATOR = 10;
+    public static final double MIN_DISTANCE = 2.0D;
     private static final double MEDIUM_MIN_DISTANCE = 3.0D;
     private static final double BIG_MIN_DISTANCE = 6.0D;
 
@@ -45,7 +53,8 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(AGE, 0)
                 .setValue(COLOR, CrystalColor.WHITE)
-                .setValue(FACING, Direction.UP));
+                .setValue(FACING, Direction.UP)
+                .setValue(WATERLOGGED, false));
     }
 
     public static CrystalColor colorForLight(int lightLevel) {
@@ -62,7 +71,26 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
         return ChangedExtras.BLUE_STONE_CRYSTAL.get()
                 .defaultBlockState()
                 .setValue(FACING, facing)
-                .setValue(COLOR, colorForLight(level.getMaxLocalRawBrightness(pos)));
+                .setValue(COLOR, colorForLight(level.getMaxLocalRawBrightness(pos)))
+                .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
+    }
+
+    public static boolean hasMinimumDistance(LevelReader level, BlockPos pos) {
+        int radius = (int) Math.ceil(MIN_DISTANCE);
+        for (BlockPos target : BlockPos.betweenClosed(
+                pos.offset(-radius, -radius, -radius),
+                pos.offset(radius, radius, radius))) {
+            if (target.equals(pos)) {
+                continue;
+            }
+            if (pos.closerThan(target, MIN_DISTANCE)) {
+                BlockState targetState = level.getBlockState(target);
+                if (targetState.is(ChangedExtras.BLUE_STONE_CRYSTAL.get())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static boolean canGrowToMedium(LevelReader level, BlockPos pos) {
@@ -161,6 +189,8 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
                 CarnelineTransfurHandler.onTouchedRedCrystal(entity);
             } else if (state.getValue(COLOR) == CrystalColor.WHITE && state.getValue(AGE) > 0) {
                 PantherTransfurHandler.onTouchedWhiteCrystal(entity, state);
+            } else if (state.getValue(COLOR) == CrystalColor.BLUE) {
+                KaijuTransfurHandler.onTouchedBlueCrystal(entity);
             }
         }
     }
@@ -173,6 +203,8 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
                 CarnelineTransfurHandler.onTouchedRedCrystal(entity);
             } else if (state.getValue(COLOR) == CrystalColor.WHITE && state.getValue(AGE) > 0) {
                 PantherTransfurHandler.onTouchedWhiteCrystal(entity, state);
+            } else if (state.getValue(COLOR) == CrystalColor.BLUE) {
+                KaijuTransfurHandler.onTouchedBlueCrystal(entity);
             }
         }
     }
@@ -185,6 +217,8 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
                 CarnelineTransfurHandler.onTouchedRedCrystal(player);
             } else if (state.getValue(COLOR) == CrystalColor.WHITE && state.getValue(AGE) > 0) {
                 PantherTransfurHandler.onTouchedWhiteCrystal(player, state);
+            } else if (state.getValue(COLOR) == CrystalColor.BLUE) {
+                KaijuTransfurHandler.onTouchedBlueCrystal(player);
             }
         }
     }
@@ -204,15 +238,28 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
         Direction facing = state.getValue(FACING);
         BlockPos supportPos = pos.relative(facing.getOpposite());
         BlockState supportState = level.getBlockState(supportPos);
-        return supportState.is(ChangedExtras.BLUE_STONE_BLOCK.get()) && supportState.isFaceSturdy(level, supportPos, facing);
+        return supportState.is(ChangedExtras.BLUE_STONE_BLOCK.get())
+                && supportState.isFaceSturdy(level, supportPos, facing)
+                && hasMinimumDistance(level, pos);
     }
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                   LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        return direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos)
-                ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        if (state.getValue(WATERLOGGED)) {
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+        if (direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos)) {
+            return state.getValue(WATERLOGGED)
+                    ? Blocks.WATER.defaultBlockState()
+                    : Blocks.AIR.defaultBlockState();
+        }
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
@@ -227,13 +274,14 @@ public class BlueStoneCrystalBlock extends DirectionalBlock implements Bonemeala
         BlockPos pos = context.getClickedPos();
         BlockState placedState = this.defaultBlockState()
                 .setValue(FACING, context.getClickedFace())
-                .setValue(COLOR, colorForLight(level.getMaxLocalRawBrightness(pos)));
+                .setValue(COLOR, colorForLight(level.getMaxLocalRawBrightness(pos)))
+                .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
         return placedState.canSurvive(level, pos) ? placedState : null;
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(AGE, COLOR, FACING);
+        builder.add(AGE, COLOR, FACING, WATERLOGGED);
     }
 
     private static VoxelShape shapeFor(Direction facing, double min, double max, double height) {

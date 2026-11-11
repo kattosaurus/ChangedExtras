@@ -21,7 +21,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID)
 public final class PantherTransfurHandler {
-    private static final String LAST_TICK_TAG = "changedextras_panther_last_tick";
+    public static final String LAST_TOUCH_TAG = "changedextras_crystal_last_touch_tick";
+    public static final int TOUCH_COOLDOWN_TICKS = 20;
 
     private PantherTransfurHandler() {
     }
@@ -52,12 +53,14 @@ public final class PantherTransfurHandler {
 
         CompoundTag data = livingEntity.getPersistentData();
         long currentTick = livingEntity.level().getGameTime();
-        if (data.getLong(LAST_TICK_TAG) == currentTick) {
+        if (data.contains(LAST_TOUCH_TAG) && currentTick - data.getLong(LAST_TOUCH_TAG) < TOUCH_COOLDOWN_TICKS) {
             return;
         }
-        data.putLong(LAST_TICK_TAG, currentTick);
+        data.putLong(LAST_TOUCH_TAG, currentTick);
 
-        float progress = state.getValue(BlueStoneCrystalBlock.AGE) == 1 ? 6.0f : 8.0f;
+        float tolerance = Math.max(0.0001f, (float) ProcessTransfur.getEntityTransfurTolerance(livingEntity));
+        float progress = tolerance * 0.25f;
+
         ProcessTransfur.progressTransfur(livingEntity, LatexAssimilationDecision.fromBlockOrItem(
                 ModTransfurVariants.LATEX_PANTHER.get(),
                 TransfurContext.hazard(TransfurCause.CRYSTAL),

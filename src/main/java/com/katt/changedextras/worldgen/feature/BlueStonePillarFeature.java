@@ -185,6 +185,10 @@ public class BlueStonePillarFeature extends Feature<NoneFeatureConfiguration> {
                 continue;
             }
 
+            if (!BlueStoneCrystalBlock.hasMinimumDistance(level, targetPos)) {
+                continue;
+            }
+
             Collections.shuffle(dirs);
             for (Direction dir : dirs) {
                 BlockPos support = targetPos.relative(dir.getOpposite());

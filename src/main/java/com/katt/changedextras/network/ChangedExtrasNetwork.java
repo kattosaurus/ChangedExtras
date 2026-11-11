@@ -71,5 +71,9 @@ public class ChangedExtrasNetwork {
                 RespawnChoicePacket::encode,
                 RespawnChoicePacket::decode,
                 RespawnChoicePacket::handle);
+        INSTANCE.registerMessage(id++, JamStatePacket.class,
+                JamStatePacket::encode,
+                JamStatePacket::decode,
+                JamStatePacket::handle);
     }
 }

@@ -27,7 +27,7 @@ public class ModTagProvider extends ModJsonProvider {
             "changedextras:latex_jammer", "changedextras:latex_katto", "changedextras:latex_hazzy",
             "changedextras:proto_bee", "changedextras:latex_white_cat", "changedextras:latex_catte",
             "changedextras:latex_haku", "changedextras:latex_thorniii", "changedextras:latex_carneline",
-            "changedextras:latex_panther"
+            "changedextras:latex_panther", "changedextras:latex_kaiju"
     };
 
     public ModTagProvider(PackOutput output) {
@@ -64,7 +64,7 @@ public class ModTagProvider extends ModJsonProvider {
                 "changedextras:latex_artist", "changedextras:latex_jammer", "changedextras:latex_katto",
                 "changedextras:latex_hazzy", "changedextras:latex_white_cat", "changedextras:latex_catte",
                 "changedextras:latex_haku", "changedextras:latex_thorniii", "changedextras:latex_carneline",
-                "changedextras:latex_panther");
+                "changedextras:latex_panther", "changedextras:latex_kaiju");
         tag("changed", "tags/entity_types", "organic_latex",
                 "changedextras:conekat/male", "changedextras:conekat/female",
                 "changedextras:mint_conekat/male", "changedextras:mint_conekat/female",
@@ -87,7 +87,7 @@ public class ModTagProvider extends ModJsonProvider {
                 "changedextras:neapolitan_conekat/female", "changedextras:neapolitan_conekat/male",
                 "changedextras:latex_katto", "changedextras:latex_hazzy",
                 "changedextras:latex_white_cat", "changedextras:latex_catte", "changedextras:latex_carneline",
-                "changedextras:latex_panther");
+                "changedextras:latex_panther", "changedextras:latex_kaiju");
         tag("changed_addon", "tags/changed/latex_variant", "has_claws", CLAW_ENTITIES);
         tag("changed_addon", "tags/changed/latex_variant", "wolf_like", "changedextras:latex_jammer");
         tag("changed_addon", "tags/entity_types", "has_claws", CLAW_ENTITIES);
@@ -95,7 +95,8 @@ public class ModTagProvider extends ModJsonProvider {
 
         // minecraft
         tag("minecraft", "tags/blocks/mineable", "pickaxe",
-                "changedextras:scp009_crystal", "changedextras:domain_barrier");
+                "changedextras:scp009_crystal", "changedextras:domain_barrier", "changedextras:blue_stone");
+        tag("minecraft", "tags/blocks", "needs_iron_tool", "changedextras:blue_stone");
         tag("minecraft", "tags/blocks", "overworld_carver_replaceables", "changedextras:blue_stone");
         tag("minecraft", "tags/painting_variant", "placeable", "changedextras:the_eye");
         tag("minecraft", "tags/worldgen/biome", "is_overworld", "changedextras:blue_cave");
