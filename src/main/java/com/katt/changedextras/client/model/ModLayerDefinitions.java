@@ -26,5 +26,6 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(LatexThorniiiEntityModel.LAYER_LOCATION, LatexThorniiiEntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexCarnelineEntityModel.LAYER_LOCATION, LatexCarnelineEntityModel::createBodyLayer);
         event.registerLayerDefinition(LatexPantherEntityModel.LAYER_LOCATION, LatexPantherEntityModel::createBodyLayer);
+        event.registerLayerDefinition(LatexKaijuEntityModel.LAYER_LOCATION, LatexKaijuEntityModel::createBodyLayer);
     }
 }

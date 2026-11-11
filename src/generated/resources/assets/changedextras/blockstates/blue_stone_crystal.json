@@ -1,235 +1,469 @@
 {
   "variants": {
-    "age=0,color=blue,facing=down": {
+    "age=0,color=blue,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_blue",
       "x": 180
     },
-    "age=0,color=blue,facing=east": {
+    "age=0,color=blue,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_blue",
+      "x": 180
+    },
+    "age=0,color=blue,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_blue",
       "x": 90,
       "y": 90
     },
-    "age=0,color=blue,facing=north": {
+    "age=0,color=blue,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_blue",
+      "x": 90,
+      "y": 90
+    },
+    "age=0,color=blue,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_blue",
       "x": 90
     },
-    "age=0,color=blue,facing=south": {
+    "age=0,color=blue,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_blue",
+      "x": 90
+    },
+    "age=0,color=blue,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_blue",
       "x": 90,
       "y": 180
     },
-    "age=0,color=blue,facing=up": {
+    "age=0,color=blue,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_blue",
+      "x": 90,
+      "y": 180
+    },
+    "age=0,color=blue,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_blue"
     },
-    "age=0,color=blue,facing=west": {
+    "age=0,color=blue,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_blue"
+    },
+    "age=0,color=blue,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_blue",
       "x": 90,
       "y": 270
     },
-    "age=0,color=red,facing=down": {
+    "age=0,color=blue,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_blue",
+      "x": 90,
+      "y": 270
+    },
+    "age=0,color=red,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_red",
       "x": 180
     },
-    "age=0,color=red,facing=east": {
+    "age=0,color=red,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_red",
+      "x": 180
+    },
+    "age=0,color=red,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_red",
       "x": 90,
       "y": 90
     },
-    "age=0,color=red,facing=north": {
+    "age=0,color=red,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_red",
+      "x": 90,
+      "y": 90
+    },
+    "age=0,color=red,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_red",
       "x": 90
     },
-    "age=0,color=red,facing=south": {
+    "age=0,color=red,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_red",
+      "x": 90
+    },
+    "age=0,color=red,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_red",
       "x": 90,
       "y": 180
     },
-    "age=0,color=red,facing=up": {
+    "age=0,color=red,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_red",
+      "x": 90,
+      "y": 180
+    },
+    "age=0,color=red,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_red"
     },
-    "age=0,color=red,facing=west": {
+    "age=0,color=red,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_red"
+    },
+    "age=0,color=red,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_red",
       "x": 90,
       "y": 270
     },
-    "age=0,color=white,facing=down": {
+    "age=0,color=red,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_red",
+      "x": 90,
+      "y": 270
+    },
+    "age=0,color=white,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_white",
       "x": 180
     },
-    "age=0,color=white,facing=east": {
+    "age=0,color=white,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_white",
+      "x": 180
+    },
+    "age=0,color=white,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_white",
       "x": 90,
       "y": 90
     },
-    "age=0,color=white,facing=north": {
+    "age=0,color=white,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_white",
+      "x": 90,
+      "y": 90
+    },
+    "age=0,color=white,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_white",
       "x": 90
     },
-    "age=0,color=white,facing=south": {
+    "age=0,color=white,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_white",
+      "x": 90
+    },
+    "age=0,color=white,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_white",
       "x": 90,
       "y": 180
     },
-    "age=0,color=white,facing=up": {
+    "age=0,color=white,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_white",
+      "x": 90,
+      "y": 180
+    },
+    "age=0,color=white,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_white"
     },
-    "age=0,color=white,facing=west": {
+    "age=0,color=white,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_white"
+    },
+    "age=0,color=white,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/small_white",
       "x": 90,
       "y": 270
     },
-    "age=1,color=blue,facing=down": {
+    "age=0,color=white,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/small_white",
+      "x": 90,
+      "y": 270
+    },
+    "age=1,color=blue,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_blue",
       "x": 180
     },
-    "age=1,color=blue,facing=east": {
+    "age=1,color=blue,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_blue",
+      "x": 180
+    },
+    "age=1,color=blue,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_blue",
       "x": 90,
       "y": 90
     },
-    "age=1,color=blue,facing=north": {
+    "age=1,color=blue,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_blue",
+      "x": 90,
+      "y": 90
+    },
+    "age=1,color=blue,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_blue",
       "x": 90
     },
-    "age=1,color=blue,facing=south": {
+    "age=1,color=blue,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_blue",
+      "x": 90
+    },
+    "age=1,color=blue,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_blue",
       "x": 90,
       "y": 180
     },
-    "age=1,color=blue,facing=up": {
+    "age=1,color=blue,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_blue",
+      "x": 90,
+      "y": 180
+    },
+    "age=1,color=blue,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_blue"
     },
-    "age=1,color=blue,facing=west": {
+    "age=1,color=blue,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_blue"
+    },
+    "age=1,color=blue,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_blue",
       "x": 90,
       "y": 270
     },
-    "age=1,color=red,facing=down": {
+    "age=1,color=blue,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_blue",
+      "x": 90,
+      "y": 270
+    },
+    "age=1,color=red,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_red",
       "x": 180
     },
-    "age=1,color=red,facing=east": {
+    "age=1,color=red,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_red",
+      "x": 180
+    },
+    "age=1,color=red,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_red",
       "x": 90,
       "y": 90
     },
-    "age=1,color=red,facing=north": {
+    "age=1,color=red,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_red",
+      "x": 90,
+      "y": 90
+    },
+    "age=1,color=red,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_red",
       "x": 90
     },
-    "age=1,color=red,facing=south": {
+    "age=1,color=red,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_red",
+      "x": 90
+    },
+    "age=1,color=red,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_red",
       "x": 90,
       "y": 180
     },
-    "age=1,color=red,facing=up": {
+    "age=1,color=red,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_red",
+      "x": 90,
+      "y": 180
+    },
+    "age=1,color=red,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_red"
     },
-    "age=1,color=red,facing=west": {
+    "age=1,color=red,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_red"
+    },
+    "age=1,color=red,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_red",
       "x": 90,
       "y": 270
     },
-    "age=1,color=white,facing=down": {
+    "age=1,color=red,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_red",
+      "x": 90,
+      "y": 270
+    },
+    "age=1,color=white,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_white",
       "x": 180
     },
-    "age=1,color=white,facing=east": {
+    "age=1,color=white,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_white",
+      "x": 180
+    },
+    "age=1,color=white,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_white",
       "x": 90,
       "y": 90
     },
-    "age=1,color=white,facing=north": {
+    "age=1,color=white,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_white",
+      "x": 90,
+      "y": 90
+    },
+    "age=1,color=white,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_white",
       "x": 90
     },
-    "age=1,color=white,facing=south": {
+    "age=1,color=white,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_white",
+      "x": 90
+    },
+    "age=1,color=white,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_white",
       "x": 90,
       "y": 180
     },
-    "age=1,color=white,facing=up": {
+    "age=1,color=white,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_white",
+      "x": 90,
+      "y": 180
+    },
+    "age=1,color=white,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_white"
     },
-    "age=1,color=white,facing=west": {
+    "age=1,color=white,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_white"
+    },
+    "age=1,color=white,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/medium_white",
       "x": 90,
       "y": 270
     },
-    "age=2,color=blue,facing=down": {
+    "age=1,color=white,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/medium_white",
+      "x": 90,
+      "y": 270
+    },
+    "age=2,color=blue,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_blue",
       "x": 180
     },
-    "age=2,color=blue,facing=east": {
+    "age=2,color=blue,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_blue",
+      "x": 180
+    },
+    "age=2,color=blue,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_blue",
       "x": 90,
       "y": 90
     },
-    "age=2,color=blue,facing=north": {
+    "age=2,color=blue,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_blue",
+      "x": 90,
+      "y": 90
+    },
+    "age=2,color=blue,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_blue",
       "x": 90
     },
-    "age=2,color=blue,facing=south": {
+    "age=2,color=blue,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_blue",
+      "x": 90
+    },
+    "age=2,color=blue,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_blue",
       "x": 90,
       "y": 180
     },
-    "age=2,color=blue,facing=up": {
+    "age=2,color=blue,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_blue",
+      "x": 90,
+      "y": 180
+    },
+    "age=2,color=blue,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_blue"
     },
-    "age=2,color=blue,facing=west": {
+    "age=2,color=blue,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_blue"
+    },
+    "age=2,color=blue,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_blue",
       "x": 90,
       "y": 270
     },
-    "age=2,color=red,facing=down": {
+    "age=2,color=blue,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_blue",
+      "x": 90,
+      "y": 270
+    },
+    "age=2,color=red,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_red",
       "x": 180
     },
-    "age=2,color=red,facing=east": {
+    "age=2,color=red,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_red",
+      "x": 180
+    },
+    "age=2,color=red,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_red",
       "x": 90,
       "y": 90
     },
-    "age=2,color=red,facing=north": {
+    "age=2,color=red,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_red",
+      "x": 90,
+      "y": 90
+    },
+    "age=2,color=red,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_red",
       "x": 90
     },
-    "age=2,color=red,facing=south": {
+    "age=2,color=red,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_red",
+      "x": 90
+    },
+    "age=2,color=red,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_red",
       "x": 90,
       "y": 180
     },
-    "age=2,color=red,facing=up": {
+    "age=2,color=red,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_red",
+      "x": 90,
+      "y": 180
+    },
+    "age=2,color=red,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_red"
     },
-    "age=2,color=red,facing=west": {
+    "age=2,color=red,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_red"
+    },
+    "age=2,color=red,facing=west,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_red",
       "x": 90,
       "y": 270
     },
-    "age=2,color=white,facing=down": {
+    "age=2,color=red,facing=west,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_red",
+      "x": 90,
+      "y": 270
+    },
+    "age=2,color=white,facing=down,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_white",
       "x": 180
     },
-    "age=2,color=white,facing=east": {
+    "age=2,color=white,facing=down,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_white",
+      "x": 180
+    },
+    "age=2,color=white,facing=east,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_white",
       "x": 90,
       "y": 90
     },
-    "age=2,color=white,facing=north": {
+    "age=2,color=white,facing=east,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_white",
+      "x": 90,
+      "y": 90
+    },
+    "age=2,color=white,facing=north,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_white",
       "x": 90
     },
-    "age=2,color=white,facing=south": {
+    "age=2,color=white,facing=north,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_white",
+      "x": 90
+    },
+    "age=2,color=white,facing=south,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_white",
       "x": 90,
       "y": 180
     },
-    "age=2,color=white,facing=up": {
+    "age=2,color=white,facing=south,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_white",
+      "x": 90,
+      "y": 180
+    },
+    "age=2,color=white,facing=up,waterlogged=false": {
       "model": "changedextras:block/blue_stone_crystal/big_white"
     },
-    "age=2,color=white,facing=west": {
+    "age=2,color=white,facing=up,waterlogged=true": {
+      "model": "changedextras:block/blue_stone_crystal/big_white"
+    },
+    "age=2,color=white,facing=west,waterlogged=false": {
+      "model": "changedextras:block/blue_stone_crystal/big_white",
+      "x": 90,
+      "y": 270
+    },
+    "age=2,color=white,facing=west,waterlogged=true": {
       "model": "changedextras:block/blue_stone_crystal/big_white",
       "x": 90,
       "y": 270

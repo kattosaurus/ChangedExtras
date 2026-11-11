@@ -1,6 +1,8 @@
 package com.katt.changedextras.mixin;
 
+import com.katt.changedextras.client.tracker.ClientJamTracker;
 import com.katt.changedextras.client.tracker.ClientParryTracker;
+import com.katt.changedextras.client.renderer.JamAnimationHelper;
 import com.katt.changedextras.client.renderer.ParryAnimationHelper;
 import com.katt.changedextras.common.latex.LatexCuddleHelper;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
@@ -124,6 +126,33 @@ public abstract class AdvancedHumanoidModelMixin<T extends ChangedEntity> {
                 leftArm.yRot = 0.35F;
                 leftArm.zRot = -0.2F;
             }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyJamPose(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        if (entity == null) {
+            return;
+        }
+
+        UUID uuid = entity.getUnderlyingPlayer() != null ? entity.getUnderlyingPlayer().getUUID() : entity.getUUID();
+        if (uuid == null) {
+            return;
+        }
+
+        if (!ClientJamTracker.isJamming(uuid)) {
+            return;
+        }
+
+        // Parry and counterattack poses take precedence over the jam animation.
+        if (ClientParryTracker.isParrying(uuid) || ClientParryTracker.isCounterattacking(uuid)) {
+            return;
+        }
+
+        try {
+            AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+            JamAnimationHelper.applyAnimation(model, uuid);
         } catch (Throwable ignored) {
         }
     }

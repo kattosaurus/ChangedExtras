@@ -18,6 +18,7 @@ import java.util.List;
 public class ChangedExtrasGuideScreen extends Screen {
     private static final ResourceLocation BOOK_TEXTURE = ResourceLocation.fromNamespaceAndPath("changedextras", "textures/gui/book.png");
     private static final ResourceLocation COVER_TEXTURE = ResourceLocation.fromNamespaceAndPath("changedextras", "textures/gui/guide.png");
+    private static final ResourceLocation BACK_COVER_TEXTURE = ResourceLocation.fromNamespaceAndPath("changedextras", "textures/gui/guide_back.png");
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
     private static final int BOOK_SOURCE_WIDTH = 164;
@@ -37,6 +38,7 @@ public class ChangedExtrasGuideScreen extends Screen {
 
     private final List<List<GuideLine>> pages;
     private final boolean hasCover;
+    private final boolean hasBackCover;
     private int page;
     private Button previousButton;
     private Button nextButton;
@@ -45,6 +47,7 @@ public class ChangedExtrasGuideScreen extends Screen {
         super(Component.translatable("item.changedextras.changed_extras_guide"));
         this.pages = pages.isEmpty() ? List.of(List.of()) : pages;
         this.hasCover = Minecraft.getInstance().getResourceManager().getResource(COVER_TEXTURE).isPresent();
+        this.hasBackCover = Minecraft.getInstance().getResourceManager().getResource(BACK_COVER_TEXTURE).isPresent();
         if (!this.hasCover) {
             this.page = 1;
         }
@@ -63,7 +66,7 @@ public class ChangedExtrasGuideScreen extends Screen {
         }));
         this.nextButton = addRenderableWidget(new PageTurnButton(left + 162 + ARROW_RIGHT_OFFSET, top + ARROW_TOP_OFFSET, 24, 20,
                 Component.literal(">"), button -> {
-            if (this.page < this.pages.size()) {
+            if (this.page < lastPage()) {
                 this.page++;
                 updateButtons();
             }
@@ -79,6 +82,12 @@ public class ChangedExtrasGuideScreen extends Screen {
 
         if (isCover()) {
             graphics.blit(COVER_TEXTURE, left, top, SCALED_BOOK_WIDTH, SCALED_BOOK_HEIGHT, 0.0F, 0.0F, BOOK_SOURCE_WIDTH, BOOK_SOURCE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            super.render(graphics, mouseX, mouseY, partialTick);
+            return;
+        }
+
+        if (isBackCover()) {
+            graphics.blit(BACK_COVER_TEXTURE, left, top, SCALED_BOOK_WIDTH, SCALED_BOOK_HEIGHT, 0.0F, 0.0F, BOOK_SOURCE_WIDTH, BOOK_SOURCE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             super.render(graphics, mouseX, mouseY, partialTick);
             return;
         }
@@ -139,13 +148,21 @@ public class ChangedExtrasGuideScreen extends Screen {
         return this.hasCover && this.page == 0;
     }
 
+    private boolean isBackCover() {
+        return this.hasBackCover && this.page == this.pages.size() + 1;
+    }
+
     private int firstPage() {
         return this.hasCover ? 0 : 1;
     }
 
+    private int lastPage() {
+        return this.pages.size() + (this.hasBackCover ? 1 : 0);
+    }
+
     private void updateButtons() {
         this.previousButton.visible = this.page > firstPage();
-        this.nextButton.visible = this.page < this.pages.size();
+        this.nextButton.visible = this.page < lastPage();
     }
 
     private static final class PageTurnButton extends Button {

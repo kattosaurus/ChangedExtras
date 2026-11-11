@@ -39,8 +39,9 @@ import java.util.WeakHashMap;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class LatexMobAIHandler {
-    // Standard player-calibrated base movement speed for smart AI
-    private static final double LATEX_PLAYER_BASE_SPEED = 0.38D;
+    // Fallback base movement speed for smart AI when a variant's native attribute
+    // can't be resolved (just under player walking speed)
+    private static final double LATEX_PLAYER_BASE_SPEED = 0.30D;
 
     private static final Set<ChangedEntity> INSTALLED_MOBS =
             Collections.newSetFromMap(new WeakHashMap<>());

@@ -16,6 +16,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
 
 import java.util.List;
 
@@ -40,6 +41,16 @@ public final class ModFeatures {
             new ResourceLocation(ChangedExtras.MODID, "blue_stone_pillar")
     );
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> BLUE_CAVE_COUCH_KEY = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE,
+            new ResourceLocation(ChangedExtras.MODID, "blue_cave_couch")
+    );
+
+    public static final ResourceKey<PlacedFeature> BLUE_CAVE_COUCH_PLACED_KEY = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            new ResourceLocation(ChangedExtras.MODID, "blue_cave_couch")
+    );
+
     private ModFeatures() {
     }
 
@@ -51,6 +62,10 @@ public final class ModFeatures {
         context.register(
                 BLUE_STONE_PILLAR_KEY,
                 new ConfiguredFeature<>(ChangedExtras.BLUE_STONE_PILLAR.get(), NoneFeatureConfiguration.INSTANCE)
+        );
+        context.register(
+                BLUE_CAVE_COUCH_KEY,
+                new ConfiguredFeature<>(ChangedExtras.BLUE_CAVE_COUCH.get(), NoneFeatureConfiguration.INSTANCE)
         );
     }
 
@@ -74,5 +89,14 @@ public final class ModFeatures {
                 BiomeFilter.biome()
         );
         context.register(BLUE_STONE_PILLAR_PLACED_KEY, new PlacedFeature(pillarFeature, pillarModifiers));
+
+        Holder<ConfiguredFeature<?, ?>> couchFeature = configuredFeatures.getOrThrow(BLUE_CAVE_COUCH_KEY);
+        List<PlacementModifier> couchModifiers = List.of(
+                RarityFilter.onAverageOnceEvery(4),
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(64)),
+                BiomeFilter.biome()
+        );
+        context.register(BLUE_CAVE_COUCH_PLACED_KEY, new PlacedFeature(couchFeature, couchModifiers));
     }
 }

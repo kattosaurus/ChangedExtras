@@ -5,6 +5,7 @@ import com.katt.changedextras.block.BlueStoneCrystalBlock;
 import com.katt.changedextras.entity.ModTransfurVariants;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,8 +21,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedExtras.MODID)
 public final class CarnelineTransfurHandler {
-    public static final String CARNELINE_TIMER_TAG = "changedextras_carneline_infection_tick";
-    public static final int DELAY_TICKS = 80; // 4 seconds of "nothing happens"
+    public static final String LAST_TOUCH_TAG = "changedextras_crystal_last_touch_tick";
+    public static final int TOUCH_COOLDOWN_TICKS = 20;
 
     private CarnelineTransfurHandler() {
     }
@@ -44,12 +45,20 @@ public final class CarnelineTransfurHandler {
         }
 
         CompoundTag data = livingEntity.getPersistentData();
-        if (data.contains(CARNELINE_TIMER_TAG)) {
-            return; // Already touched once, waiting for delay to expire
+        long currentTick = livingEntity.level().getGameTime();
+        if (data.contains(LAST_TOUCH_TAG) && currentTick - data.getLong(LAST_TOUCH_TAG) < TOUCH_COOLDOWN_TICKS) {
+            return;
         }
+        data.putLong(LAST_TOUCH_TAG, currentTick);
 
-        // Set delay timer: "nothing happens for some seconds then you get transfurred"
-        data.putLong(CARNELINE_TIMER_TAG, livingEntity.level().getGameTime() + DELAY_TICKS);
+        float tolerance = Math.max(0.0001f, (float) ProcessTransfur.getEntityTransfurTolerance(livingEntity));
+        float progress = tolerance * 0.25f;
+
+        ProcessTransfur.progressTransfur(livingEntity, LatexAssimilationDecision.fromBlockOrItem(
+                ModTransfurVariants.LATEX_CARNELINE.get(),
+                TransfurContext.hazard(TransfurCause.CRYSTAL),
+                progress
+        ));
     }
 
     @SubscribeEvent
@@ -59,31 +68,6 @@ public final class CarnelineTransfurHandler {
         if (level.isClientSide) {
             return;
         }
-
-        CompoundTag data = livingEntity.getPersistentData();
-
-        // 1. Process pending transfur timer
-        if (data.contains(CARNELINE_TIMER_TAG)) {
-            if (!livingEntity.isAlive() || ProcessTransfur.hasVariant(livingEntity)
-                    || (livingEntity instanceof Player player && ProcessTransfur.isPlayerTransfurred(player))) {
-                data.remove(CARNELINE_TIMER_TAG);
-                return;
-            }
-
-            long targetTick = data.getLong(CARNELINE_TIMER_TAG);
-            if (level.getGameTime() >= targetTick) {
-                data.remove(CARNELINE_TIMER_TAG);
-                if (livingEntity instanceof Player player) {
-                    ProcessTransfur.setPlayerTransfurVariant(player, ModTransfurVariants.LATEX_CARNELINE.get(),
-                            TransfurContext.hazard(TransfurCause.LATEX_PUDDLE));
-                } else {
-                    ProcessTransfur.transfur(livingEntity, level, ModTransfurVariants.LATEX_CARNELINE.get(), true);
-                }
-            }
-            return;
-        }
-
-        // 2. Proximity check for touching red crystals (in case entity collides with side of block)
         if (ProcessTransfur.hasVariant(livingEntity)) {
             return;
         }

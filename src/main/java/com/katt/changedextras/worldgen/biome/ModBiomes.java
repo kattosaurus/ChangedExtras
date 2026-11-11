@@ -62,6 +62,7 @@ public class ModBiomes {
                 .addCarver(GenerationStep.Carving.AIR, Carvers.CANYON)
                 .addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, placedFeatures.getOrThrow(ModFeatures.BLUE_STONE_PILLAR_PLACED_KEY))
                 .addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, placedFeatures.getOrThrow(ModFeatures.BLUE_STONE_CRYSTAL_PATCH_PLACED_KEY))
+                .addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, placedFeatures.getOrThrow(ModFeatures.BLUE_CAVE_COUCH_PLACED_KEY))
                 .build();
 
         BiomeSpecialEffects effects = new BiomeSpecialEffects.Builder()
@@ -69,11 +70,10 @@ public class ModBiomes {
                 .fogColor(0x0A1B2A)
                 .waterColor(0x1B3A5C)
                 .waterFogColor(0x0A1A2A)
-                .ambientLoopSound(SoundEvents.AMBIENT_CAVE)
                 .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
                 .backgroundMusic(Musics.createGameMusic(SoundEvents.MUSIC_BIOME_DEEP_DARK))
                 .build();
-
+        
         context.register(BLUE_CAVE, new Biome.BiomeBuilder()
                 .hasPrecipitation(false)
                 .temperature(0.8F)

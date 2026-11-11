@@ -144,6 +144,12 @@ public class ModEntities {
                     .sized(0.7F, 1.93F)
                     .build("latex_panther"));
 
+    public static final RegistryObject<EntityType<LatexKaijuEntity>> LATEX_KAIJU = REGISTRY.register("latex_kaiju",
+            () -> EntityType.Builder.of(LatexKaijuEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F)
+                    .build("latex_kaiju"));
+
     public static final RegistryObject<EntityType<SnepEntity>> SNEP = REGISTRY.register("snep",
             () -> EntityType.Builder.of(SnepEntity::new, MobCategory.MISC)
                     .clientTrackingRange(10)

@@ -20,7 +20,7 @@ public final class ChangedExtrasGameRules {
     public static final GameRules.Key<GameRules.BooleanValue> SMART_LATEX_AI_ENABLED = GameRules.register(
             "changedextras:smart_latex_ai",
             GameRules.Category.MOBS,
-            GameRules.BooleanValue.create(true)
+            GameRules.BooleanValue.create(false)
     );
 
     public static final GameRules.Key<GameRules.BooleanValue> GIVE_GUIDE_BOOK = GameRules.register(

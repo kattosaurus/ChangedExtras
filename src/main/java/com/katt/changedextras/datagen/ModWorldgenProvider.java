@@ -21,9 +21,10 @@ public class ModWorldgenProvider extends ModJsonProvider {
         write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/lab_cafeteria", new ResourceLocation("changedextras", "lab_cafeteria"), facilityRoom("changedextras:facility/room/lab_cafeteria/lab_cafeteria", "changedextras:chests/lab_cafeteria", 100, 0, 2, "changed:general"));
         // biome white_void is generated via ModBiomes bootstrap (Registries provider)
         write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/recreation_room", new ResourceLocation("changedextras", "recreation_room"), facilityRoom("changedextras:facility/room/recreation_room/recreation_room", "changedextras:chests/recreationstorage", 200, 0, 2, "changed:entrance"));
+        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/blue_cave_room", new ResourceLocation("changedextras", "blue_cave_room"), facilityRoom("changedextras:facility/room/blue_cave_room/blue_cave_room", 15, 0, 2, "changed:entrance"));
 
         write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "armory_room"), roomWeight(100, 0, 2));
-        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "exp12_room"), roomWeight(50, 0, 2));
+        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "exp12_room"), roomWeight(20, 0, 1));
         write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "scp009_room"), roomWeight(100, 0, 1));
 
         write(PackOutput.Target.DATA_PACK, "accessories/entities", new ResourceLocation("changed", "changedextras_humanoids"), accessoriesHumanoids());
@@ -65,6 +66,22 @@ public class ModWorldgenProvider extends ModJsonProvider {
         piece.addProperty("type", "changed:room");
         piece.addProperty("template", template);
         piece.addProperty("loot_table", lootTable);
+        root.add("piece", piece);
+        root.addProperty("spawn_weight", spawnWeight);
+        root.addProperty("minimum", min);
+        root.addProperty("maximum", max);
+        JsonArray zones = new JsonArray();
+        zones.add(new JsonPrimitive(neighbouringZone));
+        root.add("neighboring_zones", zones);
+        return root;
+    }
+
+    /** Room whose template already bakes loot tables into its chests, so no loot_table is referenced. */
+    private JsonObject facilityRoom(String template, int spawnWeight, int min, int max, String neighbouringZone) {
+        JsonObject root = new JsonObject();
+        JsonObject piece = new JsonObject();
+        piece.addProperty("type", "changed:room");
+        piece.addProperty("template", template);
         root.add("piece", piece);
         root.addProperty("spawn_weight", spawnWeight);
         root.addProperty("minimum", min);

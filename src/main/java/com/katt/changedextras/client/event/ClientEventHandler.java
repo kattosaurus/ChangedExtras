@@ -4,6 +4,7 @@ import com.katt.changedextras.client.renderer.ArtistTintManager;
 import com.katt.changedextras.client.sound.ArtistBossMusicManager;
 import com.katt.changedextras.client.sound.JackpotSoundManager;
 import com.katt.changedextras.client.tracker.ClientJackpotTracker;
+import com.katt.changedextras.client.tracker.ClientJamTracker;
 import com.katt.changedextras.client.tracker.ClientPrepareTracker;
 
 import com.katt.changedextras.ChangedExtras;
@@ -80,6 +81,7 @@ public class ClientEventHandler {
             JackpotSoundManager.clear(Minecraft.getInstance());
             ClientJackpotTracker.clear();
             ClientPrepareTracker.clear();
+            ClientJamTracker.clear();
         }
 
         private static void spawnJackpotParticles(Player player) {
