@@ -1,0 +1,244 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 12,
+                "min": 3
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:blue_stone",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 3,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:strange_crystal_shard",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:bread",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 16,
+                "min": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:torch",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:icecream",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:pink_icecream",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:mint_icecream",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:choco_icecream",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:strawberry_icecream",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changedextras:neapolitan_icecream",
+          "weight": 2
+        }
+      ],
+      "rolls": 4
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.15,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "damage": {
+                "type": "minecraft:uniform",
+                "max": 0.6,
+                "min": 0.4
+              },
+              "function": "minecraft:set_damage"
+            }
+          ],
+          "name": "minecraft:iron_pickaxe"
+        }
+      ],
+      "rolls": 1
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.01,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "changedextras:latex_kaiju_syringe"
+        }
+      ],
+      "rolls": 1
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.01,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "changedextras:latex_panther_syringe"
+        }
+      ],
+      "rolls": 1
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.01,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "changedextras:latex_carneline_syringe"
+        }
+      ],
+      "rolls": 1
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "max": 4,
+                "min": 1
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changed_addon:orange_juice"
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}

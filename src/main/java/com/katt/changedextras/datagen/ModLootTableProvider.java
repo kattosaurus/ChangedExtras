@@ -21,6 +21,7 @@ public class ModLootTableProvider extends ModJsonProvider {
         block("route", "changedextras:route", false);
 
         write("loot_tables/chests/armory", armory());
+        write("loot_tables/chests/blue_cave_couch", blueCaveCouch());
         write("loot_tables/chests/exp12_room", exp12Room());
         write("loot_tables/chests/hiddenchest", hiddenChest());
         write("loot_tables/chests/lab_cafeteria", labCafeteria());
@@ -75,6 +76,34 @@ public class ModLootTableProvider extends ModJsonProvider {
         pools.add(single(0.01D, item("changed_addon:electric_katana")));
         pools.add(single(0.01D, withFunction(item("changedextras:katt_syringe"), setCountConst(1))));
         pools.add(single(0.1D, item("changed_addon:crow_bar")));
+        root.add("pools", pools);
+        return root;
+    }
+
+    private JsonObject blueCaveCouch() {
+        JsonObject root = chest();
+        JsonArray pools = new JsonArray();
+        JsonObject pool = new JsonObject();
+        pool.addProperty("rolls", 4);
+        JsonArray entries = new JsonArray();
+        entries.add(withFunction(weighted("changedextras:blue_stone", 4), setCountRange(3, 12)));
+        entries.add(withFunction(weighted("changedextras:strange_crystal_shard", 3), setCountRange(1, 3)));
+        entries.add(withFunction(weighted("minecraft:bread", 3), setCountRange(1, 4)));
+        entries.add(withFunction(weighted("minecraft:torch", 4), setCountRange(4, 16)));
+        entries.add(withFunction(weighted("changedextras:icecream", 2), setCountRange(1, 4)));
+        entries.add(withFunction(weighted("changedextras:pink_icecream", 2), setCountRange(1, 4)));
+        entries.add(withFunction(weighted("changedextras:mint_icecream", 2), setCountRange(1, 4)));
+        entries.add(withFunction(weighted("changedextras:choco_icecream", 2), setCountRange(1, 4)));
+        entries.add(withFunction(weighted("changedextras:strawberry_icecream", 2), setCountRange(1, 4)));
+        entries.add(withFunction(weighted("changedextras:neapolitan_icecream", 2), setCountRange(1, 4)));
+        pool.add("entries", entries);
+        pools.add(pool);
+
+        pools.add(single(0.15D, withFunction(item("minecraft:iron_pickaxe"), setDamageUniform(0.4D, 0.6D))));
+        pools.add(single(0.01D, item("changedextras:latex_kaiju_syringe")));
+        pools.add(single(0.01D, item("changedextras:latex_panther_syringe")));
+        pools.add(single(0.01D, item("changedextras:latex_carneline_syringe")));
+        pools.add(single(0.1D, withFunction(item("changed_addon:orange_juice"), setCountRange(1, 4))));
         root.add("pools", pools);
         return root;
     }
