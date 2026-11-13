@@ -1,0 +1,11 @@
+{
+  "parent": { "tree": "changedextras:scp_009" },
+  "titleId": "",
+  "price": 0,
+  "acquiredEffects": [
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:toggle_night_vision"
+    }
+  ]
+}

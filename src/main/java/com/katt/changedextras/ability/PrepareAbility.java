@@ -5,7 +5,7 @@ import com.katt.changedextras.common.freeze.PlayerFreezeManager;
 import com.katt.changedextras.network.PrepareStatePacket;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.ability.SimpleAbility;
+import net.ltxprogrammer.changed.ability.active.SimpleAbility;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

@@ -1,0 +1,27 @@
+{
+  "parent": { "tree": "changedextras:latex_artist" },
+  "titleId": "",
+  "price": 0,
+  "acquiredEffects": [
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:switch_transfur_mode"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:grab_entity"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changedextras:paint_ball"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changedextras:swing"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changedextras:puncture"
+    }
+  ]
+}

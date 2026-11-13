@@ -145,6 +145,7 @@ public class ModLootTableProvider extends ModJsonProvider {
         entries.add(withFunction(weighted("changed:white_latex_goo", 1), setCountRange(2, 3)));
         entries.add(withFunction(weighted("minecraft:bread", 4), setCountRange(5, 15)));
         entries.add(withFunction(weighted("minecraft:apple", 4), setCountRange(2, 8)));
+        entries.add(withFunction(weighted("minecraft:raw_salmon", 4), setCountRange(2,8)));
         entries.add(withFunction(weighted("changedextras:icecream", 3), setCountRange(3, 20)));
         entries.add(withFunction(weighted("changedextras:pink_icecream", 2), setCountRange(1, 4)));
         entries.add(withFunction(weighted("changedextras:mint_icecream", 2), setCountRange(1, 4)));
