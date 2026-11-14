@@ -266,6 +266,6 @@
   "changedextras.animation_conflict.title": "Animációütközés figyelmeztetés",
   "changedextras.animation_conflict.message": "A Changed Extras és a Changed: Refreshed Animations is telepítve van. Mindkét mod ugyanazokat a szemeket és humanoid modelleket animálja, ami duplázott animációkat, remegő pupillákat vagy más vizuális hibákat okozhat. A Changed: Refreshed Animations eltávolításával elkerülheted az ütközést, de folytathatod is.",
   "changedextras.animation_conflict.hint": "Folytathatod a játékot, de a vizuális hibák megmaradhatnak, amíg az addont el nem távolítod.",
-  "changedextras.animation_conflict.continue": "Folytatás",
+  "changedextras.animation_conflict.continue": "Folytatás mindenképpen",
   "changedextras.animation_conflict.quit": "Játék bezárása"
 }
