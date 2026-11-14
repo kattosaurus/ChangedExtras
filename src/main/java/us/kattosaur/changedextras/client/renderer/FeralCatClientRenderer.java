@@ -3,7 +3,6 @@ import us.kattosaur.changedextras.client.tracker.ClientFeralCatTracker;
 
 import us.kattosaur.changedextras.common.feral.FeralCatManager;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.ltxprogrammer.changed.client.RenderOverride;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -40,10 +39,6 @@ public class FeralCatClientRenderer {
 
     // One dummy cat PER player (before, all feral players shared a single dummy)
     private static final Map<UUID, Cat> DUMMIES = new HashMap<>();
-
-    public static void register() {
-        RenderOverride.registerOverride(FeralCatRenderOverride::new);
-    }
 
     public static boolean isFeral(Player player) {
         if (player == null) return false;

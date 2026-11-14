@@ -9,7 +9,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import us.kattosaur.changedextras.client.model.catte_bucket;
 
 import us.kattosaur.changedextras.block.*;
-import us.kattosaur.changedextras.client.renderer.FeralCatClientRenderer;
 import us.kattosaur.changedextras.client.gui.PillBottleScreen;
 import us.kattosaur.changedextras.client.renderer.accessory.DyeableClothingRenderer;
 import us.kattosaur.changedextras.client.renderer.accessory.JammerHeadphonesRenderer;
@@ -814,7 +813,6 @@ public class ChangedExtras {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            FeralCatClientRenderer.register();
             AccessoryLayer.registerRenderer(
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
                     SimpleClothingRenderer.of(clothingInnerModel(), EquipmentSlot.CHEST)
