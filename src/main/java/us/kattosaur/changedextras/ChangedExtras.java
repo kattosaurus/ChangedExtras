@@ -817,7 +817,7 @@ public class ChangedExtras {
             FeralCatClientRenderer.register();
             AccessoryLayer.registerRenderer(
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
-                    SimpleClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST)
+                    SimpleClothingRenderer.of(clothingInnerModel(), EquipmentSlot.CHEST)
             );
             AccessoryLayer.registerRenderer(
                     ChangedExtras.JAMMER_HEADPHONES.get(),
@@ -849,7 +849,7 @@ public class ChangedExtras {
         public static void onRegisterColorHandlers(RegisterColorHandlersEvent.Item event) {
             AccessoryLayer.registerRenderer(
                     ChangedExtras.LONG_SLEEVE_SHIRT.get(),
-                    DyeableClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST)
+                    DyeableClothingRenderer.of(clothingInnerModel(), EquipmentSlot.CHEST)
             );
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, PROTO_BEE_PRIMARY, PROTO_BEE_SECONDARY),
                     ChangedExtras.PROTO_BEE_SYRINGE.get());
@@ -879,6 +879,23 @@ public class ChangedExtras {
             event.register((stack, tintIndex) -> syringeLayerColor(tintIndex, NEAPOLITAN_CONEKAT_PRIMARY, NEAPOLITAN_CONEKAT_SECONDARY),
                     ChangedExtras.NEAPOLITAN_CONEKAT_MALE_SYRINGE.get(),
                     ChangedExtras.NEAPOLITAN_CONEKAT_FEMALE_SYRINGE.get());
+        }
+
+        private static ArmorModel clothingInnerModel() {
+            // Changed 0.16.0 and older exposed this as an ArmorModel enum constant.
+            // Newer builds moved it into the ArmorModels registry, so resolve whichever exists at runtime.
+            try {
+                Class<?> armorModels = Class.forName(
+                        "net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModels",
+                        true, ArmorModel.class.getClassLoader());
+                return (ArmorModel) armorModels.getField("CLOTHING_INNER").get(null);
+            } catch (ReflectiveOperationException ignored) {
+                try {
+                    return (ArmorModel) ArmorModel.class.getField("CLOTHING_INNER").get(null);
+                } catch (ReflectiveOperationException exception) {
+                    throw new IllegalStateException("Unable to locate Changed's CLOTHING_INNER armor model", exception);
+                }
+            }
         }
 
         private static int syringeLayerColor(int tintIndex, int primaryColor, int secondaryColor) {
