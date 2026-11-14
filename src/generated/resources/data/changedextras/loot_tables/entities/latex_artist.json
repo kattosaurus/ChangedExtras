@@ -50,61 +50,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "changed_addon:laethin"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "count": {
-                "max": 15,
-                "min": 10
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "changed_addon:golden_orange"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "count": {
-                "max": 5,
-                "min": 1
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
           "name": "changedextras:the_palette"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "count": {
-                "max": 10,
-                "min": 3
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "changed_addon:litix_camonia"
         }
       ],
       "rolls": 1

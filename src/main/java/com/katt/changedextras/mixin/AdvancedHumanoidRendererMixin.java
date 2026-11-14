@@ -1,11 +1,13 @@
 package com.katt.changedextras.mixin;
 
 import com.katt.changedextras.client.renderer.ArtistTintManager;
+import com.katt.changedextras.client.renderer.GlobalAnimationHelper;
 import com.katt.changedextras.common.latex.LatexCuddleHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
+import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.CustomLatexEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -61,5 +63,21 @@ public class AdvancedHumanoidRendererMixin {
         poseStack.mulPose(Axis.YP.rotationDegrees(LatexCuddleHelper.getCuddleYaw(owner) - bodyRotation));
         poseStack.translate(0.0D, 0.14D, 0.0D);
         poseStack.mulPose(Axis.ZP.rotationDegrees(88.0F));
+    }
+
+    /**
+     * While grabbing, turn the whole body toward the look direction so the arms
+     * line up with the grabbed entity instead of reaching at empty air. Runs after
+     * the cuddle pose so the two do not fight.
+     */
+    @Inject(method = "setupRotations", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyGrabBodyAim(ChangedEntity entity, PoseStack poseStack, float bob,
+                                                float bodyRotation, float partialTick, CallbackInfo ci) {
+        if (LatexCuddleHelper.shouldCuddle(entity)) {
+            return;
+        }
+
+        AdvancedHumanoidModel<?> model = ((AdvancedHumanoidRenderer<?, ?>) (Object) this).getModel();
+        GlobalAnimationHelper.applyGrabBodyAim(model, entity, poseStack, bodyRotation, partialTick);
     }
 }

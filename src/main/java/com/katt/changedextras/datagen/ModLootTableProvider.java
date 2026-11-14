@@ -72,10 +72,7 @@ public class ModLootTableProvider extends ModJsonProvider {
         pools.add(single(0.05D, withFunction(item("minecraft:diamond_chestplate"), setDamageUniform(0.4D, 0.6D))));
         pools.add(single(0.05D, withFunction(item("minecraft:diamond_leggings"), setDamageUniform(0.4D, 0.6D))));
         pools.add(single(0.05D, withFunction(item("minecraft:diamond_boots"), setDamageUniform(0.4D, 0.6D))));
-        pools.add(single(0.0002D, item("changed_addon:transfur_totem")));
-        pools.add(single(0.01D, item("changed_addon:electric_katana")));
         pools.add(single(0.01D, withFunction(item("changedextras:katt_syringe"), setCountConst(1))));
-        pools.add(single(0.1D, item("changed_addon:crow_bar")));
         root.add("pools", pools);
         return root;
     }
@@ -103,7 +100,6 @@ public class ModLootTableProvider extends ModJsonProvider {
         pools.add(single(0.01D, item("changedextras:latex_kaiju_syringe")));
         pools.add(single(0.01D, item("changedextras:latex_panther_syringe")));
         pools.add(single(0.01D, item("changedextras:latex_carneline_syringe")));
-        pools.add(single(0.1D, withFunction(item("changed_addon:orange_juice"), setCountRange(1, 4))));
         root.add("pools", pools);
         return root;
     }
@@ -115,12 +111,7 @@ public class ModLootTableProvider extends ModJsonProvider {
         pools.add(singlePlain(withFunction(item("minecraft:diamond"), setCountRange(1, 5))));
         pools.add(singlePlain(withFunction(item("minecraft:iron_ingot"), setCountRange(7, 15))));
         pools.add(singlePlain(withFunction(item("minecraft:gold_ingot"), setCountRange(1, 3))));
-        pools.add(singlePlain(withFunction(item("changed_addon:orange_juice"), setCountRange(1, 16))));
-        pools.add(singlePlain(withFunction(item("changed_addon:ammonia_particle"), setCountRange(5, 10))));
-        pools.add(singlePlain(withFunction(item("changed_addon:laethin"), setCountRange(1, 5))));
         pools.add(singlePlain(withFunction(item("changedextras:flask_of_tears"), setCountRange(1, 1))));
-        pools.add(singlePlain(withFunction(item("changed_addon:pot_with_camonia"), setCountRange(2, 3))));
-        pools.add(singlePlain(withFunction(item("changed_addon:syringe_with_litix_cammonia"), setCountRange(1, 2))));
         root.add("pools", pools);
         return root;
     }
@@ -128,8 +119,6 @@ public class ModLootTableProvider extends ModJsonProvider {
     private JsonObject hiddenChest() {
         JsonObject root = chest();
         JsonArray pools = new JsonArray();
-        pools.add(singlePlain(withFunction(item("changed_addon:orange_juice"), setCountRange(1, 5))));
-        pools.add(singlePlain(withFunction(item("changed_addon:pot_with_camonia"), setCountRange(0, 1))));
         pools.add(singlePlain(withFunction(item("minecraft:iron_ingot"), setCountRange(1, 5))));
         pools.add(singlePlain(withFunction(item("minecraft:gold_ingot"), setCountRange(1, 3))));
         root.add("pools", pools);
@@ -179,10 +168,7 @@ public class ModLootTableProvider extends ModJsonProvider {
         JsonArray pools = new JsonArray();
         pools.add(singlePlain(withFunction(item("minecraft:netherite_scrap"), setCountRange(2, 3))));
         pools.add(singlePlain(withFunction(item("changedextras:flask_of_tears"), setCountRange(1, 3))));
-        pools.add(singlePlain(withFunction(item("changed_addon:laethin"), setCountRange(1, 5))));
-        pools.add(singlePlain(withFunction(item("changed_addon:golden_orange"), setCountRange(10, 15))));
         pools.add(singlePlain(withFunction(item("changedextras:the_palette"), setCountRange(1, 5))));
-        pools.add(singlePlain(withFunction(item("changed_addon:litix_camonia"), setCountRange(3, 10))));
         root.add("pools", pools);
         return root;
     }

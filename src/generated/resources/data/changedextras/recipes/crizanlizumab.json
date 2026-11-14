@@ -1,15 +1,28 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "item": "changedextras:used_vial"
-    },
-    {
-      "item": "changed_addon:ammonia"
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "changed_addon"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "item": "changedextras:used_vial"
+          },
+          {
+            "item": "changed_addon:ammonia"
+          }
+        ],
+        "result": {
+          "item": "changedextras:crizanlizumab"
+        }
+      }
     }
-  ],
-  "result": {
-    "item": "changedextras:crizanlizumab"
-  }
+  ]
 }

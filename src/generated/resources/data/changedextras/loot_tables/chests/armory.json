@@ -183,36 +183,6 @@
     {
       "conditions": [
         {
-          "chance": 2.0E-4,
-          "condition": "minecraft:random_chance"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "changed_addon:transfur_totem"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "conditions": [
-        {
-          "chance": 0.01,
-          "condition": "minecraft:random_chance"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "changed_addon:electric_katana"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "conditions": [
-        {
           "chance": 0.01,
           "condition": "minecraft:random_chance"
         }
@@ -227,21 +197,6 @@
             }
           ],
           "name": "changedextras:katt_syringe"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "conditions": [
-        {
-          "chance": 0.1,
-          "condition": "minecraft:random_chance"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "changed_addon:crow_bar"
         }
       ],
       "rolls": 1

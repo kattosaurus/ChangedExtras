@@ -8,42 +8,6 @@
           "functions": [
             {
               "count": {
-                "max": 16,
-                "min": 1
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "changed_addon:orange_juice"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "count": {
-                "max": 3,
-                "min": 2
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "changed_addon:pot_with_camonia"
-        }
-      ],
-      "rolls": 1
-    },
-    {
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "count": {
                 "max": 5,
                 "min": 1
               },

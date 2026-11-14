@@ -9,10 +9,6 @@
     },
     {
       "type": "changed:unlock_active_ability",
-      "ability": "changed_addon:claws"
-    },
-    {
-      "type": "changed:unlock_active_ability",
       "ability": "changed:grab_entity"
     },
     {

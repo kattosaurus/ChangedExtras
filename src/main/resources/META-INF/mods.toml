@@ -73,7 +73,7 @@ description='''${mod_description}'''
     side="BOTH"
 [[dependencies.changedextras]]
     modId="changed_addon"
-    mandatory=true
+    mandatory=false
     versionRange="[2.8.0,)"
     ordering="AFTER"
     side="BOTH"

@@ -1,9 +1,8 @@
 package com.katt.changedextras.common.latex;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.compat.ChangedAddonCompat;
 import com.katt.changedextras.entity.ModTransfurVariants;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedSounds;
@@ -40,14 +39,8 @@ public final class HazzyTransfurHandler {
         if (stack == null || stack.isEmpty()) {
             return false;
         }
-        if (stack.getItem() instanceof HazardBodySuit) {
+        if (ChangedAddonCompat.isHazardBodySuit(stack)) {
             return true;
-        }
-        try {
-            if (ChangedAddonItems.HAZARD_BODY_SUIT.isPresent() && stack.is(ChangedAddonItems.HAZARD_BODY_SUIT.get())) {
-                return true;
-            }
-        } catch (Throwable ignored) {
         }
         ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         if (id != null) {
@@ -148,13 +141,7 @@ public final class HazzyTransfurHandler {
 
     private static void playRipEffects(LivingEntity entity, ItemStack stack) {
         Level level = entity.level();
-        SoundEvent breakSound = null;
-        if (stack.getItem() instanceof HazardBodySuit hazardBodySuit) {
-            try {
-                breakSound = hazardBodySuit.getBreakSound(stack);
-            } catch (Throwable ignored) {
-            }
-        }
+        SoundEvent breakSound = ChangedAddonCompat.getHazardBodySuitBreakSound(stack);
         if (breakSound == null) {
             try {
                 if (ChangedSounds.WETSUIT_BREAK.isPresent()) {

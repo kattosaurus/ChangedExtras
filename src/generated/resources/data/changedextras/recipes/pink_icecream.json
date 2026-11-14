@@ -1,15 +1,28 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "item": "changedextras:icecream"
-    },
-    {
-      "item": "changed_addon:luminara_bloom_petals"
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "changed_addon"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "item": "changedextras:icecream"
+          },
+          {
+            "item": "changed_addon:luminara_bloom_petals"
+          }
+        ],
+        "result": {
+          "item": "changedextras:pink_icecream"
+        }
+      }
     }
-  ],
-  "result": {
-    "item": "changedextras:pink_icecream"
-  }
+  ]
 }

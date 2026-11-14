@@ -1,10 +1,9 @@
 package com.katt.changedextras.entity.beasts;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.compat.ChangedAddonCompat;
 import com.katt.changedextras.init.ChangedExtrasEffects;
 import com.katt.changedextras.init.ChangedExtrasSounds;
-import net.foxyas.changedaddon.enchantment.LatexSolventEnchantment;
-import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
@@ -50,7 +49,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatReaction {
+public class ArtistEntity extends AbstractWhiteCatEntity {
     public static final int ATTACK_POSE_NONE = 0;
     public static final int ATTACK_POSE_BRUSH = 1;
     public static final int ATTACK_POSE_DASH = 2;
@@ -431,10 +430,9 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
     }
 
     /**
-     * Called by Changed Addon's PatFeatureHandle when the Artist gets patted.
-     * Only this method is overridden (not the Specific/Simple variants) so she speaks once per pat.
+     * Called by the optional Changed Addon pat listener when the Artist gets patted.
+     * Only this method is used (not the Specific/Simple variants) so she speaks once per pat.
      */
-    @Override
     public void whenPattedReaction(LivingEntity patter, InteractionHand hand) {
         if (this.level().isClientSide || this.getUnderlyingPlayer() != null) {
             return;
@@ -649,7 +647,7 @@ public class ArtistEntity extends AbstractWhiteCatEntity implements ICustomPatRe
         if (attacker == null) {
             attacker = source.getEntity();
         }
-        return attacker != null && LatexSolventEnchantment.getLatexSolventLevelOfEntity(attacker) > 0.0D;
+        return attacker != null && ChangedAddonCompat.getLatexSolventLevel(attacker) > 0.0D;
     }
 
     private void scream() {

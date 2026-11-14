@@ -215,30 +215,6 @@
         }
       ],
       "rolls": 1
-    },
-    {
-      "conditions": [
-        {
-          "chance": 0.1,
-          "condition": "minecraft:random_chance"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "count": {
-                "max": 4,
-                "min": 1
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "changed_addon:orange_juice"
-        }
-      ],
-      "rolls": 1
     }
   ]
 }

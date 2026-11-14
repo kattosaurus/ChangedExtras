@@ -8,5 +8,5 @@
     "type": "changed:room",
     "template": "changedextras:facility/room/blue_cave_room/blue_cave_room"
   },
-  "spawn_weight": 20
+  "spawn_weight": 15
 }

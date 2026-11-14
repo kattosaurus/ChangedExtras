@@ -14,10 +14,6 @@
     {
       "type": "changed:unlock_active_ability",
       "ability": "changed:toggle_night_vision"
-    },
-    {
-      "type": "changed:unlock_active_ability",
-      "ability": "changed_addon:pollen_carry"
     }
   ]
 }

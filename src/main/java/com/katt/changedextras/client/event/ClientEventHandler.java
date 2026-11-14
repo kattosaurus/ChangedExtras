@@ -1,8 +1,10 @@
 package com.katt.changedextras.client.event;
 import com.katt.changedextras.client.hud.LatexDebugOverlay;
 import com.katt.changedextras.client.renderer.ArtistTintManager;
+import com.katt.changedextras.client.renderer.EyeBlink;
 import com.katt.changedextras.client.sound.ArtistBossMusicManager;
 import com.katt.changedextras.client.sound.JackpotSoundManager;
+import com.katt.changedextras.client.tracker.ClientAttackComboTracker;
 import com.katt.changedextras.client.tracker.ClientJackpotTracker;
 import com.katt.changedextras.client.tracker.ClientJamTracker;
 import com.katt.changedextras.client.tracker.ClientPrepareTracker;
@@ -73,6 +75,8 @@ public class ClientEventHandler {
                 ArtistTintManager.clearAll();
                 LatexDebugOverlay.clear();
                 ClientPrepareTracker.clear();
+                ClientAttackComboTracker.clear();
+                EyeBlink.clear();
             }
         }
 
@@ -82,6 +86,8 @@ public class ClientEventHandler {
             ClientJackpotTracker.clear();
             ClientPrepareTracker.clear();
             ClientJamTracker.clear();
+            ClientAttackComboTracker.clear();
+            EyeBlink.clear();
         }
 
         private static void spawnJackpotParticles(Player player) {

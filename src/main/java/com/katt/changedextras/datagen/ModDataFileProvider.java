@@ -14,7 +14,95 @@ public class ModDataFileProvider extends ModJsonProvider {
     protected void generate() {
         advancements();
         infuserRecipes();
+        conditionalRecipes();
         clientAssets();
+    }
+
+    // ---------------------------------------------------------------- conditional addon recipes
+
+    private void conditionalRecipes() {
+        conditionalRecipe("crizanlizumab", shapelessRecipe(item("changedextras:crizanlizumab"),
+                item("changedextras:used_vial"),
+                item("changed_addon:ammonia")));
+
+        conditionalRecipe("hydroxyurea", shapelessRecipe(item("changedextras:hydroxyurea"),
+                item("changed_addon:biomass"),
+                item("changed_addon:ammonia"),
+                item("minecraft:fermented_spider_eye")));
+
+        conditionalRecipe("pink_icecream", shapelessRecipe(item("changedextras:pink_icecream"),
+                item("changedextras:icecream"),
+                item("changed_addon:luminara_bloom_petals")));
+
+        JsonObject sketchKeys = new JsonObject();
+        sketchKeys.add("N", item("changed_addon:biomass"));
+        sketchKeys.add("E", item("changed:latex_base"));
+        sketchKeys.add("Q", item("changed:orange"));
+        sketchKeys.add("I", item("minecraft:totem_of_undying"));
+        sketchKeys.add("O", item("changedextras:the_palette"));
+        sketchKeys.add("R", item("changedextras:flask_of_tears"));
+        sketchKeys.add("P", item("minecraft:paper"));
+        conditionalRecipe("sketch", shapedRecipe(item("changedextras:sketch"),
+                new String[]{"NEQ", "IOR", "PPP"}, sketchKeys));
+
+        conditionalRecipe("voxelotor", shapelessRecipe(item("changedextras:voxelotor"),
+                item("changed_addon:luminara_bloom_petals"),
+                item("changed_addon:biomass"),
+                item("changed_addon:ammonia"),
+                item("minecraft:glowstone_dust")));
+    }
+
+    private void conditionalRecipe(String id, JsonObject recipe) {
+        JsonObject root = new JsonObject();
+        root.addProperty("type", "forge:conditional");
+
+        JsonArray conditions = new JsonArray();
+        JsonObject condition = new JsonObject();
+        condition.addProperty("type", "forge:mod_loaded");
+        condition.addProperty("modid", "changed_addon");
+        conditions.add(condition);
+
+        JsonObject entry = new JsonObject();
+        entry.add("conditions", conditions);
+        entry.add("recipe", recipe);
+
+        JsonArray recipes = new JsonArray();
+        recipes.add(entry);
+        root.add("recipes", recipes);
+
+        int idx = id.lastIndexOf('/');
+        if (idx >= 0) {
+            write(PackOutput.Target.DATA_PACK, "recipes/" + id.substring(0, idx), id.substring(idx + 1), root);
+        } else {
+            write(PackOutput.Target.DATA_PACK, "recipes", id, root);
+        }
+    }
+
+    private static JsonObject shapelessRecipe(JsonObject result, JsonObject... ingredients) {
+        JsonObject recipe = new JsonObject();
+        recipe.addProperty("type", "minecraft:crafting_shapeless");
+        recipe.addProperty("category", "misc");
+        JsonArray array = new JsonArray();
+        for (JsonObject ingredient : ingredients) {
+            array.add(ingredient);
+        }
+        recipe.add("ingredients", array);
+        recipe.add("result", result);
+        return recipe;
+    }
+
+    private static JsonObject shapedRecipe(JsonObject result, String[] pattern, JsonObject keys) {
+        JsonObject recipe = new JsonObject();
+        recipe.addProperty("type", "minecraft:crafting_shaped");
+        recipe.addProperty("category", "misc");
+        JsonArray patternArray = new JsonArray();
+        for (String line : pattern) {
+            patternArray.add(new JsonPrimitive(line));
+        }
+        recipe.add("pattern", patternArray);
+        recipe.add("key", keys);
+        recipe.add("result", result);
+        return recipe;
     }
 
     // ---------------------------------------------------------------- advancements
@@ -89,7 +177,7 @@ public class ModDataFileProvider extends ModJsonProvider {
     // ---------------------------------------------------------------- infuser recipes
 
     private void infuserRecipes() {
-        infuser("infuser/artist/artist", "changedextras:latex_artist",
+        conditionalInfuser("infuser/artist/artist", "changedextras:latex_artist",
                 item("changedextras:artist_brush"),
                 item("minecraft:totem_of_undying"),
                 item("changedextras:the_palette"),
@@ -122,7 +210,17 @@ public class ModDataFileProvider extends ModJsonProvider {
                 item("minecraft:cod"));
     }
 
+    private void conditionalInfuser(String path, String form, JsonObject... ingredients) {
+        conditionalRecipe(path, infuserRecipe(form, ingredients));
+    }
+
     private void infuser(String path, String form, JsonObject... ingredients) {
+        JsonObject root = infuserRecipe(form, ingredients);
+        int idx = path.lastIndexOf('/');
+        write(PackOutput.Target.DATA_PACK, "recipes/" + path.substring(0, idx), path.substring(idx + 1), root);
+    }
+
+    private static JsonObject infuserRecipe(String form, JsonObject... ingredients) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "changed:infuser");
         JsonArray array = new JsonArray();
@@ -131,8 +229,7 @@ public class ModDataFileProvider extends ModJsonProvider {
         }
         root.add("ingredients", array);
         root.addProperty("form", form);
-        int idx = path.lastIndexOf('/');
-        write(PackOutput.Target.DATA_PACK, "recipes/" + path.substring(0, idx), path.substring(idx + 1), root);
+        return root;
     }
 
     // ---------------------------------------------------------------- client assets

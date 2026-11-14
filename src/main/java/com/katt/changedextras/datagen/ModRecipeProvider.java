@@ -28,19 +28,6 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item("changedextras", "crizanlizumab"))
-                .requires(item("changedextras", "used_vial"))
-                .requires(item("changed_addon", "ammonia"))
-                .unlockedBy("has_item", has(item("changedextras", "used_vial")))
-                .save(writer, new ResourceLocation("changedextras", "crizanlizumab"));
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item("changedextras", "hydroxyurea"))
-                .requires(item("changed_addon", "biomass"))
-                .requires(item("changed_addon", "ammonia"))
-                .requires(Items.FERMENTED_SPIDER_EYE)
-                .unlockedBy("has_item", has(item("changed_addon", "biomass")))
-                .save(writer, new ResourceLocation("changedextras", "hydroxyurea"));
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("changedextras", "pale_test"))
                 .pattern("###")
                 .pattern("/_u")
@@ -62,26 +49,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('G', Items.GLASS_PANE)
                 .unlockedBy("has_item", has(Items.GLASS_PANE))
                 .save(writer, new ResourceLocation("changedextras", "pill_bottle"));
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item("changedextras", "pink_icecream"))
-                .requires(item("changedextras", "icecream"))
-                .requires(item("changed_addon", "luminara_bloom_petals"))
-                .unlockedBy("has_item", has(item("changedextras", "icecream")))
-                .save(writer, new ResourceLocation("changedextras", "pink_icecream"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("changedextras", "sketch"))
-                .pattern("NEQ")
-                .pattern("IOR")
-                .pattern("PPP")
-                .define('Q', item("changed", "orange"))
-                .define('N', item("changed_addon", "biomass"))
-                .define('E', item("changed", "latex_base"))
-                .define('I', Items.TOTEM_OF_UNDYING)
-                .define('R', item("changedextras", "flask_of_tears"))
-                .define('O', item("changedextras", "the_palette"))
-                .define('P', Items.PAPER)
-                .unlockedBy("has_item", has(item("changedextras", "flask_of_tears")))
-                .save(writer, new ResourceLocation("changedextras", "sketch"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("changedextras", "sterile_swab"))
                 .pattern("W")
@@ -116,14 +83,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('u', Items.WATER_BUCKET)
                 .unlockedBy("has_item", has(Items.GLASS_PANE))
                 .save(writer, new ResourceLocation("changedextras", "vial"));
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item("changedextras", "voxelotor"))
-                .requires(item("changed_addon", "luminara_bloom_petals"))
-                .requires(item("changed_addon", "biomass"))
-                .requires(item("changed_addon", "ammonia"))
-                .requires(Items.GLOWSTONE_DUST)
-                .unlockedBy("has_item", has(item("changed_addon", "biomass")))
-                .save(writer, new ResourceLocation("changedextras", "voxelotor"));
     }
 
     @Override

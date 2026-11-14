@@ -1,6 +1,7 @@
 package com.katt.changedextras.client.model;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.client.renderer.GlobalAnimationHelper;
 import com.katt.changedextras.client.tracker.ClientPrepareTracker;
 import com.katt.changedextras.entity.beasts.LatexPantherEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -189,6 +190,7 @@ public class LatexPantherEntityModel<T extends LatexPantherEntity> extends Advan
     public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        GlobalAnimationHelper.apply(this, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, true);
 
         if (ClientPrepareTracker.isAnimationActive() && ClientPrepareTracker.isCaster(entity)) {
             try {

@@ -2,6 +2,7 @@ package com.katt.changedextras.mixin;
 
 import com.katt.changedextras.client.tracker.ClientJamTracker;
 import com.katt.changedextras.client.tracker.ClientParryTracker;
+import com.katt.changedextras.client.renderer.GlobalAnimationHelper;
 import com.katt.changedextras.client.renderer.JamAnimationHelper;
 import com.katt.changedextras.client.renderer.ParryAnimationHelper;
 import com.katt.changedextras.common.latex.LatexCuddleHelper;
@@ -20,6 +21,32 @@ import java.util.UUID;
 
 @Mixin(AdvancedHumanoidModel.class)
 public abstract class AdvancedHumanoidModelMixin<T extends ChangedEntity> {
+    /**
+     * Applies the shared animation layer to models from every mod. Models owned by
+     * Changed Extras already call the helper themselves, so they are skipped here.
+     */
+    @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyGlobalAnimations(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        if (entity == null) {
+            return;
+        }
+
+        AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+        if (GlobalAnimationHelper.isManagedModel(model)) {
+            return;
+        }
+
+        UUID uuid = entity.getUnderlyingPlayer() != null ? entity.getUnderlyingPlayer().getUUID() : entity.getUUID();
+        if (LatexCuddleHelper.shouldCuddle(entity)
+                || (uuid != null && (ClientParryTracker.isCounterattacking(uuid)
+                || ClientParryTracker.isParrying(uuid)
+                || ClientJamTracker.isJamming(uuid)))) {
+            return;
+        }
+
+        GlobalAnimationHelper.applyGlobal(model, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    }
+
     @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
     private void changedextras$applyCuddlePose(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         if (!LatexCuddleHelper.shouldCuddle(entity)) {

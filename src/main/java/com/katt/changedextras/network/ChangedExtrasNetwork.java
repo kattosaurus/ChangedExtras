@@ -75,5 +75,9 @@ public class ChangedExtrasNetwork {
                 JamStatePacket::encode,
                 JamStatePacket::decode,
                 JamStatePacket::handle);
+        INSTANCE.registerMessage(id++, AttackComboPacket.class,
+                AttackComboPacket::encode,
+                AttackComboPacket::decode,
+                AttackComboPacket::handle);
     }
 }

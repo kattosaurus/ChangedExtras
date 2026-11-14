@@ -1,6 +1,7 @@
 package com.katt.changedextras.client.model;
 
 import com.katt.changedextras.ChangedExtras;
+import com.katt.changedextras.client.renderer.GlobalAnimationHelper;
 import com.katt.changedextras.entity.beasts.ArtistEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -167,6 +168,7 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
     public void setupAnim(@NotNull ArtistEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        GlobalAnimationHelper.apply(this, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, true);
         if (entity.getScreamTicks() > 0) {
             applyScream(entity, ageInTicks);
         } else {

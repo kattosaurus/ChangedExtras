@@ -17,6 +17,7 @@ import com.katt.changedextras.client.event.ClientEventHandler;
 import com.katt.changedextras.client.particle.JackpotSmokeParticleProvider;
 import com.katt.changedextras.common.ChangedExtrasGameRules;
 import com.katt.changedextras.common.spawn.ChangedExtrasSpawnController;
+import com.katt.changedextras.compat.ChangedAddonCompat;
 import com.katt.changedextras.entity.ModEntities;
 import com.katt.changedextras.entity.ModEntityAttributes;
 import com.katt.changedextras.entity.ModTransfurVariants;
@@ -532,6 +533,7 @@ public class ChangedExtras {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        ChangedAddonCompat.registerPatListener();
         ChangedExtrasGameRules.bootstrap();
         ChangedExtrasNetwork.register();
         event.enqueueWork(ChangedExtras::registerTransfurColors);

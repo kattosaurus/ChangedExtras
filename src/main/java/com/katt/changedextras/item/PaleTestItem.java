@@ -1,6 +1,6 @@
 package com.katt.changedextras.item;
 
-import net.foxyas.changedaddon.variant.LatexInfection;
+import com.katt.changedextras.compat.ChangedAddonCompat;
 import net.ltxprogrammer.changed.process.Pale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -12,12 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class PaleTestItem extends Item {
-    private static final Logger LOGGER = LogManager.getLogger("changedextras");
-
     private static final String RESULT_READY_TAG = "changedextras.result_ready";
     private static final String RESULT_POSITIVE_TAG = "changedextras.positive_result";
     private static final String PALE_VALUE_TAG = "changedextras.pale_value";
@@ -51,17 +46,13 @@ public class PaleTestItem extends Item {
     }
 
     private static boolean isPlayerInfectedSafe(Player player) {
-        try {
-            return LatexInfection.isPlayerInfected(player);
-        } catch (Throwable t) {
-            LOGGER.warn("changedextras: LatexInfection.isPlayerInfected() failed ({}), " +
-                    "falling back to reading '{}' NBT directly. The Changed Addon's " +
-                    "infection API may have changed.", t.toString(), FALLBACK_INFECTED_TAG);
-
-            CompoundTag persistentData = player.getPersistentData();
-            return persistentData.contains(FALLBACK_INFECTED_TAG)
-                    && persistentData.getBoolean(FALLBACK_INFECTED_TAG);
+        if (ChangedAddonCompat.isPlayerInfected(player)) {
+            return true;
         }
+        // Works standalone and also covers addon versions whose infection API changed.
+        CompoundTag persistentData = player.getPersistentData();
+        return persistentData.contains(FALLBACK_INFECTED_TAG)
+                && persistentData.getBoolean(FALLBACK_INFECTED_TAG);
     }
 
     public static boolean isPositive(ItemStack stack) {
