@@ -1,7 +1,7 @@
 {
   "required": false,
   "minVersion": "0.8",
-  "package": "com.katt.changedextras.mixin",
+  "package": "us.kattosaur.changedextras.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "changedextras.refmap.json",
   "mixins": [

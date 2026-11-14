@@ -1,0 +1,83 @@
+package us.kattosaur.changedextras.network;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+
+public class ChangedExtrasNetwork {
+    private static final String PROTOCOL_VERSION = "1.0";
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+            ResourceLocation.fromNamespaceAndPath("changedextras", "main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
+
+    public static void register() {
+        int id = 0;
+        INSTANCE.registerMessage(id++, JackpotStatePacket.class,
+                JackpotStatePacket::encode,
+                JackpotStatePacket::decode,
+                JackpotStatePacket::handle);
+        INSTANCE.registerMessage(id++, ParryStatePacket.class,
+                ParryStatePacket::encode,
+                ParryStatePacket::decode,
+                ParryStatePacket::handle);
+        INSTANCE.registerMessage(id++, SaveArtistBrushPacket.class,
+                SaveArtistBrushPacket::encode,
+                SaveArtistBrushPacket::decode,
+                SaveArtistBrushPacket::handle);
+        INSTANCE.registerMessage(id++, SyncArtistColorPacket.class,
+                SyncArtistColorPacket::encode,
+                SyncArtistColorPacket::decode,
+                SyncArtistColorPacket::handle);
+        INSTANCE.registerMessage(id++, LatexDebugTogglePacket.class,
+                LatexDebugTogglePacket::encode,
+                LatexDebugTogglePacket::decode,
+                LatexDebugTogglePacket::handle);
+        INSTANCE.registerMessage(id++, LatexDebugSnapshotPacket.class,
+                LatexDebugSnapshotPacket::encode,
+                LatexDebugSnapshotPacket::decode,
+                LatexDebugSnapshotPacket::handle);
+        INSTANCE.registerMessage(id++, SyncJammerVipPacket.class,
+                SyncJammerVipPacket::encode,
+                SyncJammerVipPacket::decode,
+                SyncJammerVipPacket::handle);
+        INSTANCE.registerMessage(id++, FeralCatStatePacket.class,
+                FeralCatStatePacket::encode,
+                FeralCatStatePacket::decode,
+                FeralCatStatePacket::handle);
+        INSTANCE.registerMessage(id++, ParryProgressPacket.class,
+                ParryProgressPacket::encode,
+                ParryProgressPacket::decode,
+                ParryProgressPacket::handle);
+        INSTANCE.registerMessage(id++, DomainStatePacket.class,
+                DomainStatePacket::encode,
+                DomainStatePacket::decode,
+                DomainStatePacket::handle);
+        INSTANCE.registerMessage(id++, DomainFlashPacket.class,
+                DomainFlashPacket::encode,
+                DomainFlashPacket::decode,
+                DomainFlashPacket::handle);
+        INSTANCE.registerMessage(id++, PrepareStatePacket.class,
+                PrepareStatePacket::encode,
+                PrepareStatePacket::decode,
+                PrepareStatePacket::handle);
+        INSTANCE.registerMessage(id++, SyncDeathRespawnPacket.class,
+                SyncDeathRespawnPacket::encode,
+                SyncDeathRespawnPacket::decode,
+                SyncDeathRespawnPacket::handle);
+        INSTANCE.registerMessage(id++, RespawnChoicePacket.class,
+                RespawnChoicePacket::encode,
+                RespawnChoicePacket::decode,
+                RespawnChoicePacket::handle);
+        INSTANCE.registerMessage(id++, JamStatePacket.class,
+                JamStatePacket::encode,
+                JamStatePacket::decode,
+                JamStatePacket::handle);
+        INSTANCE.registerMessage(id++, AttackComboPacket.class,
+                AttackComboPacket::encode,
+                AttackComboPacket::decode,
+                AttackComboPacket::handle);
+    }
+}

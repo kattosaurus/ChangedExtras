@@ -1,0 +1,27 @@
+package us.kattosaur.changedextras.init;
+
+import us.kattosaur.changedextras.ChangedExtras;
+import us.kattosaur.changedextras.worldgen.biome.ModBiomes;
+import us.kattosaur.changedextras.worldgen.dimension.ModDimensions;
+import us.kattosaur.changedextras.worldgen.feature.ModFeatures;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
+
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+public class ModDataPackProvider extends DatapackBuiltinEntriesProvider {
+    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+            .add(Registries.CONFIGURED_FEATURE, ModFeatures::bootstrapConfigured)
+            .add(Registries.PLACED_FEATURE, ModFeatures::bootstrapPlaced)
+            .add(Registries.BIOME, ModBiomes::bootstrap)
+            .add(Registries.DIMENSION_TYPE, ModDimensions::bootstrapType)
+            .add(Registries.LEVEL_STEM, ModDimensions::bootstrapStem);
+
+    public ModDataPackProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries, BUILDER, Set.of(ChangedExtras.MODID));
+    }
+}

@@ -262,5 +262,10 @@
   "subtitles.changedextras.jackpot_stop": "Suddenly the music stops",
   "subtitles.changedextras.parry": "Attack Parried",
   "subtitles.changedextras.heartbeat": "Heart beats rapidly, they're out of breath maybe?",
-  "changedextras.death_screen.respawn_as_transfur": "Respawn as %s"
+  "changedextras.death_screen.respawn_as_transfur": "Respawn as %s",
+  "changedextras.animation_conflict.title": "Animation Conflict Warning",
+  "changedextras.animation_conflict.message": "Changed Extras and Changed: Refreshed Animations are both installed. Both mods animate the same eyes and humanoid models, which can cause doubled animations, jittering pupils or other visual bugs. Remove Changed: Refreshed Animations to avoid the conflict, or continue anyway.",
+  "changedextras.animation_conflict.hint": "You can continue playing, but the visual bugs may remain until the addon is removed.",
+  "changedextras.animation_conflict.continue": "Continue Anyway",
+  "changedextras.animation_conflict.quit": "Quit Game"
 }

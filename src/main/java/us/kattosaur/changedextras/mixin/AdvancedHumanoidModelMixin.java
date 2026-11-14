@@ -1,0 +1,186 @@
+package us.kattosaur.changedextras.mixin;
+
+import us.kattosaur.changedextras.client.tracker.ClientJamTracker;
+import us.kattosaur.changedextras.client.tracker.ClientParryTracker;
+import us.kattosaur.changedextras.client.renderer.GlobalAnimationHelper;
+import us.kattosaur.changedextras.client.renderer.JamAnimationHelper;
+import us.kattosaur.changedextras.client.renderer.ParryAnimationHelper;
+import us.kattosaur.changedextras.common.latex.LatexCuddleHelper;
+import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
+import net.ltxprogrammer.changed.client.renderer.model.TorsoedModel;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.minecraft.client.model.HeadedModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.HumanoidArm;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.UUID;
+
+@Mixin(AdvancedHumanoidModel.class)
+public abstract class AdvancedHumanoidModelMixin<T extends ChangedEntity> {
+    /**
+     * Applies the shared animation layer to models from every mod. Models owned by
+     * Changed Extras already call the helper themselves, so they are skipped here.
+     */
+    @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyGlobalAnimations(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        if (entity == null) {
+            return;
+        }
+
+        AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+        if (GlobalAnimationHelper.isManagedModel(model)) {
+            return;
+        }
+
+        UUID uuid = entity.getUnderlyingPlayer() != null ? entity.getUnderlyingPlayer().getUUID() : entity.getUUID();
+        if (LatexCuddleHelper.shouldCuddle(entity)
+                || (uuid != null && (ClientParryTracker.isCounterattacking(uuid)
+                || ClientParryTracker.isParrying(uuid)
+                || ClientJamTracker.isJamming(uuid)))) {
+            return;
+        }
+
+        GlobalAnimationHelper.applyGlobal(model, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    }
+
+    @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyCuddlePose(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        if (!LatexCuddleHelper.shouldCuddle(entity)) {
+            return;
+        }
+
+        try {
+            AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+            ModelPart head = ((HeadedModel)model).getHead();
+            ModelPart torso = ((TorsoedModel)model).getTorso();
+            ModelPart rightArm = model.getArm(HumanoidArm.RIGHT);
+            ModelPart leftArm = model.getArm(HumanoidArm.LEFT);
+            ModelPart rightLeg = model.getLeg(HumanoidArm.RIGHT);
+            ModelPart leftLeg = model.getLeg(HumanoidArm.LEFT);
+            if (head == null || torso == null || rightArm == null || leftArm == null || rightLeg == null || leftLeg == null) {
+                return;
+            }
+
+            float rollWave = (float)Math.sin(ageInTicks * 0.22F) * 0.08F;
+            torso.zRot = 1.15F + rollWave;
+            torso.xRot = 0.2F;
+            torso.yRot = 0.0F;
+
+            head.xRot = 0.35F;
+            head.yRot = -0.18F + rollWave * 0.3F;
+            head.zRot = 1.05F + rollWave * 0.5F;
+
+            rightArm.xRot = -1.4F;
+            rightArm.yRot = -0.2F;
+            rightArm.zRot = 0.45F;
+            leftArm.xRot = -1.15F;
+            leftArm.yRot = 0.3F;
+            leftArm.zRot = -0.3F;
+
+            rightLeg.xRot = -1.25F + rollWave;
+            rightLeg.yRot = 0.1F;
+            rightLeg.zRot = 0.22F;
+            leftLeg.xRot = -1.45F - rollWave;
+            leftLeg.yRot = -0.08F;
+            leftLeg.zRot = -0.18F;
+        } catch (ClassCastException | NullPointerException ignored) {
+        }
+    }
+
+    @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyParryPose(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        if (entity == null) {
+            return;
+        }
+
+        UUID uuid = entity.getUnderlyingPlayer() != null ? entity.getUnderlyingPlayer().getUUID() : entity.getUUID();
+        if (uuid == null) {
+            return;
+        }
+
+        // The caster plays the domain-open animation during the intro, before anything else.
+        try {
+            AdvancedHumanoidModel<T> animationModel = (AdvancedHumanoidModel<T>)(Object)this;
+            if (ParryAnimationHelper.applyDomainAnimation(animationModel, uuid)) {
+                return;
+            }
+        } catch (Throwable ignored) {
+        }
+
+        boolean counterattacking = ClientParryTracker.isCounterattacking(uuid);
+        boolean parrying = ClientParryTracker.isParrying(uuid);
+
+        if (!counterattacking && !parrying) {
+            return;
+        }
+
+        try {
+            AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+
+            // Try keyframe animation first
+            if (ParryAnimationHelper.applyAnimation(model, uuid)) {
+                return;
+            }
+
+            ModelPart rightArm = model.getArm(HumanoidArm.RIGHT);
+            ModelPart leftArm = model.getArm(HumanoidArm.LEFT);
+            if (rightArm == null || leftArm == null) {
+                return;
+            }
+
+            if (counterattacking) {
+                // Left fist counter punch forward
+                leftArm.xRot = -1.55F;
+                leftArm.yRot = 0.25F;
+                leftArm.zRot = -0.1F;
+
+                // Right arm tucked back
+                rightArm.xRot = -0.7F;
+                rightArm.yRot = -0.3F;
+                rightArm.zRot = 0.4F;
+            } else if (parrying) {
+                // Right fist raised in front for blocking guard
+                rightArm.xRot = -1.45F;
+                rightArm.yRot = -0.55F;
+                rightArm.zRot = 0.55F;
+
+                // Left arm lower guard
+                leftArm.xRot = -0.35F;
+                leftArm.yRot = 0.35F;
+                leftArm.zRot = -0.2F;
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    @Inject(method = "setupAnim", at = @At("TAIL"), remap = false, require = 0)
+    private void changedextras$applyJamPose(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        if (entity == null) {
+            return;
+        }
+
+        UUID uuid = entity.getUnderlyingPlayer() != null ? entity.getUnderlyingPlayer().getUUID() : entity.getUUID();
+        if (uuid == null) {
+            return;
+        }
+
+        if (!ClientJamTracker.isJamming(uuid)) {
+            return;
+        }
+
+        // Parry and counterattack poses take precedence over the jam animation.
+        if (ClientParryTracker.isParrying(uuid) || ClientParryTracker.isCounterattacking(uuid)) {
+            return;
+        }
+
+        try {
+            AdvancedHumanoidModel<T> model = (AdvancedHumanoidModel<T>)(Object)this;
+            JamAnimationHelper.applyAnimation(model, uuid);
+        } catch (Throwable ignored) {
+        }
+    }
+}

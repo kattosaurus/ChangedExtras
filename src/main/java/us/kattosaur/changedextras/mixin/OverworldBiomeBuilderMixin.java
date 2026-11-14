@@ -1,0 +1,51 @@
+package us.kattosaur.changedextras.mixin;
+
+import us.kattosaur.changedextras.worldgen.biome.ModBiomes;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.OverworldBiomeBuilder;
+import net.minecraftforge.data.loading.DatagenModLoader;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Consumer;
+
+@Mixin(OverworldBiomeBuilder.class)
+public abstract class OverworldBiomeBuilderMixin {
+    @ModifyArg(
+            method = "addUndergroundBiomes",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/level/biome/OverworldBiomeBuilder;addBottomBiome(Ljava/util/function/Consumer;Lnet/minecraft/world/level/biome/Climate$Parameter;Lnet/minecraft/world/level/biome/Climate$Parameter;Lnet/minecraft/world/level/biome/Climate$Parameter;Lnet/minecraft/world/level/biome/Climate$Parameter;Lnet/minecraft/world/level/biome/Climate$Parameter;FLnet/minecraft/resources/ResourceKey;)V"
+            ),
+            index = 5,
+            require = 1
+    )
+    private Climate.Parameter changedextras$splitDeepDarkWeirdness(Climate.Parameter weirdness) {
+        if (DatagenModLoader.isRunningDataGen()) {
+            return weirdness;
+        }
+        return Climate.Parameter.span(-1.0F, 0.0F);
+    }
+
+    @Inject(method = "addUndergroundBiomes", at = @At("TAIL"), require = 1)
+    private void changedextras$addBlueCave(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, CallbackInfo ci) {
+        if (DatagenModLoader.isRunningDataGen()) {
+            return;
+        }
+        consumer.accept(Pair.of(Climate.parameters(
+                Climate.Parameter.span(-0.20F, 0.25F),   // temperature
+                Climate.Parameter.span(-0.30F, 0.10F),   // humidity
+                Climate.Parameter.span(0.05F, 0.45F),    // continentalness (inland)
+                Climate.Parameter.span(-0.8F, -0.375F),  // erosion (unchanged)
+                Climate.Parameter.span(0.2F, 1.1F),      // depth (unchanged for now)
+                Climate.Parameter.span(0.0F, 0.5F),      // weirdness (unchanged)
+                0.15F                                    // offset
+        ), ModBiomes.BLUE_CAVE));
+    }
+}
