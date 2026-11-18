@@ -16,6 +16,7 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(WhiteCatEntityModel.LAYER_LOCATION, WhiteCatEntityModel::createBodyLayer);
         event.registerLayerDefinition(ArtistEntityModel.LAYER_LOCATION, ArtistEntityModel::createBodyLayer);
         event.registerLayerDefinition(KattEntityModel.LAYER_LOCATION, KattEntityModel::createBodyLayer);
+        event.registerLayerDefinition(KattoJacketModel.LAYER_LOCATION, KattoJacketModel::createBodyLayer);
         event.registerLayerDefinition(JammerEntityModel.LAYER_LOCATION, JammerEntityModel::createBodyLayer);
         event.registerLayerDefinition(JammerEntityModel.OUTLINE_LAYER_LOCATION, JammerEntityModel::createOutlineLayer);
         event.registerLayerDefinition(ProtoBeeEntityModel.LAYER_LOCATION, ProtoBeeEntityModel::createBodyLayer);
