@@ -7,7 +7,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.ltxprogrammer.changed.init.ChangedGameRules;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -27,6 +26,7 @@ import java.util.Collection;
  *
  * <pre>
  * /changedextras choice [yes|no]   re-show or answer the special starter transfur prompt
+ * /changedextras transform         re-apply your special starter transfur form
  * /changedextras debug             toggle the AI debug overlay
  * /changedextras vip [enable|disable|true|false] [targets]
  *                                 Jammer VIP: bare toggles yours, a value sets yours,
@@ -56,6 +56,7 @@ public final class ChangedExtrasCommands {
     private static LiteralArgumentBuilder<CommandSourceStack> root() {
         return Commands.literal(ROOT)
                 .then(choiceNode())
+                .then(transformNode())
                 .then(debugNode())
                 .then(vipNode())
                 .then(resetNode());
@@ -68,6 +69,11 @@ public final class ChangedExtrasCommands {
                         .executes(context -> answerChoice(context.getSource(), true)))
                 .then(Commands.literal("no")
                         .executes(context -> answerChoice(context.getSource(), false)));
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> transformNode() {
+        return Commands.literal("transform")
+                .executes(ChangedExtrasCommands::applyStarterTransform);
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> debugNode() {
@@ -134,10 +140,10 @@ public final class ChangedExtrasCommands {
             }
 
             ProcessTransfur.setPlayerTransfurVariant(player, variant);
-            source.sendSuccess(() -> Component.literal("§aYou have started transfurred as §b" + specialData.displayName() + "§a!"), false);
-            if (!player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM)) {
-                source.sendSuccess(() -> Component.literal("§e§lWarning: §cThis world doesnt have keep form enabled, whenever you die, you'll lose your form"), false);
+            if (variant == us.kattosaur.changedextras.entity.ModTransfurVariants.KATT.get()) {
+                player.server.execute(() -> ChangedExtras.ensureKattoJacket(player));
             }
+            source.sendSuccess(() -> Component.literal("§aYou have started transfurred as §b" + specialData.displayName() + "§a!"), false);
         } else {
             source.sendSuccess(() -> Component.literal("§eYou have chosen to remain human."), false);
         }
@@ -157,6 +163,31 @@ public final class ChangedExtrasCommands {
             return null;
         }
         return specialData;
+    }
+
+    private static int applyStarterTransform(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        ChangedExtras.SpecialPlayerData specialData = ChangedExtras.SPECIAL_PLAYERS.get(player.getUUID());
+        if (specialData == null) {
+            source.sendFailure(Component.literal("§cYou do not have a special starter transfur form."));
+            return 0;
+        }
+
+        var variant = specialData.variantSupplier().get();
+        if (variant == null) {
+            source.sendFailure(Component.literal("§cFailed to load transfur variant."));
+            return 0;
+        }
+
+        ProcessTransfur.setPlayerTransfurVariant(player, variant);
+        player.getPersistentData().putBoolean(ChangedExtras.SPECIAL_CHOICE_MADE_TAG, true);
+        if (variant == us.kattosaur.changedextras.entity.ModTransfurVariants.KATT.get()) {
+            player.server.execute(() -> ChangedExtras.ensureKattoJacket(player));
+        }
+
+        source.sendSuccess(() -> Component.literal("§aYou have been transfurred as §b" + specialData.displayName() + "§a!"), false);
+        return 1;
     }
 
     private static int resetStarter(CommandSourceStack source, Collection<ServerPlayer> targets) {

@@ -6,6 +6,7 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.process.TransfurEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -22,6 +23,12 @@ public final class KattoReplicationHandler {
     public static void onEntityVariantAssigned(ProcessTransfur.EntityVariantAssigned event) {
         if (event.variant != ModTransfurVariants.KATT.get()) {
             return;
+        }
+
+        // Give the Katto transfur prompt person their default jacket when becoming Latex Katto
+        if (event.livingEntity instanceof ServerPlayer serverPlayer
+                && ChangedExtras.SPECIAL_PLAYER_UUID.equals(serverPlayer.getUUID())) {
+            serverPlayer.server.execute(() -> ChangedExtras.ensureKattoJacket(serverPlayer));
         }
 
         // Never redirect if the entity being assigned is already Latex Katto
