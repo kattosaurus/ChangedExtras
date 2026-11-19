@@ -24,7 +24,7 @@ public abstract class ModJsonProvider implements DataProvider {
     protected abstract void generate();
 
     protected void write(PackOutput.Target target, String directory, String id, JsonObject json) {
-        this.entries.add(new Entry(target, directory, new ResourceLocation("changedextras", id), json));
+        this.entries.add(new Entry(target, directory, ResourceLocation.fromNamespaceAndPath("changedextras", id), json));
     }
 
     protected void write(PackOutput.Target target, String directory, ResourceLocation id, JsonObject json) {

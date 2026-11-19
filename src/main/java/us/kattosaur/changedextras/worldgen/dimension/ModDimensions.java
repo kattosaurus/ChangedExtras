@@ -25,15 +25,15 @@ import java.util.OptionalLong;
 public class ModDimensions {
     public static final ResourceKey<Level> DM_KEY = ResourceKey.create(
             Registries.DIMENSION,
-            new ResourceLocation(ChangedExtras.MODID, "idle_death_gamble")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "idle_death_gamble")
     );
     public static final ResourceKey<DimensionType> DM_TYPE = ResourceKey.create(
             Registries.DIMENSION_TYPE,
-            new ResourceLocation(ChangedExtras.MODID, "idle_death_gamble")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "idle_death_gamble")
     );
     public static final ResourceKey<LevelStem> DM_STEM = ResourceKey.create(
             Registries.LEVEL_STEM,
-            new ResourceLocation(ChangedExtras.MODID, "idle_death_gamble")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "idle_death_gamble")
     );
 
     public static void bootstrapType(BootstapContext<DimensionType> context) {

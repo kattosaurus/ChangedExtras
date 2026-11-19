@@ -39,7 +39,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('=', Items.IRON_INGOT)
                 .define('N', Items.NETHERITE_SCRAP)
                 .unlockedBy("has_item", has(item("changedextras", "processed_vial")))
-                .save(writer, new ResourceLocation("changedextras", "pale_test"));
+                .save(writer, ResourceLocation.fromNamespaceAndPath("changedextras", "pale_test"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("changedextras", "pill_bottle"))
                 .pattern(" T ")
@@ -48,7 +48,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('T', Items.ORANGE_TERRACOTTA)
                 .define('G', Items.GLASS_PANE)
                 .unlockedBy("has_item", has(Items.GLASS_PANE))
-                .save(writer, new ResourceLocation("changedextras", "pill_bottle"));
+                .save(writer, ResourceLocation.fromNamespaceAndPath("changedextras", "pill_bottle"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("changedextras", "sterile_swab"))
                 .pattern("W")
@@ -57,7 +57,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('W', Items.WHITE_WOOL)
                 .define('S', Items.STICK)
                 .unlockedBy("has_item", has(Items.WHITE_WOOL))
-                .save(writer, new ResourceLocation("changedextras", "sterile_swab"));
+                .save(writer, ResourceLocation.fromNamespaceAndPath("changedextras", "sterile_swab"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item("changedextras", "the_palette"))
                 .requires(Items.BOWL)
@@ -65,13 +65,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(Items.BLUE_DYE)
                 .requires(Items.YELLOW_DYE)
                 .unlockedBy("has_item", has(Items.BOWL))
-                .save(writer, new ResourceLocation("changedextras", "the_palette"));
+                .save(writer, ResourceLocation.fromNamespaceAndPath("changedextras", "the_palette"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item("changedextras", "used_vial"))
                 .requires(item("changedextras", "used_swab"))
                 .requires(item("changedextras", "vial"))
                 .unlockedBy("has_item", has(item("changedextras", "vial")))
-                .save(writer, new ResourceLocation("changedextras", "used_vial"));
+                .save(writer, ResourceLocation.fromNamespaceAndPath("changedextras", "used_vial"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("changedextras", "vial"))
                 .pattern("###")
@@ -82,7 +82,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('S', Items.SUGAR)
                 .define('u', Items.WATER_BUCKET)
                 .unlockedBy("has_item", has(Items.GLASS_PANE))
-                .save(writer, new ResourceLocation("changedextras", "vial"));
+                .save(writer, ResourceLocation.fromNamespaceAndPath("changedextras", "vial"));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private static ItemLike item(String namespace, String path) {
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(namespace, path));
+        Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath(namespace, path));
         if (item == null) {
             throw new IllegalStateException("Unknown item: " + namespace + ":" + path);
         }
@@ -100,6 +100,6 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private static TagKey<Item> tag(String namespace, String path) {
-        return ItemTags.create(new ResourceLocation(namespace, path));
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath(namespace, path));
     }
 }

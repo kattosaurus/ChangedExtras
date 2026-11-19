@@ -22,11 +22,11 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 public class ModBiomes {
     public static final ResourceKey<Biome> WHITE_VOID = ResourceKey.create(
             Registries.BIOME,
-            new ResourceLocation(ChangedExtras.MODID, "white_void")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "white_void")
     );
     public static final ResourceKey<Biome> BLUE_CAVE = ResourceKey.create(
             Registries.BIOME,
-            new ResourceLocation(ChangedExtras.MODID, "blue_cave")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_cave")
     );
 
     public static void bootstrap(BootstapContext<Biome> context) {

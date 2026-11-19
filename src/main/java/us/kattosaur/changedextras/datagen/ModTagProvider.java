@@ -127,6 +127,6 @@ public class ModTagProvider extends ModJsonProvider {
             array.add(new JsonPrimitive(value));
         }
         root.add("values", array);
-        write(PackOutput.Target.DATA_PACK, directory, new ResourceLocation(namespace, name), root);
+        write(PackOutput.Target.DATA_PACK, directory, ResourceLocation.fromNamespaceAndPath(namespace, name), root);
     }
 }

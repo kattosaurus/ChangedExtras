@@ -26,7 +26,7 @@ import java.util.Optional;
  */
 public class ForbiddenLibraryPiece extends FacilityRoomPiece {
     public static final ResourceLocation TEMPLATE =
-            new ResourceLocation(ChangedExtras.MODID, "facility/room/forbidden_library/forbidden_library");
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "facility/room/forbidden_library/forbidden_library");
 
     public ForbiddenLibraryPiece() {
         super(TEMPLATE, Optional.empty());

@@ -59,7 +59,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         };
         for (String name : syringes) {
             getBuilder(name).parent(new ModelFile.UncheckedModelFile(
-                    new net.minecraft.resources.ResourceLocation("changed:item/latex_syringe")));
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("changed", "item/latex_syringe")));
         }
     }
 

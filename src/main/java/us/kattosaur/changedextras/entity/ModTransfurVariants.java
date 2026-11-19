@@ -94,7 +94,6 @@ public class ModTransfurVariants {
                     () -> TransfurVariant.Builder.of(ModEntities.WHITE_CAT)
                             .nightVision()
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<KattEntity>> KATT =
@@ -117,7 +116,6 @@ public class ModTransfurVariants {
                     () -> TransfurVariant.Builder.of(ModEntities.PROTO_BEE)
                             .nightVision()
                             .transfurMode(TransfurMode.ABSORPTION)
-                            .absorbing()
                             .reducedFall(true)
                             .extraJumps(3)
                             .build());
@@ -145,7 +143,6 @@ public class ModTransfurVariants {
                     () -> TransfurVariant.Builder.of(ModEntities.LATEX_CATTE)
                             .nightVision()
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<LatexHakuEntity>> LATEX_HAKU =
@@ -154,14 +151,12 @@ public class ModTransfurVariants {
                             .cameraZOffset(0.4375f)
                             .nightVision()
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<LatexThorniiiEntity>> LATEX_THORNIII =
             REGISTRY.register("latex_thorniii",
                     () -> TransfurVariant.Builder.of(ModEntities.LATEX_THORNIII)
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<LatexCarnelineEntity>> LATEX_CARNELINE =
@@ -169,7 +164,6 @@ public class ModTransfurVariants {
                     () -> TransfurVariant.Builder.of(ModEntities.LATEX_CARNELINE)
                             .nightVision()
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<LatexPantherEntity>> LATEX_PANTHER =
@@ -177,7 +171,6 @@ public class ModTransfurVariants {
                     () -> TransfurVariant.Builder.of(ModEntities.LATEX_PANTHER)
                             .nightVision()
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
     public static final RegistryObject<TransfurVariant<LatexKaijuEntity>> LATEX_KAIJU =
@@ -185,7 +178,6 @@ public class ModTransfurVariants {
                     () -> TransfurVariant.Builder.of(ModEntities.LATEX_KAIJU)
                             .nightVision()
                             .transfurMode(TransfurMode.REPLICATION)
-                            .replicating()
                             .build());
 
 }

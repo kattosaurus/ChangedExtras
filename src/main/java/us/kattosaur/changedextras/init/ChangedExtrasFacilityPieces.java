@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public final class ChangedExtrasFacilityPieces {
     public static final ResourceLocation FORBIDDEN_LIBRARY =
-            new ResourceLocation(ChangedExtras.MODID, "forbidden_library");
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "forbidden_library");
 
     private ChangedExtrasFacilityPieces() {}
 

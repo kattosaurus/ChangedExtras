@@ -13,23 +13,23 @@ public class ModWorldgenProvider extends ModJsonProvider {
 
     @Override
     protected void generate() {
-        write(PackOutput.Target.DATA_PACK, "worldgen/structure", new ResourceLocation("changedextras", "biological_studies_facility"), structure("changedextras:biological_studies_facility", "changedextras:has_structure/biological_studies_facility"));
-        write(PackOutput.Target.DATA_PACK, "worldgen/structure", new ResourceLocation("changedextras", "bunker"), structure("changedextras:bunker", "changedextras:has_structure/bunker"));
-        write(PackOutput.Target.DATA_PACK, "worldgen/structure_set", new ResourceLocation("changedextras", "biological_studies_facility"), structureSet("changedextras:biological_studies_facility", 48484848, 36, 12));
-        write(PackOutput.Target.DATA_PACK, "worldgen/structure_set", new ResourceLocation("changedextras", "bunkers"), structureSet("changedextras:bunker", 88420137, 34, 10));
+        write(PackOutput.Target.DATA_PACK, "worldgen/structure", ResourceLocation.fromNamespaceAndPath("changedextras", "biological_studies_facility"), structure("changedextras:biological_studies_facility", "changedextras:has_structure/biological_studies_facility"));
+        write(PackOutput.Target.DATA_PACK, "worldgen/structure", ResourceLocation.fromNamespaceAndPath("changedextras", "bunker"), structure("changedextras:bunker", "changedextras:has_structure/bunker"));
+        write(PackOutput.Target.DATA_PACK, "worldgen/structure_set", ResourceLocation.fromNamespaceAndPath("changedextras", "biological_studies_facility"), structureSet("changedextras:biological_studies_facility", 48484848, 36, 12));
+        write(PackOutput.Target.DATA_PACK, "worldgen/structure_set", ResourceLocation.fromNamespaceAndPath("changedextras", "bunkers"), structureSet("changedextras:bunker", 88420137, 34, 10));
 
-        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/lab_cafeteria", new ResourceLocation("changedextras", "lab_cafeteria"), facilityRoom("changedextras:facility/room/lab_cafeteria/lab_cafeteria", "changedextras:chests/lab_cafeteria", 100, 0, 2, "changed:general"));
+        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/lab_cafeteria", ResourceLocation.fromNamespaceAndPath("changedextras", "lab_cafeteria"), facilityRoom("changedextras:facility/room/lab_cafeteria/lab_cafeteria", "changedextras:chests/lab_cafeteria", 100, 0, 2, "changed:general"));
         // biome white_void is generated via ModBiomes bootstrap (Registries provider)
-        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/recreation_room", new ResourceLocation("changedextras", "recreation_room"), facilityRoom("changedextras:facility/room/recreation_room/recreation_room", "changedextras:chests/recreationstorage", 200, 0, 2, "changed:entrance"));
-        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/blue_cave_room", new ResourceLocation("changedextras", "blue_cave_room"), facilityRoom("changedextras:facility/room/blue_cave_room/blue_cave_room", 15, 0, 2, "changed:entrance"));
+        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/recreation_room", ResourceLocation.fromNamespaceAndPath("changedextras", "recreation_room"), facilityRoom("changedextras:facility/room/recreation_room/recreation_room", "changedextras:chests/recreationstorage", 200, 0, 2, "changed:entrance"));
+        write(PackOutput.Target.DATA_PACK, "worldgen/changed/facility/room/blue_cave_room", ResourceLocation.fromNamespaceAndPath("changedextras", "blue_cave_room"), facilityRoom("changedextras:facility/room/blue_cave_room/blue_cave_room", 15, 0, 2, "changed:entrance"));
 
-        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "armory_room"), roomWeight(100, 0, 2));
-        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "exp12_room"), roomWeight(20, 0, 1));
-        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", new ResourceLocation("changedextras", "scp009_room"), roomWeight(100, 0, 1));
+        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", ResourceLocation.fromNamespaceAndPath("changedextras", "armory_room"), roomWeight(100, 0, 2));
+        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", ResourceLocation.fromNamespaceAndPath("changedextras", "exp12_room"), roomWeight(20, 0, 1));
+        write(PackOutput.Target.DATA_PACK, "structures/biological_studies_facility/rooms", ResourceLocation.fromNamespaceAndPath("changedextras", "scp009_room"), roomWeight(100, 0, 1));
 
-        write(PackOutput.Target.DATA_PACK, "accessories/entities", new ResourceLocation("changed", "changedextras_humanoids"), accessoriesHumanoids());
-        write(PackOutput.Target.DATA_PACK, "accessories/entities", new ResourceLocation("changed", "changedextras_taurs"), accessoriesTaurs());
-        write(PackOutput.Target.DATA_PACK, "forge/biome_modifier", new ResourceLocation("changedextras", "overworld_latex_spawns"), biomeModifier());
+        write(PackOutput.Target.DATA_PACK, "accessories/entities", ResourceLocation.fromNamespaceAndPath("changed", "changedextras_humanoids"), accessoriesHumanoids());
+        write(PackOutput.Target.DATA_PACK, "accessories/entities", ResourceLocation.fromNamespaceAndPath("changed", "changedextras_taurs"), accessoriesTaurs());
+        write(PackOutput.Target.DATA_PACK, "forge/biome_modifier", ResourceLocation.fromNamespaceAndPath("changedextras", "overworld_latex_spawns"), biomeModifier());
     }
 
     private JsonObject structure(String type, String biomes) {

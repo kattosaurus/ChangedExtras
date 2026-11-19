@@ -58,7 +58,7 @@ public final class ChangedExtrasGuideClientAccess {
     }
 
     private static final ResourceLocation GUIDE_LOCATION =
-            new ResourceLocation(ChangedExtras.MODID, "guide.md");
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "guide.md");
 
     private static String readGuide() {
         Minecraft minecraft = Minecraft.getInstance();

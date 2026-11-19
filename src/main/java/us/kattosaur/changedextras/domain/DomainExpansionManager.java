@@ -864,7 +864,7 @@ public class DomainExpansionManager {
         clearScenarioStructure(level, domain);
 
         StructureTemplateManager manager = level.getStructureManager();
-        ResourceLocation id = new ResourceLocation(ChangedExtras.MODID, scenario.getStructureId());
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, scenario.getStructureId());
         Optional<StructureTemplate> optional = manager.get(id);
         if (optional.isEmpty()) {
             LOGGER.warn("[DomainExpansionManager] Scenario structure {} is missing", id);

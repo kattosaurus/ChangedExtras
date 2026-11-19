@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LatexThorniiiEntityModel extends AdvancedHumanoidModel<LatexThorniiiEntity> implements DoubleArmedModel<LatexThorniiiEntity> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changedextras", "latex_thorniii"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("changedextras", "latex_thorniii"), "main");
 
     private final ModelPart Head;
     private final ModelPart Torso;

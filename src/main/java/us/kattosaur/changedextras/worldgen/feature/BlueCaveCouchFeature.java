@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public class BlueCaveCouchFeature extends Feature<NoneFeatureConfiguration> {
     private static final ResourceLocation STRUCTURE_LOCATION =
-            new ResourceLocation(ChangedExtras.MODID, "blue_cave_couch");
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_cave_couch");
 
     public BlueCaveCouchFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);

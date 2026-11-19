@@ -23,32 +23,32 @@ import java.util.List;
 public final class ModFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLUE_STONE_CRYSTAL_PATCH_KEY = ResourceKey.create(
             Registries.CONFIGURED_FEATURE,
-            new ResourceLocation(ChangedExtras.MODID, "blue_stone_crystal_patch")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_stone_crystal_patch")
     );
 
     public static final ResourceKey<PlacedFeature> BLUE_STONE_CRYSTAL_PATCH_PLACED_KEY = ResourceKey.create(
             Registries.PLACED_FEATURE,
-            new ResourceLocation(ChangedExtras.MODID, "blue_stone_crystal_patch")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_stone_crystal_patch")
     );
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLUE_STONE_PILLAR_KEY = ResourceKey.create(
             Registries.CONFIGURED_FEATURE,
-            new ResourceLocation(ChangedExtras.MODID, "blue_stone_pillar")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_stone_pillar")
     );
 
     public static final ResourceKey<PlacedFeature> BLUE_STONE_PILLAR_PLACED_KEY = ResourceKey.create(
             Registries.PLACED_FEATURE,
-            new ResourceLocation(ChangedExtras.MODID, "blue_stone_pillar")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_stone_pillar")
     );
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLUE_CAVE_COUCH_KEY = ResourceKey.create(
             Registries.CONFIGURED_FEATURE,
-            new ResourceLocation(ChangedExtras.MODID, "blue_cave_couch")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_cave_couch")
     );
 
     public static final ResourceKey<PlacedFeature> BLUE_CAVE_COUCH_PLACED_KEY = ResourceKey.create(
             Registries.PLACED_FEATURE,
-            new ResourceLocation(ChangedExtras.MODID, "blue_cave_couch")
+            ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "blue_cave_couch")
     );
 
     private ModFeatures() {
