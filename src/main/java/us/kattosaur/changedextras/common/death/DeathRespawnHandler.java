@@ -38,7 +38,7 @@ public final class DeathRespawnHandler {
         }
 
         boolean configEnabled = Config.respawnAsTransfurInsteadOfKeepForm;
-        boolean keepForm = player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM);
+        boolean keepForm = player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM.get());
         ChangedExtrasNetwork.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> player),
                 new SyncDeathRespawnPacket(configEnabled, keepForm, null)
@@ -62,7 +62,7 @@ public final class DeathRespawnHandler {
         player.getPersistentData().remove(RESPAWN_AS_TRANSFUR_TAG);
 
         boolean configEnabled = Config.respawnAsTransfurInsteadOfKeepForm;
-        boolean keepForm = player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM);
+        boolean keepForm = player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM.get());
         ChangedExtrasNetwork.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> player),
                 new SyncDeathRespawnPacket(configEnabled, keepForm, variantId)
@@ -80,7 +80,7 @@ public final class DeathRespawnHandler {
         }
 
         boolean configEnabled = Config.respawnAsTransfurInsteadOfKeepForm;
-        boolean keepForm = oldPlayer.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM);
+        boolean keepForm = oldPlayer.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM.get());
         boolean hadVariant = oldPlayer.getPersistentData().contains(DEATH_VARIANT_TAG);
 
         if (configEnabled && keepForm && hadVariant) {

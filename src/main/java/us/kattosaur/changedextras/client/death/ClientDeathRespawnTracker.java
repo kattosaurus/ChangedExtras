@@ -41,7 +41,7 @@ public final class ClientDeathRespawnTracker {
     public static boolean isKeepFormEnabled() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.hasSingleplayerServer() && mc.level != null && !receivedServerSync) {
-            return mc.level.getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM);
+            return mc.level.getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM.get());
         }
         return keepFormRuleEnabled;
     }

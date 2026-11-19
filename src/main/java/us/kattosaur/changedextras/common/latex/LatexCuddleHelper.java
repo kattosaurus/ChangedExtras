@@ -1,7 +1,6 @@
 package us.kattosaur.changedextras.common.latex;
 
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.TamableLatexEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -17,11 +16,11 @@ public final class LatexCuddleHelper {
 
     @Nullable
     public static Player getTamingOwner(ChangedEntity entity) {
-        if (!(entity instanceof TamableLatexEntity tamable) || !tamable.isTame()) {
+        if (!entity.isTame()) {
             return null;
         }
 
-        UUID ownerUuid = tamable.getOwnerUUID();
+        UUID ownerUuid = entity.getOwnerUUID();
         if (ownerUuid == null) {
             return null;
         }

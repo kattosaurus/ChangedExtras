@@ -4,7 +4,6 @@ import us.kattosaur.changedextras.common.latex.LatexCuddleHelper;
 import us.kattosaur.changedextras.common.inventory.LatexInventory;
 import us.kattosaur.changedextras.common.inventory.LatexInventoryProvider;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.TamableLatexEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -2768,7 +2767,7 @@ public class LatexBrain {
             // back against whoever actually hit them (or a retaliation target
             // set for some other reason, e.g. owner defense). They never
             // proactively pick fights with a random/idle player.
-            if (mob instanceof TamableLatexEntity tamable && tamable.isTame()) {
+            if (mob.isTame()) {
                 return mind.isRetaliationTarget(mob, player);
             }
 

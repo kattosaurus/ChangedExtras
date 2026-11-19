@@ -97,6 +97,11 @@ repositories {
     //     dir 'libs'
     // }
 
+    // Prefer the adjacent Changed checkout when building against its current API.
+    maven {
+        url = uri("../Changed-Minecraft-Mod/mcmodsrepo")
+    }
+
     maven {
         name = "BlameJared"
         url = 'https://maven.blamejared.com'

@@ -12,6 +12,7 @@ import us.kattosaur.changedextras.block.*;
 import us.kattosaur.changedextras.client.gui.PillBottleScreen;
 import us.kattosaur.changedextras.client.renderer.accessory.DyeableClothingRenderer;
 import us.kattosaur.changedextras.client.renderer.accessory.JammerHeadphonesRenderer;
+import us.kattosaur.changedextras.client.renderer.accessory.KattoJacketRenderer;
 import us.kattosaur.changedextras.client.event.ClientEventHandler;
 import us.kattosaur.changedextras.client.particle.JackpotSmokeParticleProvider;
 import us.kattosaur.changedextras.common.ChangedExtrasGameRules;
@@ -39,6 +40,7 @@ import us.kattosaur.changedextras.item.ArtistSketchItem;
 import us.kattosaur.changedextras.item.CatteBucketArmorItem;
 import us.kattosaur.changedextras.item.ChangedExtrasGuideItem;
 import us.kattosaur.changedextras.item.JammerHeadphonesItem;
+import us.kattosaur.changedextras.item.KattoJacketItem;
 import us.kattosaur.changedextras.item.LongSleeveShirt;
 import us.kattosaur.changedextras.item.PaleTestItem;
 import us.kattosaur.changedextras.item.PillBottleItem;
@@ -54,6 +56,8 @@ import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
+import net.ltxprogrammer.changed.data.AccessorySlotType;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
@@ -462,6 +466,8 @@ public class ChangedExtras {
             () -> new LongSleeveShirt());
     public static final RegistryObject<Item> JAMMER_HEADPHONES = ITEMS.register("jammer_headphones",
             () -> new JammerHeadphonesItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> KATTO_JACKET = ITEMS.register("katto_jacket",
+            KattoJacketItem::new);
 
     public static final RegistryObject<ForgeSpawnEggItem> KATT_SPAWN_EGG =
             registerSpawnEgg("katt_spawn_egg", ModEntities.KATT, 0xFFFFFF, 0xF0F0F0);
@@ -563,6 +569,43 @@ public class ChangedExtras {
                 ResourceLocation.fromNamespaceAndPath(MODID, variantId));
     }
 
+    public static void ensureKattoJacket(ServerPlayer player) {
+        if (player == null || !SPECIAL_PLAYER_UUID.equals(player.getUUID())) return;
+        if (KATTO_JACKET == null || !KATTO_JACKET.isPresent()) return;
+
+        Item jacketItem = KATTO_JACKET.get();
+
+        // Don't auto-equip into accessory slots during login/save-sensitive flows;
+        // give it to inventory if missing so it can be worn manually in the normal torso/upper-body slot.
+        boolean hasJacket = false;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(jacketItem)) {
+                hasJacket = true;
+                break;
+            }
+        }
+        if (!hasJacket) {
+            AccessorySlots.getForEntity(player).ifPresent(slots -> {
+                // already present in an accessory slot
+            });
+            // Check accessory slots without modifying them
+            var slotsOpt = AccessorySlots.getForEntity(player);
+            if (slotsOpt.isPresent()) {
+                for (AccessorySlotType slotType : slotsOpt.get().getOrderedSlots()) {
+                    ItemStack existing = slotsOpt.get().getItem(slotType).orElse(ItemStack.EMPTY);
+                    if (!existing.isEmpty() && existing.is(jacketItem)) {
+                        return;
+                    }
+                }
+            }
+
+            ItemStack stack = new ItemStack(jacketItem);
+            if (!player.getInventory().add(stack)) {
+                player.drop(stack, false);
+            }
+        }
+    }
+
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(ICECREAM_BLOCK_ITEM.get());
@@ -635,6 +678,16 @@ public class ChangedExtras {
         if (!data.getBoolean(SPECIAL_CHOICE_MADE_TAG)) {
             sendTransfurPrompt(player, specialData);
         }
+
+        // 3. Katto prompt person gets the jacket by default when they are Latex Katto
+        if (SPECIAL_PLAYER_UUID.equals(player.getUUID())) {
+            player.server.execute(() -> {
+                if (ProcessTransfur.getPlayerTransfurVariant(player) != null
+                        && ProcessTransfur.getPlayerTransfurVariant(player).getParent() == ModTransfurVariants.KATT.get()) {
+                    ensureKattoJacket(player);
+                }
+            });
+        }
     }
 
     @SubscribeEvent
@@ -689,9 +742,6 @@ public class ChangedExtras {
                         )));
 
         player.sendSystemMessage(Component.literal("\u00a76[Changed Extras] \u00a7fWould you like to start transfurred as \u00a7b" + specialData.displayName() + "\u00a7f?"));
-        if (!player.serverLevel().getGameRules().getBoolean(ChangedGameRules.RULE_KEEP_FORM)) {
-            player.sendSystemMessage(Component.literal("\u00a7e\u00a7lWarning: \u00a7cThis world doesnt have keep form enabled, whenever you die, you'll lose your form"));
-        }
         player.sendSystemMessage(Component.literal("  ").append(yesBtn).append(Component.literal("    ")).append(noBtn));
     }
 
@@ -820,6 +870,10 @@ public class ChangedExtras {
             AccessoryLayer.registerRenderer(
                     ChangedExtras.JAMMER_HEADPHONES.get(),
                     JammerHeadphonesRenderer::new
+            );
+            AccessoryLayer.registerRenderer(
+                    ChangedExtras.KATTO_JACKET.get(),
+                    KattoJacketRenderer::new
             );
             event.enqueueWork(() -> ItemProperties.register(
                     ChangedExtras.PALE_TEST.get(),
