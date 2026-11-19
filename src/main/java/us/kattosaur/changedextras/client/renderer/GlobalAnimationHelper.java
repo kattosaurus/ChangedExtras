@@ -7,22 +7,16 @@ import us.kattosaur.changedextras.ability.GrabReachAccess;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.ability.active.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
-import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
@@ -32,48 +26,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 /**
- * Replays the shared {@link GlobalAnimations} on bipedal (anthro) latex models.
+ * Replays the shared {@link GlobalAnimations} on the standard bipedal latex models.
  *
  * <p>The clips are applied after the model's preset animator has run, and only the bones
  * touched by a clip are reset first. That means these definitions <em>replace</em> the
  * preset idle/attack/grab/tail motion for those bones, while special states
- * (crouching, swimming, riding, sleeping, flying) are left entirely to the presets.
- * Non-bipedal shapes (taurs, nagas, merfolk, ferals) only receive tail animations, since
- * their body rigs are incompatible with the shared bipedal clips.</p>
+ * (crouching, swimming, riding, sleeping, flying) are left entirely to the presets.</p>
  *
  * <p>Selection:</p>
  * <ul>
- *     <li>Grabbing: {@code GrabIdle} while actively holding someone; it stops once the
- *     target is suited/absorbed. {@code Attack2} plays while reaching.</li>
+ *     <li>Grabbing: {@code GrabIdle} while holding, {@code Attack2} while reaching.</li>
  *     <li>Attacking: the combo cycles {@code Attack}, {@code Attack1}, {@code Attack2}.</li>
- *     <li>Moving: {@code IdleBody} for the upper body, leaving the arms and legs to the
- *     preset's vanilla walk animation; otherwise {@code Idle} for the whole upper body.
- *     Neither clip has arm position channels, so no global layer moves the arms vertically.</li>
- *     <li>Tail: {@code changed_addon:no_tail_anim} variants keep their tail at rest;
- *     {@code changed_addon:cat_like} and {@code changed_addon:leopard_like} use
- *     {@code CatTail}; everything else (including {@code changed_addon:wolf_like} and
- *     untagged variants) uses {@code WolfTail}.</li>
+ *     <li>Moving: {@code IdleBody} for the upper body, leaving the legs to the preset's
+ *     vanilla walk animation and adding the vanilla walk arm swing; otherwise
+ *     {@code Idle} for the whole upper body.</li>
+ *     <li>Always: {@code CatTail} or {@code WolfTail} for the tail.</li>
  * </ul>
  */
 public final class GlobalAnimationHelper {
     private static final Vector3f ANIMATION_CACHE = new Vector3f();
-
-    private static final ResourceKey<Registry<TransfurVariant<?>>> VARIANT_REGISTRY =
-            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("changed", "latex_variant"));
-    private static final TagKey<TransfurVariant<?>> CAT_LIKE =
-            TagKey.create(VARIANT_REGISTRY, ResourceLocation.fromNamespaceAndPath("changed_addon", "cat_like"));
-    private static final TagKey<TransfurVariant<?>> LEOPARD_LIKE =
-            TagKey.create(VARIANT_REGISTRY, ResourceLocation.fromNamespaceAndPath("changed_addon", "leopard_like"));
-    private static final TagKey<TransfurVariant<?>> WOLF_LIKE =
-            TagKey.create(VARIANT_REGISTRY, ResourceLocation.fromNamespaceAndPath("changed_addon", "wolf_like"));
-    private static final TagKey<TransfurVariant<?>> NO_TAIL_ANIM =
-            TagKey.create(VARIANT_REGISTRY, ResourceLocation.fromNamespaceAndPath("changed_addon", "no_tail_anim"));
 
     private static final GlobalDriver DRIVER = new GlobalDriver();
 
@@ -96,34 +74,25 @@ public final class GlobalAnimationHelper {
 
     private static final Map<UUID, GrabAim> GRAB_AIM_STATES = new HashMap<>();
 
-    /** Below this movement speed the entity counts as idle and gets the full idle clip. */
-    private static final float MOVING_SPEED_THRESHOLD = 0.05F;
+    /**
+     * Vanilla's arm swing reaches roughly a radian at full speed, which reads as an
+     * exaggerated flail when layered over the presets' arm pose. Damping the curve keeps
+     * the vanilla timing and phase while making the arc look natural on these models.
+     */
+    private static final float ARM_SWING_AMPLITUDE = 0.6F;
 
     private GlobalAnimationHelper() {
     }
 
-    /**
-     * @param legacyCatTail retained for call-site compatibility; tail selection is now
-     *                      driven by the entity's variant tags instead
-     */
     public static <T extends ChangedEntity> void apply(AdvancedHumanoidModel<T> model, T entity,
                                                        float limbSwing, float limbSwingAmount, float ageInTicks,
-                                                       float netHeadYaw, float headPitch, boolean legacyCatTail) {
+                                                       float netHeadYaw, float headPitch, boolean catTail) {
         if (!Config.globalAnimations) {
             return;
         }
 
         HumanoidAnimator<T, ?> animator = model.getAnimator(entity);
-        if (animator == null) {
-            return;
-        }
-
-        if (!isBipedalGlobal(entity)) {
-            applyTailOnly(model, entity, ageInTicks);
-            return;
-        }
-
-        if (isSpecialState(model, entity, animator)) {
+        if (animator == null || isSpecialState(model, entity, animator)) {
             return;
         }
 
@@ -131,7 +100,6 @@ public final class GlobalAnimationHelper {
             DRIVER.setModel(model);
 
             List<Clip> clips = new ArrayList<>(3);
-            long elapsedMillis = (long) (ageInTicks * 50.0F);
             boolean headFollowsLook = false;
             boolean grabbing = false;
             boolean moving = false;
@@ -144,9 +112,7 @@ public final class GlobalAnimationHelper {
             boolean reworkedCombat = Config.latexReworkedCombat;
 
             if (grab != null) {
-                // Changed keeps grabbedEntity set after the target is suited/absorbed,
-                // but its own animator only holds the grab pose while this is true.
-                holding = grab.shouldAnimateArms();
+                holding = grab.grabbedEntity != null;
                 if (!holding && reworkedCombat) {
                     if (grab instanceof GrabReachAccess reach) {
                         if (reach.changedextras$isGrabReaching()) {
@@ -198,7 +164,7 @@ public final class GlobalAnimationHelper {
                         // Item swings (and every swing when the reworked combat config
                         // is off) use the preset's own animation. Only the upper body
                         // is layered here so the preset arm swing stays visible.
-                        clips.add(new Clip(GlobalAnimations.IdleBody, elapsedMillis));
+                        clips.add(new Clip(GlobalAnimations.IdleBody, (long) (ageInTicks * 50.0F)));
                         headFollowsLook = true;
                     } else if (attack != null && attack.combo() == 1) {
                         clips.add(new Clip(GlobalAnimations.Attack1, scaledMillis(model.attackTime, ATTACK1_LENGTH_SECONDS)));
@@ -206,50 +172,25 @@ public final class GlobalAnimationHelper {
                         clips.add(new Clip(GlobalAnimations.Attack, scaledMillis(model.attackTime, ATTACK_LENGTH_SECONDS)));
                     }
                 } else {
-                    moving = Math.abs(limbSwingAmount) > MOVING_SPEED_THRESHOLD;
+                    moving = Math.abs(limbSwingAmount) > 0.05F;
                     clips.add(new Clip(moving ? GlobalAnimations.IdleBody : GlobalAnimations.Idle,
-                            elapsedMillis));
+                            (long) (ageInTicks * 50.0F)));
                     headFollowsLook = true;
                 }
             }
 
-            TailAnimation tail = selectTailAnimation(entity);
-            if (tail != TailAnimation.NONE) {
-                clips.add(new Clip(tail == TailAnimation.CAT ? GlobalAnimations.CatTail : GlobalAnimations.WolfTail,
-                        elapsedMillis));
-            }
+            clips.add(new Clip(catTail ? GlobalAnimations.CatTail : GlobalAnimations.WolfTail,
+                    (long) (ageInTicks * 50.0F)));
 
             // Reset every bone that any selected clip touches before replaying them, so the
             // clips always start from the model's rest pose instead of stacking on each other.
-            // Preserve preset positions for bones that no selected clip moves positionally, to
-            // avoid snapping them (e.g. arms) away from the model/animator's intended placement.
-            Map<ModelPart, Boolean> resetParts = new HashMap<>();
+            Set<ModelPart> reset = new HashSet<>();
             for (Clip clip : clips) {
-                for (Map.Entry<String, List<AnimationChannel>> entry : clip.definition.boneAnimations().entrySet()) {
-                    boolean hasPosition = hasPositionChannel(entry.getValue());
-                    DRIVER.getAnyDescendantWithName(entry.getKey()).ifPresent(part ->
-                            resetParts.merge(part, hasPosition, Boolean::logicalOr));
+                for (String name : clip.definition.boneAnimations().keySet()) {
+                    DRIVER.getAnyDescendantWithName(name).ifPresent(reset::add);
                 }
             }
-            if (tail == TailAnimation.NONE) {
-                // No tail clip means the preset tail motion must be cleared too, otherwise
-                // the tail would still swing from the model's own animator.
-                for (String name : TAIL_PARTS) {
-                    DRIVER.getAnyDescendantWithName(name).ifPresent(part -> resetParts.putIfAbsent(part, false));
-                }
-            }
-            for (Map.Entry<ModelPart, Boolean> entry : resetParts.entrySet()) {
-                ModelPart part = entry.getKey();
-                float x = part.x;
-                float y = part.y;
-                float z = part.z;
-                part.resetPose();
-                if (!entry.getValue()) {
-                    part.x = x;
-                    part.y = y;
-                    part.z = z;
-                }
-            }
+            reset.forEach(ModelPart::resetPose);
 
             for (Clip clip : clips) {
                 KeyframeAnimations.animate(DRIVER, clip.definition, clip.elapsedMillis, 1.0F, ANIMATION_CACHE);
@@ -272,62 +213,24 @@ public final class GlobalAnimationHelper {
                     head.yRot = 0.0F;
                 }
             }
+
+            if (moving) {
+                applyVanillaArmSwing(model, animator, limbSwing, limbSwingAmount);
+            }
         } catch (Throwable ignored) {
             // Rendering must never crash because of an optional animation layer.
         }
-    }
-
-    private static <T extends ChangedEntity> void applyTailOnly(AdvancedHumanoidModel<T> model, T entity,
-                                                                float ageInTicks) {
-        try {
-            DRIVER.setModel(model);
-            TailAnimation tail = selectTailAnimation(entity);
-            if (tail == TailAnimation.NONE) {
-                for (String name : TAIL_PARTS) {
-                    DRIVER.getAnyDescendantWithName(name).ifPresent(part -> resetPartPose(part, false));
-                }
-                return;
-            }
-
-            AnimationDefinition tailClip = tail == TailAnimation.CAT ? GlobalAnimations.CatTail : GlobalAnimations.WolfTail;
-            for (Map.Entry<String, List<AnimationChannel>> entry : tailClip.boneAnimations().entrySet()) {
-                boolean hasPosition = hasPositionChannel(entry.getValue());
-                DRIVER.getAnyDescendantWithName(entry.getKey()).ifPresent(part -> resetPartPose(part, hasPosition));
-            }
-            long elapsedMillis = (long) (ageInTicks * 50.0F);
-            KeyframeAnimations.animate(DRIVER, tailClip, elapsedMillis, 1.0F, ANIMATION_CACHE);
-        } catch (Throwable ignored) {
-            // Rendering must never crash because of an optional animation layer.
-        }
-    }
-
-    private static void resetPartPose(ModelPart part, boolean keepAnimatedPosition) {
-        float x = part.x;
-        float y = part.y;
-        float z = part.z;
-        part.resetPose();
-        if (!keepAnimatedPosition) {
-            part.x = x;
-            part.y = y;
-            part.z = z;
-        }
-    }
-
-    private static boolean isBipedalGlobal(ChangedEntity entity) {
-        if (entity == null) {
-            return false;
-        }
-        return entity.getEntityShape() == EntityShape.ANTHRO;
     }
 
     /**
      * Applies the shared animation layer to any Changed model, including models from the
-     * main Changed mod and other addons. The tail clip follows the entity variant's tags.
+     * main Changed mod and other addons. The tail clip is chosen heuristically from the
+     * entity's class name so cat-like creatures keep an upright, swishing tail.
      */
     public static <T extends ChangedEntity> void applyGlobal(AdvancedHumanoidModel<T> model, T entity,
                                                              float limbSwing, float limbSwingAmount, float ageInTicks,
                                                              float netHeadYaw, float headPitch) {
-        apply(model, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, false);
+        apply(model, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, usesCatTail(entity));
     }
 
     /** Whether the model already applies this layer itself (a model from this mod). */
@@ -336,9 +239,9 @@ public final class GlobalAnimationHelper {
     }
 
     /**
-     * Whether the entity is currently reaching out to grab or actively holding a
-     * grabbed entity. Once the target is suited/absorbed this is false, so the renderer
-     * stops aiming the whole body and the head looks normally again.
+     * Whether the entity is currently reaching out to grab or already holding a
+     * grabbed entity. The renderer aims the whole body at the look direction while
+     * this is true so the grab lines up with what the player is looking at.
      */
     public static boolean isGrabAiming(ChangedEntity entity) {
         if (entity == null) {
@@ -350,7 +253,7 @@ public final class GlobalAnimationHelper {
         if (grab == null) {
             return false;
         }
-        if (grab.shouldAnimateArms()) {
+        if (grab.grabbedEntity != null) {
             return true;
         }
         return grab instanceof GrabReachAccess reach && reach.changedextras$isGrabReaching();
@@ -374,7 +277,7 @@ public final class GlobalAnimationHelper {
         }
 
         HumanoidAnimator<?, ?> animator = grabAimAnimator(model, entity);
-        if (!Config.globalAnimations || !isBipedalGlobal(entity) || animator == null
+        if (!Config.globalAnimations || animator == null
                 || isSpecialState(model, entity, animator) || !isGrabAiming(entity)) {
             GRAB_AIM_STATES.remove(entity.getUUID());
             return;
@@ -410,44 +313,52 @@ public final class GlobalAnimationHelper {
         }
     }
 
-    /**
-     * Tail selection is tag-driven. {@code changed_addon:no_tail_anim} takes priority so
-     * variants like the kaiju keep their tail still; then {@code cat_like} and
-     * {@code leopard_like} get the feline tail, while {@code wolf_like} and untagged
-     * variants get the canine tail.
-     */
-    private static TailAnimation selectTailAnimation(ChangedEntity entity) {
-        TransfurVariant<?> variant = entity == null ? null : entity.getSelfVariant();
-        if (variant == null) {
-            return TailAnimation.WOLF;
-        }
-        if (variant.is(NO_TAIL_ANIM)) {
-            return TailAnimation.NONE;
-        }
-        if (variant.is(LEOPARD_LIKE) || variant.is(CAT_LIKE)) {
-            return TailAnimation.CAT;
-        }
-        if (variant.is(WOLF_LIKE)) {
-            return TailAnimation.WOLF;
-        }
-        return TailAnimation.WOLF;
-    }
-
-    private enum TailAnimation {
-        NONE, CAT, WOLF
-    }
-
-    private static boolean hasPositionChannel(List<AnimationChannel> channels) {
-        for (AnimationChannel channel : channels) {
-            if (channel.target() == AnimationChannel.Targets.POSITION) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean usesCatTail(ChangedEntity entity) {
+        String name = entity.getClass().getSimpleName().toLowerCase(Locale.ROOT);
+        return name.contains("cat")
+                || name.contains("panther")
+                || name.contains("leopard")
+                || name.contains("tiger")
+                || name.contains("lion")
+                || name.contains("lynx")
+                || name.contains("feline");
     }
 
     private static long scaledMillis(float progress, float lengthSeconds) {
         return Math.max(0L, (long) (Math.min(progress, 1.0F) * lengthSeconds * 1000.0F));
+    }
+
+    /**
+     * Applies the arm swing vanilla's {@code HumanoidModel} uses while walking/running.
+     *
+     * <p>The phase and curve match vanilla's setup animation: the right arm leads by
+     * half a cycle and the amplitude follows {@code 2.0F * limbSwingAmount * 0.5F}.
+     * The result is damped by {@link #ARM_SWING_AMPLITUDE} and added on top of the preset
+     * arm pose so the model's rest pose is kept without the swing overshooting.</p>
+     */
+    private static <T extends ChangedEntity> void applyVanillaArmSwing(AdvancedHumanoidModel<T> model,
+                                                                       HumanoidAnimator<T, ?> animator,
+                                                                       float limbSwing, float limbSwingAmount) {
+        if (limbSwingAmount <= 0.0F) {
+            return;
+        }
+
+        float rightSwing = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F
+                * ARM_SWING_AMPLITUDE;
+        float leftSwing = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F
+                * ARM_SWING_AMPLITUDE;
+        if (animator.rightArmPose == HumanoidModel.ArmPose.EMPTY) {
+            ModelPart rightArm = model.getArm(HumanoidArm.RIGHT);
+            if (rightArm != null) {
+                rightArm.xRot += rightSwing;
+            }
+        }
+        if (animator.leftArmPose == HumanoidModel.ArmPose.EMPTY) {
+            ModelPart leftArm = model.getArm(HumanoidArm.LEFT);
+            if (leftArm != null) {
+                leftArm.xRot += leftSwing;
+            }
+        }
     }
 
     private static boolean isSpecialState(AdvancedHumanoidModel<?> model, ChangedEntity entity,

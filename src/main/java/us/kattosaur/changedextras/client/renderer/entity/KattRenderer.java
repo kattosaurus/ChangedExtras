@@ -49,11 +49,6 @@ public class KattRenderer extends AdvancedHumanoidRenderer<KattEntity, KattEntit
                     float partialTick, float ageInTicks,
                     float netHeadYaw, float headPitch) {
 
-                // Glow only appears when block light at the entity's position is 5 or lower
-                if (entity.level().getBrightness(net.minecraft.world.level.LightLayer.BLOCK, entity.blockPosition()) > 5) {
-                    return;
-                }
-
                 RenderType rt = entity.isJackpot()
                         ? RenderType.eyes(JACKPOT_GLOW_TEXTURE)
                         : RenderType.eyes(GLOW_TEXTURE);

@@ -32,9 +32,8 @@ public final class Config {
             .define("pupilTracking", true);
 
     private static final ForgeConfigSpec.BooleanValue GLOBAL_ANIMATIONS = CLIENT_BUILDER
-            .comment("Apply Changed Extras' shared idle, walk, attack and grab animations to bipedal Changed entities "
-                    + "(including the main mod and other addons). Tail animations still apply to other body types. "
-                    + "Disable this to use only each entity's built-in animations.")
+            .comment("Apply Changed Extras' shared idle, walk, attack and grab animations to every Changed entity "
+                    + "(including the main mod and other addons). Disable this to use only each entity's built-in animations.")
             .define("globalAnimations", true);
 
     // Server configs

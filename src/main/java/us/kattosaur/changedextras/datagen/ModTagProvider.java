@@ -74,7 +74,7 @@ public class ModTagProvider extends ModJsonProvider {
                 "changedextras:proto_bee", "changedextras:scp_009");
         tag("changed", "tags/items", "body",
                 "changed:sports_bra", "changed:black_tshirt", "changed:wetsuit",
-                "changed:white_tshirt", "changedextras:long_sleeve_shirt", "changedextras:katto_jacket");
+                "changed:white_tshirt", "changedextras:long_sleeve_shirt");
         tag("changed", "tags/items", "face", "changedextras:jammer_headphones");
 
         // changed_addon
@@ -85,25 +85,11 @@ public class ModTagProvider extends ModJsonProvider {
                 "changedextras:choco_conekat/female", "changedextras:choco_conekat/male",
                 "changedextras:strawberry_conekat/female", "changedextras:strawberry_conekat/male",
                 "changedextras:neapolitan_conekat/female", "changedextras:neapolitan_conekat/male",
-                "changedextras:latex_katto",
+                "changedextras:latex_katto", "changedextras:latex_hazzy",
                 "changedextras:latex_white_cat", "changedextras:latex_catte", "changedextras:latex_carneline",
-                "changedextras:latex_panther");
+                "changedextras:latex_panther", "changedextras:latex_kaiju");
         tag("changed_addon", "tags/changed/latex_variant", "has_claws", CLAW_ENTITIES);
-        tag("changed_addon", "tags/changed/latex_variant", "wolf_like",
-                "changedextras:latex_jammer", "changedextras:latex_hazzy");
-        tag("changed_addon", "tags/changed/latex_variant", "no_tail_anim", "changedextras:latex_kaiju");
-        tag("changed_addon", "tags/changed/latex_variant", "leopard_like",
-                "changed:form_latex_snow_leopard/female", "changed:form_latex_snow_leopard/male",
-                "changed_addon:form_biosynth_snow_leopard/male", "changed_addon:form_biosynth_snow_leopard/female",
-                "changed_addon:form_snepsi_leopard", "changed_addon:form_latex_dragon_snow_leopard_shark",
-                "changed_addon:form_luminarctic_leopard/male", "changed_addon:form_luminarctic_leopard/female",
-                "changed_addon:form_latex_white_snow_leopard/male", "changed_addon:form_latex_white_snow_leopard/female",
-                "changed_addon:form_latex_snow_leopard_partial", "changed:form_latex_red_panda",
-                "changed:form_latex_raccoon", "changed_addon:form_exp2/female", "changed_addon:form_exp2/male",
-                "changed_addon:form_exp6", "changed_addon:form_latex_snep_feral",
-                "changed_addon:form_latex_snep_feral_form", "changed_addon:form_lynx",
-                "changed_addon:form_latex_dragon_snow_leopard_shark", "changed_addon:form_borealis/male",
-                "changed_addon:form_borealis/female");
+        tag("changed_addon", "tags/changed/latex_variant", "wolf_like", "changedextras:latex_jammer");
         tag("changed_addon", "tags/entity_types", "has_claws", CLAW_ENTITIES);
         tag("changed_addon", "tags/transfur_variant", "able_to_carry", "changedextras:latex_thorniii");
 
