@@ -27,6 +27,48 @@ public class ModTagProvider extends ModJsonProvider {
             "changedextras:latex_jammer", "changedextras:latex_katto", "changedextras:latex_hazzy",
             "changedextras:proto_bee", "changedextras:latex_white_cat", "changedextras:latex_catte",
             "changedextras:latex_haku", "changedextras:latex_thorniii", "changedextras:latex_carneline",
+            "changedextras:latex_panther", "changedextras:latex_kaiju", "changedextras:void_cat"
+    };
+
+    private static final String[] LATEX_VARIANTS = {
+            "changedextras:latex_white_cat", "changedextras:latex_katto", "changedextras:latex_jammer",
+            "changedextras:latex_artist", "changedextras:latex_hazzy"
+    };
+
+    private static final String[] NONLATEX_VARIANTS = {
+            "changedextras:conekat/male", "changedextras:conekat/female",
+            "changedextras:mint_conekat/male", "changedextras:mint_conekat/female",
+            "changedextras:choco_conekat/male", "changedextras:choco_conekat/female",
+            "changedextras:strawberry_conekat/male", "changedextras:strawberry_conekat/female",
+            "changedextras:neapolitan_conekat/male", "changedextras:neapolitan_conekat/female",
+            "changedextras:void_cat", "changedextras:proto_bee", "changedextras:scp_009", "changedextras:latex_catte",
+            "changedextras:latex_haku", "changedextras:latex_thorniii", "changedextras:latex_carneline",
+            "changedextras:latex_panther", "changedextras:latex_kaiju"
+    };
+
+    private static final String[] NIGHT_EYES_VARIANTS = {
+            "changedextras:conekat/male", "changedextras:conekat/female",
+            "changedextras:mint_conekat/male", "changedextras:mint_conekat/female",
+            "changedextras:choco_conekat/male", "changedextras:choco_conekat/female",
+            "changedextras:strawberry_conekat/male", "changedextras:strawberry_conekat/female",
+            "changedextras:neapolitan_conekat/male", "changedextras:neapolitan_conekat/female",
+            "changedextras:latex_white_cat", "changedextras:void_cat", "changedextras:latex_katto",
+            "changedextras:latex_jammer", "changedextras:proto_bee", "changedextras:latex_artist",
+            "changedextras:scp_009", "changedextras:latex_hazzy", "changedextras:latex_catte",
+            "changedextras:latex_haku", "changedextras:latex_carneline", "changedextras:latex_panther",
+            "changedextras:latex_kaiju"
+    };
+
+    private static final String[] DIGITIGRADE_VARIANTS = {
+            "changedextras:conekat/male", "changedextras:conekat/female",
+            "changedextras:mint_conekat/male", "changedextras:mint_conekat/female",
+            "changedextras:choco_conekat/male", "changedextras:choco_conekat/female",
+            "changedextras:strawberry_conekat/male", "changedextras:strawberry_conekat/female",
+            "changedextras:neapolitan_conekat/male", "changedextras:neapolitan_conekat/female",
+            "changedextras:latex_white_cat", "changedextras:void_cat", "changedextras:latex_katto",
+            "changedextras:latex_jammer", "changedextras:proto_bee", "changedextras:latex_artist",
+            "changedextras:scp_009", "changedextras:latex_hazzy", "changedextras:latex_catte",
+            "changedextras:latex_thorniii", "changedextras:latex_carneline",
             "changedextras:latex_panther", "changedextras:latex_kaiju"
     };
 
@@ -54,6 +96,16 @@ public class ModTagProvider extends ModJsonProvider {
         tag("changedextras", "tags/worldgen/biome/has_structure", "bunker", OVERWORLD_BIOMES);
 
         // changed
+        // Changed 0.16.0's premade ability trees select transfurs through these variant tags.
+        // Split the general Changed progression trees by latex type, then add trait trees.
+        tag("changed", "tags/changed/latex_variant", "latex", LATEX_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "nonlatex", NONLATEX_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "digitigrade", DIGITIGRADE_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "taur", "changedextras:latex_haku");
+        tag("changed", "tags/changed/latex_variant", "night_eyes", NIGHT_EYES_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "aquatic", "changedextras:latex_thorniii");
+        tag("changed", "tags/changed/latex_variant", "apian", "changedextras:proto_bee");
+
         tag("changed", "tags/entity_types", "humanoids",
                 "minecraft:player", "minecraft:drowned", "minecraft:evoker", "minecraft:skeleton",
                 "minecraft:stray", "minecraft:wither_skeleton", "minecraft:husk", "minecraft:illusioner",
@@ -71,7 +123,7 @@ public class ModTagProvider extends ModJsonProvider {
                 "changedextras:choco_conekat/male", "changedextras:choco_conekat/female",
                 "changedextras:strawberry_conekat/male", "changedextras:strawberry_conekat/female",
                 "changedextras:neapolitan_conekat/male", "changedextras:neapolitan_conekat/female",
-                "changedextras:proto_bee", "changedextras:scp_009");
+                "changedextras:proto_bee", "changedextras:scp_009", "changedextras:void_cat");
         tag("changed", "tags/items", "body",
                 "changed:sports_bra", "changed:black_tshirt", "changed:wetsuit",
                 "changed:white_tshirt", "changedextras:long_sleeve_shirt", "changedextras:katto_jacket");
@@ -86,8 +138,9 @@ public class ModTagProvider extends ModJsonProvider {
                 "changedextras:strawberry_conekat/female", "changedextras:strawberry_conekat/male",
                 "changedextras:neapolitan_conekat/female", "changedextras:neapolitan_conekat/male",
                 "changedextras:latex_katto",
+                "changedextras:latex_hazzy", "changedextras:latex_kaiju",
                 "changedextras:latex_white_cat", "changedextras:latex_catte", "changedextras:latex_carneline",
-                "changedextras:latex_panther");
+                "changedextras:latex_panther", "changedextras:void_cat");
         tag("changed_addon", "tags/changed/latex_variant", "has_claws", CLAW_ENTITIES);
         tag("changed_addon", "tags/changed/latex_variant", "wolf_like",
                 "changedextras:latex_jammer", "changedextras:latex_hazzy");

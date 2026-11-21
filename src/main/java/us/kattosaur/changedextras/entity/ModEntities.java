@@ -78,6 +78,10 @@ public class ModEntities {
                     .sized(0.7F, 1.93F)
                     .build("latex_white_cat"));
 
+    public static final RegistryObject<EntityType<VoidCatEntity>> VOID_CAT = REGISTRY.register("void_cat",
+            () -> EntityType.Builder.of(VoidCatEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10).sized(0.7F, 1.93F).build("void_cat"));
+
     public static final RegistryObject<EntityType<KattEntity>> KATT = REGISTRY.register("latex_katto",
             () -> EntityType.Builder.of(KattEntity::new, MobCategory.MONSTER)
                     .clientTrackingRange(10)

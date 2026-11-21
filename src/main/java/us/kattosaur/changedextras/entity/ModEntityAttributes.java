@@ -34,6 +34,7 @@ public final class ModEntityAttributes {
                 .build());
         event.put(ModEntities.WHITE_CAT.get(), AbstractWhiteCatEntity.createAttributes()
                 .build());
+        event.put(ModEntities.VOID_CAT.get(), AbstractWhiteCatEntity.createAttributes().build());
         event.put(ModEntities.JAMMER.get(), AbstractWhiteCatEntity.createAttributes()
                 .build());
         event.put(ModEntities.PROTO_BEE.get(), AbstractWhiteCatEntity.createAttributes()

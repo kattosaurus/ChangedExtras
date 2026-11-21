@@ -145,7 +145,11 @@ public class ChangedExtrasEvents {
             return;
         }
 
-        if (AttackComboTracker.serverHurtStrike(attacker)) {
+        AttackComboTracker.ServerSwing strike = AttackComboTracker.serverHurtStrike(attacker);
+        if (strike.advanced() || strike.spam()) {
+            AttackComboPacket.broadcast(attacker, strike.spam() ? -1 : strike.combo());
+        }
+        if (strike.isThirdHit()) {
             event.setAmount(event.getAmount() * AttackComboTracker.FINISHER_DAMAGE_MULTIPLIER);
         }
     }

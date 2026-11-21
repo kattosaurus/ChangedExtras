@@ -14,6 +14,8 @@ public class ModLayerDefinitions {
         event.registerLayerDefinition(ConeKatMaleEntityModel.LAYER_LOCATION, ConeKatMaleEntityModel::createBodyLayer);
         event.registerLayerDefinition(ConeKatFemaleEntityModel.LAYER_LOCATION, ConeKatFemaleEntityModel::createBodyLayer);
         event.registerLayerDefinition(WhiteCatEntityModel.LAYER_LOCATION, WhiteCatEntityModel::createBodyLayer);
+        event.registerLayerDefinition(VoidCatEntityModel.LAYER_LOCATION, VoidCatEntityModel::createBodyLayer);
+        event.registerLayerDefinition(VoidCatEntityModel.OUTLINE_LAYER_LOCATION, VoidCatEntityModel::createOutlineLayer);
         event.registerLayerDefinition(ArtistEntityModel.LAYER_LOCATION, ArtistEntityModel::createBodyLayer);
         event.registerLayerDefinition(KattEntityModel.LAYER_LOCATION, KattEntityModel::createBodyLayer);
         event.registerLayerDefinition(KattoJacketModel.LAYER_LOCATION, KattoJacketModel::createBodyLayer);

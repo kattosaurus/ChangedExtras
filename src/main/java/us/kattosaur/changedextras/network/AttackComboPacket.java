@@ -13,11 +13,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
- * Tells clients that the server confirmed the final combo hit for an entity.
- *
- * <p>The client only predicts the first two strikes. Receiving this packet is what
- * starts the {@code Attack2} clip, so the clip and the server-side lunge always
- * happen together even if the two sides saw the swing on different ticks.</p>
+ * Tells clients which combo strike the server confirmed for an entity.
  */
 public class AttackComboPacket {
     private final UUID entityUUID;
