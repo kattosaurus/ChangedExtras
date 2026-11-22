@@ -80,7 +80,7 @@ public final class AttackComboTracker {
             return new ClientAttack(0, 0L, true);
         }
 
-        int combo = Math.max(0, state.displayCombo);
+        int combo = state.displayCombo;
         long elapsedMillis = 0L;
         if (combo == COMBO_SIZE - 1) {
             // ageInTicks is tickCount + partialTick, so its fraction smooths the
@@ -108,34 +108,12 @@ public final class AttackComboTracker {
         UUID id = key(entity);
         long now = entity.level().getGameTime();
         State state = CLIENT_STATE.computeIfAbsent(id, ignored -> new State());
-        state.clearExpiredSpam(now);
-
         boolean newSwing = state.acceptSwing(entity.swinging, entity.swingTime);
-        if (state.confirmPending) {
-            // The server already reported this swing as the finisher, so the
-            // first swing seen after the packet is that same swing, not a new hit.
-            state.confirmPending = false;
-            if (newSwing) {
-                return;
-            }
-        }
-
-        if (!newSwing) {
-            return;
-        }
-
-        Outcome outcome = state.advance(now);
-        state.displayStartTick = now;
-        if (outcome.spam()) {
+        if (newSwing) {
+            // A swing by itself is not a combo strike; wait for server confirmation.
             state.displayCombo = -1;
-        } else {
-            int display = outcome.combo();
-            if (display >= COMBO_SIZE - 1) {
-                // Wait for the server's confirmation before showing the finisher,
-                // so Attack2 can never play without the boost that goes with it.
-                display = COMBO_SIZE - 2;
-            }
-            state.displayCombo = display;
+            state.displayStartTick = now;
+            state.spam = false;
         }
     }
 
@@ -146,16 +124,14 @@ public final class AttackComboTracker {
      * swing on slightly different ticks.
      */
     public static void applyServerCombo(UUID id, int combo, long serverTick, long clientTickNow) {
-        if (id == null || combo < COMBO_SIZE - 1) {
+        if (id == null || combo >= COMBO_SIZE) {
             return;
         }
 
         State state = CLIENT_STATE.computeIfAbsent(id, ignored -> new State());
-        state.spam = false;
-        state.combo = combo;
-        state.lastSwingTick = serverTick;
+        state.spam = combo < 0;
         state.displayCombo = combo;
-        state.confirmPending = true;
+        state.confirmPending = false;
 
         long elapsedTicks = clientTickNow - serverTick;
         if (elapsedTicks < 0L) {
@@ -187,9 +163,6 @@ public final class AttackComboTracker {
         boolean newSwing = state.acceptSwing(entity.swinging, entity.swingTime);
         if (state.hasPendingHurt(now)) {
             result = state.takePendingHurt();
-        } else if (newSwing) {
-            Outcome outcome = state.advance(now);
-            result = new ServerSwing(outcome.advanced(), outcome.combo(), outcome.spam());
         }
 
         if (now < serverPrunedAt || now - serverPrunedAt > PRUNE_INTERVAL_TICKS) {
@@ -207,9 +180,9 @@ public final class AttackComboTracker {
      * applies the boost/sound/packet, keeping the damage bonus and {@code Attack2}
      * paired.
      */
-    public static boolean serverHurtStrike(LivingEntity entity) {
+    public static ServerSwing serverHurtStrike(LivingEntity entity) {
         if (!isBareHanded(entity)) {
-            return false;
+            return ServerSwing.NONE;
         }
 
         UUID id = entity.getUUID();
@@ -220,7 +193,8 @@ public final class AttackComboTracker {
 
         if (state.hasPendingHurt(now)) {
             // A second target from the same strike (sweep or multi-hit).
-            return state.pendingIsThirdHit();
+            Outcome pending = state.pendingHurtOutcome;
+            return new ServerSwing(pending.advanced(), pending.combo(), pending.spam());
         }
 
         if (entity instanceof Player) {
@@ -229,18 +203,12 @@ public final class AttackComboTracker {
             // swing packet replays this decision instead of advancing again.
             Outcome outcome = state.advance(now);
             state.setPendingHurt(outcome, now);
-            return outcome.advanced() && outcome.combo() == COMBO_SIZE - 1;
-        }
-
-        if (!state.acceptSwing(entity.swinging, entity.swingTime)) {
-            // Mobs swing before they hurt. If the tick tracker already counted this
-            // swing there is no new strike to count here.
-            return false;
+            return new ServerSwing(outcome.advanced(), outcome.combo(), outcome.spam());
         }
 
         Outcome outcome = state.advance(now);
         state.setPendingHurt(outcome, now);
-        return outcome.advanced() && outcome.combo() == COMBO_SIZE - 1;
+        return new ServerSwing(outcome.advanced(), outcome.combo(), outcome.spam());
     }
 
     /** Combos only build while the main hand is empty, so item swings stay vanilla. */

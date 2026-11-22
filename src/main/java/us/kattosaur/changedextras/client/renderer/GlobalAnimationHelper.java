@@ -202,6 +202,9 @@ public final class GlobalAnimationHelper {
                         headFollowsLook = true;
                     } else if (attack != null && attack.combo() == 1) {
                         clips.add(new Clip(GlobalAnimations.Attack1, scaledMillis(model.attackTime, ATTACK1_LENGTH_SECONDS)));
+                    } else if (attack == null || attack.combo() < 0) {
+                        clips.add(new Clip(GlobalAnimations.IdleBody, elapsedMillis));
+                        headFollowsLook = true;
                     } else {
                         clips.add(new Clip(GlobalAnimations.Attack, scaledMillis(model.attackTime, ATTACK_LENGTH_SECONDS)));
                     }

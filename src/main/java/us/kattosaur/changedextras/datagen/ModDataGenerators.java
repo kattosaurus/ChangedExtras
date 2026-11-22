@@ -32,6 +32,7 @@ public final class ModDataGenerators {
             generator.addProvider(true, new ModLootTableProvider(output));
             generator.addProvider(true, new ModTagProvider(output));
             generator.addProvider(true, new ModWorldgenProvider(output));
+            generator.addProvider(true, new ModAbilityProvider(output));
             generator.addProvider(true, new us.kattosaur.changedextras.init.ModDataPackProvider(output, lookupProvider));
         }
 

@@ -69,6 +69,7 @@ public class ModEntityRenderers {
                         ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "textures/entity/conekat/neapolitan_conekat.png")));
         registerHumanoid(event, ModEntities.WHITE_CAT.get(),
                 context -> new WhiteCatRenderer<>(context, new WhiteCatEntityModel<>(context.bakeLayer(WhiteCatEntityModel.LAYER_LOCATION))));
+        registerHumanoid(event, ModEntities.VOID_CAT.get(), VoidCatRenderer::new);
         registerHumanoid(event, ModEntities.ARTIST.get(),
                 ArtistRenderer::new);
         registerHumanoid(event, ModEntities.KATT.get(),

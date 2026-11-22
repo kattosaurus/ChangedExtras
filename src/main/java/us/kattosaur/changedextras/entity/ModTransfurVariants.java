@@ -96,6 +96,10 @@ public class ModTransfurVariants {
                             .transfurMode(TransfurMode.REPLICATION)
                             .build());
 
+    public static final RegistryObject<TransfurVariant<VoidCatEntity>> VOID_CAT =
+            REGISTRY.register("void_cat", () -> TransfurVariant.Builder.of(ModEntities.VOID_CAT)
+                    .nightVision().transfurMode(TransfurMode.REPLICATION).build());
+
     public static final RegistryObject<TransfurVariant<KattEntity>> KATT =
             REGISTRY.register("latex_katto",
                     () -> TransfurVariant.Builder.of(ModEntities.KATT)

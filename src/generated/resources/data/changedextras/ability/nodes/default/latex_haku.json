@@ -1,0 +1,35 @@
+{
+  "parent": {
+    "tree": "changedextras:latex_haku"
+  },
+  "acquiredEffects": [
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:switch_transfur_mode"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:grab_entity"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:toggle_night_vision"
+    },
+    {
+      "type": "changed:unlock_active_ability",
+      "ability": "changed:access_chest"
+    },
+    {
+      "type": "changed:enable_feature",
+      "feature": "changed:flight"
+    },
+    {
+      "type": "changed:attribute_modifier",
+      "attribute": "changed:max_flight_stamina",
+      "factor": 8.0,
+      "method": "add"
+    }
+  ],
+  "price": 0,
+  "titleId": ""
+}
