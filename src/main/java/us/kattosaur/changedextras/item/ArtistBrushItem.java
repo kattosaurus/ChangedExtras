@@ -6,9 +6,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -16,7 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ArtistBrushItem extends Item {
+/** The Artist's Brush: still a texture editor off-hand tool, now also a hexing sword. */
+public class ArtistBrushItem extends SwordItem {
     public static final String BRUSH_DATA_TAG = "ArtistBrushData";
     public static final String TEXTURE_PATH_TAG = "TexturePath";
     public static final String HEX_COLOR_TAG = "HexColor";
@@ -26,8 +34,52 @@ public class ArtistBrushItem extends Item {
     public static final String SELECTED_TARGET_UUID_TAG = "SelectedTargetUuid";
     public static final String SELECTED_TARGET_TYPE_TAG = "SelectedTargetType";
 
+    // Weapon tunables.
+    /** Durability of the brush. */
+    private static final int BRUSH_DURABILITY = 850;
+    /** Total melee damage: tier bonus (6) + sword modifier (1). */
+    private static final int BRUSH_DAMAGE = 7;
+    /** Attack speed modifier: 1.1 attacks/sec, between an axe and a sword (trident speed). */
+    private static final float BRUSH_ATTACK_SPEED = -2.9F;
+    /** How many random negative effects a hit applies. */
+    private static final int BRUSH_EFFECT_COUNT = 1;
+    private static final int BRUSH_EFFECT_DURATION = 120;
+    private static final int BRUSH_EFFECT_AMPLIFIER = 0;
+
+    private static final Tier BRUSH_TIER = new Tier() {
+        @Override
+        public int getUses() {
+            return BRUSH_DURABILITY;
+        }
+
+        @Override
+        public float getSpeed() {
+            return 4.0F;
+        }
+
+        @Override
+        public float getAttackDamageBonus() {
+            return 6.0F;
+        }
+
+        @Override
+        public int getLevel() {
+            return 4;
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return 15;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(Items.NETHERITE_SCRAP);
+        }
+    };
+
     public ArtistBrushItem(Properties properties) {
-        super(properties);
+        super(BRUSH_TIER, BRUSH_DAMAGE - 6, BRUSH_ATTACK_SPEED, properties);
     }
 
     @Override
@@ -40,9 +92,34 @@ public class ArtistBrushItem extends Item {
     }
 
     @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        boolean result = super.hurtEnemy(stack, target, attacker);
+        if (!attacker.level().isClientSide) {
+            for (int i = 0; i < BRUSH_EFFECT_COUNT; i++) {
+                target.addEffect(rollBrushEffect(attacker.getRandom()));
+            }
+        }
+        return result;
+    }
+
+    private MobEffectInstance rollBrushEffect(RandomSource random) {
+        return switch (random.nextInt(8)) {
+            case 0 -> new MobEffectInstance(MobEffects.WITHER, BRUSH_EFFECT_DURATION, BRUSH_EFFECT_AMPLIFIER);
+            case 1 -> new MobEffectInstance(MobEffects.POISON, BRUSH_EFFECT_DURATION, BRUSH_EFFECT_AMPLIFIER);
+            case 2 -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, BRUSH_EFFECT_DURATION, BRUSH_EFFECT_AMPLIFIER + 1);
+            case 3 -> new MobEffectInstance(MobEffects.WEAKNESS, BRUSH_EFFECT_DURATION, BRUSH_EFFECT_AMPLIFIER);
+            case 4 -> new MobEffectInstance(MobEffects.BLINDNESS, BRUSH_EFFECT_DURATION / 2, BRUSH_EFFECT_AMPLIFIER);
+            case 5 -> new MobEffectInstance(MobEffects.HUNGER, BRUSH_EFFECT_DURATION, BRUSH_EFFECT_AMPLIFIER);
+            case 6 -> new MobEffectInstance(MobEffects.HARM, 1, 0);
+            default -> new MobEffectInstance(MobEffects.CONFUSION, BRUSH_EFFECT_DURATION, BRUSH_EFFECT_AMPLIFIER);
+        };
+    }
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         CompoundTag brushData = stack.getTagElement(BRUSH_DATA_TAG);
         tooltip.add(Component.translatable("item.changedextras.artist_brush.tooltip").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("item.changedextras.artist_brush.tooltip.weapon").withStyle(ChatFormatting.RED));
         if (brushData == null) {
             tooltip.add(Component.translatable("item.changedextras.artist_brush.tooltip.empty").withStyle(ChatFormatting.DARK_GRAY));
             return;

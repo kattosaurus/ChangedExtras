@@ -9,7 +9,8 @@
     "NoiseChunkMixin",
     "NoiseGeneratorSettingsMixin",
     "OreVeinifierInvoker",
-    "OverworldBiomeBuilderMixin"
+    "OverworldBiomeBuilderMixin",
+    "TransfurVariantInstanceCompatMixin"
   ],
   "client": [
     "AdvancedHumanoidModelMixin",
