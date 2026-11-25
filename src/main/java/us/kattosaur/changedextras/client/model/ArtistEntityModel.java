@@ -5,9 +5,11 @@ import us.kattosaur.changedextras.client.renderer.GlobalAnimationHelper;
 import us.kattosaur.changedextras.entity.beasts.ArtistEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.client.model.animations.MagicAttackCastingAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
+import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -31,17 +33,22 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
             new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(ChangedExtras.MODID, "artist"), "main");
 
     private final ModelPart rightLeg;
+    private final ModelPart rightPad;
     private final ModelPart leftLeg;
+    private final ModelPart leftPad;
     private final ModelPart rightArm;
     private final ModelPart leftArm;
     private final ModelPart head;
     private final ModelPart torso;
+    private final ModelPart tailPrimary;
+    private final ModelPart tailSecondary;
+    private final ModelPart tailTertiary;
+    private final ModelPart tailQuaternary;
     private final HumanoidAnimator<ArtistEntity, ArtistEntityModel> animator;
 
-    // Bridges the vanilla KeyframeAnimations player (which needs a HierarchicalModel) to this
-    // model's parts, so the Blockbench "scream" animation can be played straight from ArtistEntity.
+    // Bridges vanilla KeyframeAnimations to every bone used by the Blockbench clips.
     private final Vector3f animationCache = new Vector3f();
-    private final HierarchicalModel<ArtistEntity> screamDriver = new HierarchicalModel<>() {
+    private final HierarchicalModel<ArtistEntity> animationDriver = new HierarchicalModel<>() {
         @Override
         public ModelPart root() {
             return ArtistEntityModel.this.torso;
@@ -51,11 +58,17 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
         public Optional<ModelPart> getAnyDescendantWithName(String name) {
             ModelPart part = switch (name) {
                 case "RightLeg" -> ArtistEntityModel.this.rightLeg;
+                case "RightPad" -> ArtistEntityModel.this.rightPad;
                 case "LeftLeg" -> ArtistEntityModel.this.leftLeg;
+                case "LeftPad" -> ArtistEntityModel.this.leftPad;
                 case "Head" -> ArtistEntityModel.this.head;
                 case "Torso" -> ArtistEntityModel.this.torso;
                 case "RightArm" -> ArtistEntityModel.this.rightArm;
                 case "LeftArm" -> ArtistEntityModel.this.leftArm;
+                case "TailPrimary" -> ArtistEntityModel.this.tailPrimary;
+                case "TailSecondary" -> ArtistEntityModel.this.tailSecondary;
+                case "TailTertiary" -> ArtistEntityModel.this.tailTertiary;
+                case "TailQuaternary" -> ArtistEntityModel.this.tailQuaternary;
                 default -> null;
             };
             return Optional.ofNullable(part);
@@ -76,23 +89,28 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
         this.leftArm = root.getChild("LeftArm");
 
         var tail = torso.getChild("Tail");
-        var tailPrimary = tail.getChild("TailPrimary");
-        var tailSecondary = tailPrimary.getChild("TailSecondary");
-        var tailTertiary = tailSecondary.getChild("TailTertiary");
-        var tailQuaternary = tailTertiary.getChild("TailQuaternary");
+        this.tailPrimary = tail.getChild("TailPrimary");
+        this.tailSecondary = tailPrimary.getChild("TailSecondary");
+        this.tailTertiary = tailSecondary.getChild("TailTertiary");
+        this.tailQuaternary = tailTertiary.getChild("TailQuaternary");
 
         var leftLowerLeg = leftLeg.getChild("LeftLowerLeg");
         var leftFoot = leftLowerLeg.getChild("LeftFoot");
+        this.leftPad = leftFoot.getChild("LeftPad");
         var rightLowerLeg = rightLeg.getChild("RightLowerLeg");
         var rightFoot = rightLowerLeg.getChild("RightFoot");
+        this.rightPad = rightFoot.getChild("RightPad");
 
         animator = HumanoidAnimator.of(this).hipOffset(-1.5f)
                 .addPreset(AnimatorPresets.catLike(
                         head, head.getChild("LeftEar"), head.getChild("RightEar"),
                         torso, leftArm, rightArm,
                         tail, List.of(tailPrimary, tailSecondary, tailTertiary, tailQuaternary),
-                        leftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"),
-                        rightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad")));
+                        leftLeg, leftLowerLeg, leftFoot, leftPad,
+                        rightLeg, rightLowerLeg, rightFoot, rightPad))
+                // EXP 009's chant/lightning pose, reused for the brush meteor.
+                .addAnimator(new MagicAttackCastingAnimator<ArtistEntity, ArtistEntityModel>(
+                        head, rightArm, leftArm, rightLeg, leftLeg, ArtistEntity::isCastingMeteor));
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -168,25 +186,64 @@ public class ArtistEntityModel extends AdvancedHumanoidModel<ArtistEntity> {
     public void setupAnim(@NotNull ArtistEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        GlobalAnimationHelper.apply(this, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, true);
-        if (entity.getScreamTicks() > 0) {
-            applyScream(entity, ageInTicks);
-        } else {
-            applyAttackPose(entity, ageInTicks);
+
+        // The meteor's FINAL-stage animator must own the pose; the shared layer would
+        // otherwise replay idle/grab motion over the EXP 009 chant.
+        if (entity.isCastingMeteor()) {
+            return;
         }
+
+        GlobalAnimationHelper.apply(this, entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, true);
+
+        if (entity.getFightPhase() == ArtistEntity.FightPhase.TRANSITION) {
+            playAnimation(entity, LatexArtistAnimation.RipOut,
+                    entity.getTransitionTicks(), ArtistEntity.RIP_OUT_TICKS, ageInTicks);
+            return;
+        }
+
+        if (applyAttackClip(entity, ageInTicks)) {
+            return;
+        }
+
+        applyAttackPose(entity, ageInTicks);
     }
 
-    private void applyScream(ArtistEntity entity, float ageInTicks) {
+    private boolean applyAttackClip(ArtistEntity entity, float ageInTicks) {
+        int pose = entity.getAttackPose();
+        if (pose == ArtistEntity.ATTACK_POSE_GRAB) {
+            playAnimation(entity, LatexArtistAnimation.Stretch,
+                    entity.getAttackPoseTicks(), ArtistEntity.STRETCH_TICKS, ageInTicks);
+            return true;
+        }
+        if (pose == ArtistEntity.ATTACK_POSE_GROUND_PUNCTURE) {
+            playAnimation(entity, LatexArtistAnimation.CleaveGround,
+                    entity.getAttackPoseTicks(), ArtistEntity.CLEAVE_GROUND_TICKS, ageInTicks);
+            return true;
+        }
+        return false;
+    }
+
+    private void playAnimation(ArtistEntity entity, AnimationDefinition definition,
+                               int remainingTicks, int durationTicks, float ageInTicks) {
+        resetAnimatedParts();
+        float partialTick = ageInTicks - entity.tickCount;
+        float elapsedTicks = Math.max(0.0F, durationTicks - remainingTicks + partialTick);
+        KeyframeAnimations.animate(animationDriver, definition, (long) (elapsedTicks * 50.0F), 1.0F, animationCache);
+    }
+
+    private void resetAnimatedParts() {
         rightLeg.resetPose();
+        rightPad.resetPose();
         leftLeg.resetPose();
+        leftPad.resetPose();
         head.resetPose();
         torso.resetPose();
         rightArm.resetPose();
         leftArm.resetPose();
-
-        float partialTick = ageInTicks - entity.tickCount;
-        long elapsedMillis = (long)((ArtistEntity.SCREAM_DURATION_TICKS - entity.getScreamTicks() + partialTick) * 50.0F);
-        KeyframeAnimations.animate(screamDriver, LatexArtistAnimation.scream, elapsedMillis, 1.0F, animationCache);
+        tailPrimary.resetPose();
+        tailSecondary.resetPose();
+        tailTertiary.resetPose();
+        tailQuaternary.resetPose();
     }
 
     private void applyAttackPose(ArtistEntity entity, float ageInTicks) {

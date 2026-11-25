@@ -72,6 +72,120 @@ public class ModTagProvider extends ModJsonProvider {
             "changedextras:latex_panther", "changedextras:latex_kaiju"
     };
 
+    // Changed Addon Plus registers its forms in changed:latex_variant but does not add them to any
+    // of the tags that Changed 0.16.0's ability trees select. Keep those assignments here so each
+    // addon form receives the same progression trees as the equivalent Changed/Changed Extras form.
+    private static final String[] ADDON_LATEX_VARIANTS = {
+            "changed_addon:form_puro_kind/male", "changed_addon:form_puro_kind/female",
+            "changed_addon:form_biosynth_snow_leopard/male", "changed_addon:form_biosynth_snow_leopard/female",
+            "changed_addon:form_white_fox", "changed_addon:form_latex_snow_fox/male",
+            "changed_addon:form_latex_snow_fox/female", "changed_addon:form_dazed_latex",
+            "changed_addon:form_buff_dazed_latex", "changed_addon:form_mirror_white_tiger_female",
+            "changed_addon:form_snepsi_leopard", "changed_addon:form_foxta_foxy",
+            "changed_addon:form_latex_kitsune/male", "changed_addon:form_latex_kitsune/female",
+            "changed_addon:form_latex_calico_cat", "changed_addon:form_latex_dragon_snow_leopard_shark",
+            "changed_addon:form_latex_snep", "changed_addon:form_latex_snep_feral",
+            "changed_addon:form_luminarctic_leopard/male", "changed_addon:form_luminarctic_leopard/female",
+            "changed_addon:form_latex_squid_tiger_shark", "changed_addon:form_luminara_flower_beast",
+            "changed_addon:form_latex_white_snow_leopard/male", "changed_addon:form_latex_white_snow_leopard/female",
+            "changed_addon:form_latex_cheetah/male", "changed_addon:form_latex_cheetah/female",
+            "changed_addon:form_dark_latex_yufeng_queen", "changed_addon:form_latex_snow_leopard_partial",
+            "changed_addon:form_void_fox", "changed_addon:form_avali",
+            "changed_addon:form_avali_zergodmaster", "changed_addon:form_protogen",
+            "changed_addon:form_prototype", "changed_addon:form_foxyas",
+            "changed_addon:form_protogen_0senia0", "changed_addon:form_latex_kayla_shark",
+            "changed_addon:form_wolfy", "changed_addon:form_reyn", "changed_addon:form_lynx",
+            "changed_addon:form_fengqi_wolf", "changed_addon:form_latex_border_collie",
+            "changed_addon:form_buny", "changed_addon:form_bagel", "changed_addon:form_hayden_fennec_fox",
+            "changed_addon:form_himalayan_crystal_gas_cat/male",
+            "changed_addon:form_himalayan_crystal_gas_cat/female", "changed_addon:form_blue_lizard",
+            "changed_addon:form_latex_mongoose", "changed_addon:form_pink_cyan_skunk",
+            "changed_addon:form_latex_wind_cat/male", "changed_addon:form_latex_wind_cat/female",
+            "changed_addon:form_borealis/male", "changed_addon:form_borealis/female",
+            "changed_addon:form_exp1/male", "changed_addon:form_exp1/female",
+            "changed_addon:form_exp2/male", "changed_addon:form_exp2/female", "changed_addon:form_exp6",
+            "changed_addon:form_experiment009", "changed_addon:form_experiment_10",
+            "changed_addon:form_experiment009_boss", "changed_addon:form_experiment_10_boss"
+    };
+
+    private static final String[] ADDON_DIGITIGRADE_VARIANTS = {
+            "changed_addon:form_biosynth_snow_leopard/male", "changed_addon:form_biosynth_snow_leopard/female",
+            "changed_addon:form_latex_calico_cat", "changed_addon:form_himalayan_crystal_gas_cat/male",
+            "changed_addon:form_himalayan_crystal_gas_cat/female", "changed_addon:form_latex_wind_cat/male",
+            "changed_addon:form_latex_wind_cat/female", "changed_addon:form_latex_cheetah/male",
+            "changed_addon:form_latex_cheetah/female", "changed_addon:form_luminarctic_leopard/male",
+            "changed_addon:form_luminarctic_leopard/female", "changed_addon:form_latex_white_snow_leopard/male",
+            "changed_addon:form_latex_white_snow_leopard/female", "changed_addon:form_latex_snow_leopard_partial",
+            "changed_addon:form_snepsi_leopard", "changed_addon:form_mirror_white_tiger_female",
+            "changed_addon:form_latex_snep", "changed_addon:form_latex_snep_feral", "changed_addon:form_lynx",
+            "changed_addon:form_borealis/male", "changed_addon:form_borealis/female",
+            "changed_addon:form_white_fox", "changed_addon:form_latex_snow_fox/male",
+            "changed_addon:form_latex_snow_fox/female", "changed_addon:form_foxta_foxy",
+            "changed_addon:form_void_fox", "changed_addon:form_foxyas", "changed_addon:form_hayden_fennec_fox",
+            "changed_addon:form_exp1/male", "changed_addon:form_exp1/female",
+            "changed_addon:form_latex_kitsune/male", "changed_addon:form_latex_kitsune/female",
+            "changed_addon:form_wolfy", "changed_addon:form_fengqi_wolf",
+            "changed_addon:form_latex_border_collie", "changed_addon:form_puro_kind/male",
+            "changed_addon:form_puro_kind/female", "changed_addon:form_protogen",
+            "changed_addon:form_prototype", "changed_addon:form_protogen_0senia0",
+            "changed_addon:form_avali", "changed_addon:form_avali_zergodmaster",
+            "changed_addon:form_latex_dragon_snow_leopard_shark", "changed_addon:form_latex_squid_tiger_shark",
+            "changed_addon:form_latex_kayla_shark", "changed_addon:form_latex_mongoose",
+            "changed_addon:form_pink_cyan_skunk", "changed_addon:form_blue_lizard",
+            "changed_addon:form_buny", "changed_addon:form_bagel", "changed_addon:form_exp2/male",
+            "changed_addon:form_exp2/female", "changed_addon:form_exp6"
+    };
+
+    private static final String[] ADDON_NIGHT_EYES_VARIANTS = {
+            "changed_addon:form_dazed_latex", "changed_addon:form_buff_dazed_latex",
+            "changed_addon:form_latex_calico_cat", "changed_addon:form_himalayan_crystal_gas_cat/male",
+            "changed_addon:form_himalayan_crystal_gas_cat/female", "changed_addon:form_latex_wind_cat/male",
+            "changed_addon:form_latex_wind_cat/female", "changed_addon:form_latex_cheetah/male",
+            "changed_addon:form_latex_cheetah/female", "changed_addon:form_luminarctic_leopard/male",
+            "changed_addon:form_luminarctic_leopard/female", "changed_addon:form_latex_white_snow_leopard/male",
+            "changed_addon:form_latex_white_snow_leopard/female", "changed_addon:form_latex_snow_leopard_partial",
+            "changed_addon:form_snepsi_leopard", "changed_addon:form_mirror_white_tiger_female",
+            "changed_addon:form_lynx", "changed_addon:form_borealis/male", "changed_addon:form_borealis/female",
+            "changed_addon:form_latex_kitsune/male", "changed_addon:form_latex_kitsune/female",
+            "changed_addon:form_avali", "changed_addon:form_avali_zergodmaster",
+            "changed_addon:form_fengqi_wolf", "changed_addon:form_exp6",
+            "changed_addon:form_experiment009", "changed_addon:form_experiment_10",
+            "changed_addon:form_experiment009_boss", "changed_addon:form_experiment_10_boss"
+    };
+
+    private static final String[] ADDON_AQUATIC_VARIANTS = {
+            "changed_addon:form_latex_dragon_snow_leopard_shark",
+            "changed_addon:form_latex_squid_tiger_shark", "changed_addon:form_latex_kayla_shark"
+    };
+
+    private static final String[] ADDON_LAMNID_VARIANTS = {
+            "changed_addon:form_latex_dragon_snow_leopard_shark",
+            "changed_addon:form_latex_squid_tiger_shark", "changed_addon:form_latex_kayla_shark"
+    };
+
+    private static final String[] ADDON_COLEOID_VARIANTS = {
+            "changed_addon:form_latex_squid_tiger_shark"
+    };
+
+    private static final String[] ADDON_MULTI_ARMED_VARIANTS = {
+            "changed_addon:form_latex_squid_tiger_shark"
+    };
+
+    private static final String[] ADDON_WINGED_BACK_VARIANTS = {
+            "changed_addon:form_avali", "changed_addon:form_avali_zergodmaster",
+            "changed_addon:form_borealis/male", "changed_addon:form_borealis/female",
+            "changed_addon:form_latex_dragon_snow_leopard_shark",
+            "changed_addon:form_dark_latex_yufeng_queen"
+    };
+
+    private static final String[] ADDON_PLANT_LIKE_VARIANTS = {
+            "changed_addon:form_luminara_flower_beast"
+    };
+
+    private static final String[] ADDON_DARK_LATEX_VARIANTS = {
+            "changed_addon:form_dark_latex_yufeng_queen"
+    };
+
     public ModTagProvider(PackOutput output) {
         super(output, "Tags: changedextras");
     }
@@ -98,13 +212,22 @@ public class ModTagProvider extends ModJsonProvider {
         // changed
         // Changed 0.16.0's premade ability trees select transfurs through these variant tags.
         // Split the general Changed progression trees by latex type, then add trait trees.
-        tag("changed", "tags/changed/latex_variant", "latex", LATEX_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "latex", combine(LATEX_VARIANTS, ADDON_LATEX_VARIANTS));
         tag("changed", "tags/changed/latex_variant", "nonlatex", NONLATEX_VARIANTS);
-        tag("changed", "tags/changed/latex_variant", "digitigrade", DIGITIGRADE_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "digitigrade",
+                combine(DIGITIGRADE_VARIANTS, ADDON_DIGITIGRADE_VARIANTS));
         tag("changed", "tags/changed/latex_variant", "taur", "changedextras:latex_haku");
-        tag("changed", "tags/changed/latex_variant", "night_eyes", NIGHT_EYES_VARIANTS);
-        tag("changed", "tags/changed/latex_variant", "aquatic", "changedextras:latex_thorniii");
+        tag("changed", "tags/changed/latex_variant", "night_eyes",
+                combine(NIGHT_EYES_VARIANTS, ADDON_NIGHT_EYES_VARIANTS));
+        tag("changed", "tags/changed/latex_variant", "aquatic",
+                combine(new String[]{"changedextras:latex_thorniii"}, ADDON_AQUATIC_VARIANTS));
         tag("changed", "tags/changed/latex_variant", "apian", "changedextras:proto_bee");
+        tag("changed", "tags/changed/latex_variant", "lamnid", ADDON_LAMNID_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "coleoid", ADDON_COLEOID_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "multi_armed", ADDON_MULTI_ARMED_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "winged_back", ADDON_WINGED_BACK_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "plant_like", ADDON_PLANT_LIKE_VARIANTS);
+        tag("changed", "tags/changed/latex_variant", "dark_latex", ADDON_DARK_LATEX_VARIANTS);
 
         tag("changed", "tags/entity_types", "humanoids",
                 "minecraft:player", "minecraft:drowned", "minecraft:evoker", "minecraft:skeleton",
@@ -170,6 +293,20 @@ public class ModTagProvider extends ModJsonProvider {
 
         // forge
         tag("forge", "tags/worldgen/biome", "is_cave", "changedextras:blue_cave");
+    }
+
+    private static String[] combine(String[]... arrays) {
+        int length = 0;
+        for (String[] array : arrays) {
+            length += array.length;
+        }
+        String[] result = new String[length];
+        int offset = 0;
+        for (String[] array : arrays) {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        return result;
     }
 
     private void tag(String namespace, String directory, String name, String... values) {

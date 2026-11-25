@@ -69,6 +69,7 @@ public class ModFluids {
             () -> new Scp009WaterBlock(SCP009_WATER, BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_RED)
                     .noCollission()
+                    .replaceable()
                     .strength(100.0F)
                     .noLootTable()
                     .liquid()));
