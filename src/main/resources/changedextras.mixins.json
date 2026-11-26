@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "changedextras.refmap.json",
   "mixins": [
+    "BehaviorUtilsMixin",
+    "EntityMixin",
     "GrabEntityAbilityInstanceMixin",
     "NoiseChunkMixin",
     "NoiseGeneratorSettingsMixin",

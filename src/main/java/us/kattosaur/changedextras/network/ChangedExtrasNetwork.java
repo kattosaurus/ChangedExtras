@@ -79,5 +79,9 @@ public class ChangedExtrasNetwork {
                 AttackComboPacket::encode,
                 AttackComboPacket::decode,
                 AttackComboPacket::handle);
+        INSTANCE.registerMessage(id++, ShadowHideStatePacket.class,
+                ShadowHideStatePacket::encode,
+                ShadowHideStatePacket::decode,
+                ShadowHideStatePacket::handle);
     }
 }

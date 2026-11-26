@@ -10,11 +10,15 @@ import us.kattosaur.changedextras.client.model.catte_bucket;
 
 import us.kattosaur.changedextras.block.*;
 import us.kattosaur.changedextras.client.gui.PillBottleScreen;
+import us.kattosaur.changedextras.client.renderer.FeralCatClientRenderer;
+import us.kattosaur.changedextras.client.renderer.FeralCatRenderOverride;
+import us.kattosaur.changedextras.client.renderer.ShadowHidePlayerRenderer;
 import us.kattosaur.changedextras.client.renderer.accessory.DyeableClothingRenderer;
 import us.kattosaur.changedextras.client.renderer.accessory.JammerHeadphonesRenderer;
 import us.kattosaur.changedextras.client.renderer.accessory.KattoJacketRenderer;
 import us.kattosaur.changedextras.client.event.ClientEventHandler;
 import us.kattosaur.changedextras.client.particle.JackpotSmokeParticleProvider;
+import us.kattosaur.changedextras.client.tracker.ClientShadowHideTracker;
 import us.kattosaur.changedextras.common.ChangedExtrasGameRules;
 import us.kattosaur.changedextras.common.spawn.ChangedExtrasSpawnController;
 import us.kattosaur.changedextras.compat.ChangedAddonCompat;
@@ -49,6 +53,7 @@ import us.kattosaur.changedextras.item.SterileSwabItem;
 import us.kattosaur.changedextras.item.UsedVialItem;
 import us.kattosaur.changedextras.network.ChangedExtrasNetwork;
 import com.mojang.logging.LogUtils;
+import net.ltxprogrammer.changed.client.RendererOverride;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedGameRules;
@@ -62,6 +67,7 @@ import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
@@ -861,6 +867,21 @@ public class ChangedExtras {
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
+        @SubscribeEvent
+        public static void onRegisterRendererOverrides(RendererOverride.RegisterEvent event) {
+            // Changed 0.16.0 bypasses PlayerRenderer.render (and therefore
+            // RenderPlayerEvent.Pre) for transfurred players, so the feral cat
+            // has to hook into Changed's renderer override pipeline instead.
+            // Lower priority values win over Changed's TransfurredPlayerRenderer.
+            event.registerOverride(AbstractClientPlayer.class, FeralCatRenderOverride::new,
+                    FeralCatClientRenderer::isFeral, 500);
+
+            // Hidden void cats win over every other player renderer, including
+            // the feral cat renderer above and Changed's transfurred renderer.
+            event.registerOverride(AbstractClientPlayer.class, ShadowHidePlayerRenderer::new,
+                    player -> ClientShadowHideTracker.isHidden(player.getUUID()), 100);
+        }
+
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             AccessoryLayer.registerRenderer(

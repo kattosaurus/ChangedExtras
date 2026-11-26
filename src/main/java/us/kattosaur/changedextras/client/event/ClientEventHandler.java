@@ -8,6 +8,7 @@ import us.kattosaur.changedextras.client.tracker.ClientAttackComboTracker;
 import us.kattosaur.changedextras.client.tracker.ClientJackpotTracker;
 import us.kattosaur.changedextras.client.tracker.ClientJamTracker;
 import us.kattosaur.changedextras.client.tracker.ClientPrepareTracker;
+import us.kattosaur.changedextras.client.tracker.ClientShadowHideTracker;
 
 import us.kattosaur.changedextras.ChangedExtras;
 import us.kattosaur.changedextras.init.ChangedExtrasEffects;
@@ -76,6 +77,7 @@ public class ClientEventHandler {
                 LatexDebugOverlay.clear();
                 ClientPrepareTracker.clear();
                 ClientAttackComboTracker.clear();
+                ClientShadowHideTracker.clear();
                 EyeBlink.clear();
             }
         }
@@ -87,6 +89,7 @@ public class ClientEventHandler {
             ClientPrepareTracker.clear();
             ClientJamTracker.clear();
             ClientAttackComboTracker.clear();
+            ClientShadowHideTracker.clear();
             EyeBlink.clear();
         }
 

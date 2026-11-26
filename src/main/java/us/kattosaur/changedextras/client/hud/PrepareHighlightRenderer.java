@@ -2,6 +2,7 @@ package us.kattosaur.changedextras.client.hud;
 
 import us.kattosaur.changedextras.client.renderer.PrepareRenderTypes;
 import us.kattosaur.changedextras.client.tracker.ClientPrepareTracker;
+import us.kattosaur.changedextras.client.tracker.ClientShadowHideTracker;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 public final class PrepareHighlightRenderer {
     private static final float RED = 1.0F;
@@ -23,6 +25,9 @@ public final class PrepareHighlightRenderer {
     public static <T extends LivingEntity> void render(T entity, EntityModel<T> model, PoseStack poseStack,
                                                        MultiBufferSource buffer, int packedLight) {
         if (!ClientPrepareTracker.isActive() || !entity.isAlive() || ClientPrepareTracker.isCaster(entity)) {
+            return;
+        }
+        if (entity instanceof Player player && ClientShadowHideTracker.isHidden(player.getUUID())) {
             return;
         }
 
