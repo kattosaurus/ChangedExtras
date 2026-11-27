@@ -56,7 +56,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:raw_salmon",
+          "name": "minecraft:salmon",
           "weight": 4
         },
         {

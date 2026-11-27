@@ -539,7 +539,8 @@ public final class ModAbilityProvider extends ModJsonProvider {
                   "acquiredEffects": [
                     { "type": "changed:unlock_active_ability", "ability": "changed:switch_transfur_mode" },
                     { "type": "changed:unlock_active_ability", "ability": "changed:grab_entity" },
-                    { "type": "changed:unlock_active_ability", "ability": "changed:toggle_night_vision" }
+                    { "type": "changed:unlock_active_ability", "ability": "changed:toggle_night_vision" },
+                    { "type": "changed:unlock_active_ability", "ability": "changedextras:shadow_hide" }
                   ]
                 }
                 """).getAsJsonObject());

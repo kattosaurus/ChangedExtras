@@ -6,6 +6,7 @@ import us.kattosaur.changedextras.ability.PaintBallAbility;
 import us.kattosaur.changedextras.ability.ParryAbility;
 import us.kattosaur.changedextras.ability.PrepareAbility;
 import us.kattosaur.changedextras.ability.PunctureAbility;
+import us.kattosaur.changedextras.ability.ShadowHideAbility;
 import us.kattosaur.changedextras.ability.SwingAbility;
 import us.kattosaur.changedextras.ability.TurnFeralAbility;
 import us.kattosaur.changedextras.entity.beasts.KattEntity;
@@ -50,6 +51,9 @@ public final class ChangedExtrasAbilities {
 
     public static final RegistryObject<JamAbility> JAM =
             REGISTRY.register("jam", JamAbility::new);
+
+    public static final RegistryObject<ShadowHideAbility> SHADOW_HIDE =
+            REGISTRY.register("shadow_hide", ShadowHideAbility::new);
 
     public static final RegistryObject<AbstractAbility<JackpotAbilityInstance>> JACKPOT_AURA = REGISTRY.register("jackpot_aura",
             () -> new AbstractAbility<JackpotAbilityInstance>(JackpotAbilityInstance::new) {
